@@ -68,7 +68,7 @@
             <div class="logo"><h1>BM <span>GROUP</span></h1><small>Buloneria Mitre SRL</small></div>
             <div class="header-info">
                 <strong>CUIT: 30-69179970-7</strong><br>
-                Bernabé Aráoz 162 - Tucumán | Tel: 3816797611
+                Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294 Mz B - Fracción A y B- Tucumán | Tel: 3816797611
             </div>
         </div>
     </header>
@@ -186,7 +186,7 @@
             if(!desc) return alert("Ingrese una descripción");
             if(!p || p <= 0) return alert("Ingrese un precio válido");
 
-            carrito.push({ desc: desc + " (MANUAL)", p, q: q || 1 });
+            carrito.push({ desc: desc + "", p, q: q || 1 });
             actualizarTabla();
 
             document.getElementById('man-desc').value = '';
