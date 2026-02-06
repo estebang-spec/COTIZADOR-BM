@@ -8,32 +8,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root { --primary: #000; --accent: #e51f1f; --bg: #f4f4f4; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); font-size: 14px; }
         header { background: white; border-bottom: 5px solid var(--accent); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .logo h1 { margin: 0; font-size: 26px; }
         .logo span { color: var(--accent); }
         .header-info { text-align: right; font-size: 11px; color: #444; }
         .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
-        .search-section { background: var(--primary); padding: 25px; border-radius: 12px; margin-bottom: 25px; color: white; }
-        #buscador { width: 100%; padding: 15px; border-radius: 8px; border: none; font-size: 18px; outline: none; }
-        .card-lista { background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden; }
-        .tabla-scroll { max-height: 500px; overflow-y: auto; }
-        .fila { display: grid; grid-template-columns: 140px 1fr 120px 100px; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px; }
-        .fila-header { background: #eee; font-weight: bold; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #ccc; }
-        input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%; }
-        .btn-add { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .presupuesto-box { background: white; padding: 30px; border-radius: 12px; margin-top: 30px; border: 1px solid #000; }
-        .cliente-data { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .cliente-data input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #333; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .total-area { text-align: right; margin-top: 25px; padding-top: 15px; border-top: 2px solid #eee; }
-        .total-monto { font-size: 30px; font-weight: bold; color: var(--accent); }
-        .controles { display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; }
-        .btn-pdf { background: #28a745; color: white; border: none; padding: 15px 40px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        @media (max-width: 800px) { .fila { grid-template-columns: 1fr; text-align: center; } .fila-header { display: none; } }
+        .search-section { background: var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white; }
+        #buscador { width: 100%; padding: 12px; border-radius: 5px; border: none; font-size: 16px; outline: none; }
+        .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
+        .tabla-scroll { max-height: 600px; overflow-y: auto; }
+        /* Grid ajustado para mostrar mejor los datos */
+        .fila { display: grid; grid-template-columns: 130px 1fr 100px 90px; gap: 10px; padding: 8px 15px; border-bottom: 1px solid #eee; align-items: center; }
+        .fila:hover { background-color: #f9f9f9; }
+        .fila-header { background: #eee; font-weight: bold; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #ccc; font-size: 12px; text-transform: uppercase; }
+        .code { color: #666; font-weight: bold; font-family: monospace; font-size: 12px; }
+        .desc { font-weight: 500; }
+        input[type="number"] { padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
+        .btn-add { background: var(--accent); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .presupuesto-box { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #ddd; }
+        .cliente-data { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .cliente-data input { padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #333; color: white; padding: 10px; text-align: left; font-size: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        .total-area { text-align: right; margin-top: 20px; padding-top: 10px; border-top: 2px solid #eee; }
+        .total-monto { font-size: 24px; font-weight: bold; color: var(--accent); }
+        .controles { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-pdf { background: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -42,101 +45,357 @@
             <div class="logo"><h1>BM <span>GROUP</span></h1><small>Buloneria Mitre SRL</small></div>
             <div class="header-info">
                 <strong>CUIT: 30-69179970-7</strong><br>
-                Bernabé Aráoz 162 - San Miguel de Tucumán<br>
-                Tel: 3816797611 | Mail: estebang@buloneriamitre.com.ar
+                Bernabé Aráoz 162 - Tucumán | Tel: 3816797611
             </div>
         </div>
     </header>
+
     <div class="container">
         <section class="search-section">
-            <h2 style="margin:0 0 15px 0">Cotizador Maestro - Buloneria Mitre</h2>
-            <input type="text" id="buscador" placeholder="Busque por código (FFS990, D801, ANIT 01, 7018...) o descripción..." onkeyup="filtrar()">
+            <h2 style="margin:0 0 10px 0; font-size: 20px;">Buscador Universal de Artículos</h2>
+            <input type="text" id="buscador" placeholder="Busque por Código SAP, Modelo, Marca o Descripción (Ej: 303468, GWS 2200, ANIT 01...)" onkeyup="filtrar()">
+            <small style="opacity: 0.8">Base de datos cargada: Herramientas Bosch, Electrodos Conarco/ESAB, Calzado, Seguridad y más.</small>
         </section>
+
         <div class="card-lista">
             <div class="fila fila-header">
-                <div>Código</div>
-                <div>Descripción del Artículo</div>
-                <div>Precio U. ($)</div>
+                <div>Código / Modelo</div>
+                <div>Descripción</div>
+                <div>Precio Unit.</div>
                 <div>Acción</div>
             </div>
             <div id="contenedor-items" class="tabla-scroll"></div>
         </div>
+
         <section class="presupuesto-box">
             <div class="cliente-data">
-                <div><label>Nombre del Cliente:</label><input type="text" id="cliente-nombre"></div>
-                <div><label>Forma de Pago:</label><input type="text" id="pago-cliente"></div>
+                <div><label>Cliente:</label><input type="text" id="cliente-nombre"></div>
+                <div><label>Condición de Pago:</label><input type="text" id="pago-cliente"></div>
             </div>
             <table id="tabla-final">
                 <thead><tr><th>Descripción</th><th>P. Unit</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead>
                 <tbody id="body-items"></tbody>
             </table>
             <div class="total-area">
-                <div style="font-size:12px; color:#666">TOTAL ESTIMADO (IVA 21% INCLUIDO)</div>
-                <div class="total-monto" id="total-final">$0.00</div>
+                <div class="total-monto" id="total-final">TOTAL: $0.00</div>
             </div>
             <div class="controles">
-                <button onclick="window.location.reload()" style="padding:10px 20px; cursor:pointer">Reiniciar</button>
-                <button class="btn-pdf" onclick="generarPDF()">DESCARGAR PRESUPUESTO PDF</button>
+                <button onclick="window.location.reload()" style="padding:10px 20px; cursor:pointer; border:1px solid #ccc; background:white;">Limpiar</button>
+                <button class="btn-pdf" onclick="generarPDF()">DESCARGAR PDF</button>
             </div>
         </section>
     </div>
+
     <script>
+        // BASE DE DATOS UNIFICADA
         const ARTICULOS = [
-            // --- PROTECCIÓN RESPIRATORIA (NUEVA LISTA) ---
-            { c: "FFS990", d: "MASCARA CARA COMPLETA SILICONADA" },
-            { c: "S950", d: "SEMIMASCARA SILICONADA" },
-            { c: "S900", d: "SEMIMASCARA CAUCHO" },
-            { c: "F200P3", d: "FILTRO PARA PARTICULAS (X2UN)" },
-            { c: "F200VP3", d: "FILTRO PARA PARTICULAS Y VAPORES (X2UN)" },
-            { c: "F200GP3", d: "FILTRO PARA PARTICULAS Y GASES (X2UN)" },
-            { c: "F600V", d: "CARTUCHO VAPORES ORGANICOS (X2UN)" },
-            { c: "F600M", d: "CARTUCHO MULTIGAS (X2UN)" },
-            { c: "F600MP3", d: "CARTUCHO MULTIGAS PARTICULAS (X2UN)" },
-            { c: "D801", d: "BARBIJO SIN VALVULA" },
-            { c: "D802", d: "BARBIJO CON VALVULA" },
-            { c: "D803", d: "BARBIJO CON VALVULA Y ALIVIO VAPORES" },
+            // --- LISTA 1: PROTECCIÓN RESPIRATORIA (LIBUS/3M) ---
+            {c: "FFS990", d: "MASCARA CARA COMPLETA SILICONADA"},
+            {c: "S950", d: "SEMIMASCARA SILICONADA"},
+            {c: "S900", d: "SEMIMASCARA CAUCHO"},
+            {c: "F200P3", d: "FILTRO PARA PARTICULAS (X2UN)"},
+            {c: "F200VP3", d: "FILTRO PARA PARTICULAS Y VAPORES (X2UN)"},
+            {c: "F200GP3", d: "FILTRO PARA PARTICULAS Y GASES (X2UN)"},
+            {c: "F200VGP3", d: "FILTRO PARA PARTICULAS, GASES Y VAPORES (X2UN)"},
+            {c: "F700P3", d: "FILTRO PARA PARTICULAS (X2UN)"},
+            {c: "F700VGP3", d: "FILTRO PARA PARTICULAS, GASES Y VAPORES (X2UN)"},
+            {c: "F600V", d: "CARTUCHO VAPORES ORGANICOS (X2UN)"},
+            {c: "F600VG", d: "CARTUCHO VAPORES Y GASES (X2UN)"},
+            {c: "F600M", d: "CARTUCHO MULTIGAS (X2UN)"},
+            {c: "F600VGP3", d: "Cartucho p/Part, Gases Acidos, Vap. Orgánicos e Inor"},
+            {c: "F600MP3", d: "CARTUCHO MULTIGAS PARTICULAS (X2UN)"},
+            {c: "PFP2 P2 R", d: "PREFILTRO PARTICULAS"},
+            {c: "D801", d: "BARBIJO SIN VALVULA"},
+            {c: "D802", d: "BARBIJO CON VALVULA"},
+            {c: "D803", d: "BARBIJO CON VALVULA Y ALIVIO VAPORES"},
+            {c: "D804", d: "BARBIJO CON VALVULA Y ALIVIO GASES"},
+            {c: "A200", d: "RETENEDOR DE FILTROS"},
+            {c: "RPF1", d: "RETENEDOR DE FILTROS"},
 
-            // --- PROTECCIÓN VISUAL / AUDITIVA / CRANEANA ---
-            { c: "MILENIUM", d: "CASCO MILENIUM CLASS S/V (VARIOS COLORES)" },
-            { c: "ECO LINE", d: "ANTEOJO ECO LINE HC TRANSPARENTE/AMARILLO" },
-            { c: "L-320", d: "PROTECTOR AUDITIVO VINCHA O CASCO" },
-            { c: "STRONG", d: "MASCARA SOLDADOR STRONG WELDER 500" },
+            // --- LISTA 2: GUANTES Y ROPA DE TRABAJO ---
+            {c: "ANIT 01", d: "Guante de Acrilo Nitrilo con interior flocado y palma antideslizante"},
+            {c: "GPU02", d: "Guantes tejido poliester G13 y spandex con baño de PU en palma"},
+            {c: "GN17", d: "Guantes tejido poliester G13 y spandex con baño de NITRILO en palma"},
+            {c: "GL01", d: "Guantes tejido poliester G13 y spandex con baño de LATEX NATURAL RUGOSO"},
+            {c: "GN16", d: "Guante Ultraliviano HPPE G18 Nivel 5 corte doble baño Nitrilo + Refuerzo"},
+            {c: "GN18", d: "Guante Tejido Ultraliviano G18 doble baño de Nitrilo Palma Antideslizante"},
+            {c: "GD04", d: "Guantes de descarne mod. medio paseo con refuerzo en palma amarillo"},
+            {c: "GD05", d: "Guantes de descarne modelo americano puño descarne corto"},
+            {c: "GD06", d: "Guantes de descarne modelo americano puño de lona corto"},
+            {c: "GD08", d: "Guantes de descarne modelo americano puño descarne largo"},
+            {c: "GD11", d: "Guantes descarne soldador forro GUATA y costuras Kevlar"},
+            {c: "GD11 M", d: "Guantes descarne soldador forro ALGODÓN y costuras Kevlar MARRÓN"},
+            {c: "GV05", d: "Guantes vaqueta amarilla 1/2 paseo elastizado dorso / c/protec impacto"},
+            {c: "GV06", d: "Guantes vaqueta amarilla 1/2 paseo elastizado dorso forrado"},
+            {c: "GV01", d: "Guantes vaqueta amarilla americano puño descarne corto T10"},
+            {c: "GV02", d: "Guantes vaqueta amarilla americano puño descarne largo T10"},
+            {c: "CD TL", d: "Campera descarne soldador cierre y velcro Talle L"},
+            {c: "CD TXL", d: "Campera descarne soldador cierre y velcro Talle XL"},
+            {c: "CD T2XL", d: "Campera descarne soldador cierre y velcro Talle 2XL"},
+            {c: "CD T3XL", d: "Campera descarne soldador cierre y velcro Talle 3XL"},
+            {c: "CD T4XL", d: "Campera descarne soldador cierre y velcro Talle 4XL"},
+            {c: "CD T5XL", d: "Campera descarne soldador cierre y velcro Talle 5XL"},
+            
+            // --- LISTA 3: BOSCH (HERRAMIENTAS Y ACCESORIOS) ---
+            {c: "1600A0265R", d: "Cinturón de herramientas ProClick"},
+            {c: "1619BZ0100", d: "Bolso de transporte - Mediano"},
+            {c: "1600A003BK", d: "Bolso de transporte - Grande"},
+            {c: "1619PC1129", d: "Tool Box - Caja de Herramientas"},
+            {c: "1600A001SA", d: "Carrito de transporte - L-Boxx"},
+            {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7\""},
+            {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9\""},
+            {c: "06018F11H0", d: "GWS 2200-180 DM VULCANO Amoladora 9\""},
+            {c: "06018F21H0", d: "GWS 2200-230 DM VULCANO Amoladora 9\""},
+            {c: "06018F30H0", d: "GWS 25-180 VULCANO Amoladora 7\""},
+            {c: "06018F40H0", d: "GWS 25-230 VULCANO Amoladora 9\""},
+            {c: "06018F50H0", d: "GWS 28-180 VULCANO Amoladora 7\""},
+            {c: "06018F60H0", d: "GWS 28-230 VULCANO Amoladora 9\""},
+            {c: "06018F71H0", d: "GWS 25-180 LVI Amoladora 7\""},
+            {c: "06018F81H0", d: "GWS 25-230 LVI Amoladora 9\""},
+            {c: "06018G01H0", d: "GWS 30-180 PB Amoladora Brushless"},
+            {c: "06018G11H0", d: "GWS 30-230 PB Amoladora Brushless"},
+            {c: "06013A30H0", d: "GWS 700 Mini amoladora 4 1/2\""},
+            {c: "06013980H0", d: "GWS 770 Mini amoladora 4 1/2\""},
+            {c: "06013775H0", d: "GWS 850 Mini amoladora 4 1/2\""},
+            {c: "06013A90H0", d: "GWS 9-125 Mini amoladora 5\""},
+            {c: "06013A92H0", d: "GWS 9-125 S Mini amoladora 5\" Variable"},
+            {c: "06013A60H0", d: "GWS 12-125 S Amoladora 5\" Variable"},
+            {c: "06017D03H0", d: "GWS 17-125 S Amoladora Variable"},
+            {c: "06019N90E0", d: "GWS 18V-8 Amoladora Inalámbrica [Bare Tool]"},
+            {c: "06019J40E0", d: "GWS 18V-10 Amoladora Inalámbrica [Bare Tool]"},
+            {c: "06019H60E0", d: "GWS 18V-15 C Amoladora BiTurbo [Bare Tool]"},
+            {c: "06019F2000", d: "GWS 12V-76 Minipulidora 3\" [Bare Tool]"},
+            {c: "06012B50H0", d: "GGS 30 LS Amoladora Recta"},
+            {c: "06019H22E0", d: "Bosch GO 3 Atornillador"},
+            {c: "06019K30H0", d: "GSR 185-LI Taladro Atornillador (2 bat)"},
+            {c: "06019K70H0", d: "GTB 185-LI Atornillador Drywall (2 bat)"},
+            {c: "06014470H0", d: "GSR 7-14 E Taladro/Atornillador cable"},
+            {c: "1600Z00036", d: "GBA 18V 2,0 Ah Batería"},
+            {c: "1600Z00038", d: "GBA 18V 4,0 Ah Batería"},
+            {c: "1600A016GK", d: "ProCORE 18V 8,0 Ah Batería"},
+            {c: "1600A028U0", d: "GAL 18V-40 CARGADOR"},
+            {c: "06015A90H0", d: "GHO 700 Cepillo"},
+            {c: "06016B70H0", d: "GOF 130 Ruteadora"},
+            {c: "0601B51100", d: "GCM 18V-254 D Ingleteadora Inalámbrica [Bare Tool]"},
+            {c: "0601B440K0", d: "GTS 18V-216 SIERRA DE MESA BITURBO [Bare Tool]"},
+            {c: "06015B30E1", d: "GST 185-LI Sierra Caladora [Bare Tool]"},
+            {c: "06016C00E0", d: "GSA 185-LI Sierra Sable"},
+            {c: "06016A1001", d: "GKS 12V-26 Sierra Circular [Bare Tool]"},
+            {c: "06019E3000", d: "GAS 12V-LI Aspiradora Inalámbrica [Bare Tool]"},
+            {c: "06013A50E0", d: "GEX 185-LI Lijadora Roto orbital [Bare Tool]"},
+            {c: "06018G20D0", d: "GOP 185-LI Multicortadora [Bare Tool]"},
+            {c: "06012A6580", d: "GHG 18V-50 Pistola de calor [Bare Tool]"},
+            {c: "06014A1100", d: "GLI 18V-300 Linterna [Bare Tool]"},
+            {c: "06012C10H0", d: "GBS 750 Lijadora de banda"},
+            {c: "06013A80H0", d: "GEX 125 Lijadora Excéntrica 5\""},
+            {c: "06012A80H1", d: "GSS 140 Lijadora Orbital"},
+            {c: "06019G80H0", d: "GSR 120-LI Taladro/Atornillador (2 bat)"},
+            {c: "06019F60H0", d: "GSR 12V-15 FC FlexiClick (2 bat)"},
+            {c: "06011B50H0", d: "GSB 450 Taladro Percutor"},
+            {c: "06011B60H0", d: "GSB 550 Taladro Percutor"},
+            {c: "06012B80H0", d: "GSB 13 RE Taladro Percutor"},
+            {c: "06012B90H0", d: "GSB 16 RE Taladro Percutor"},
+            {c: "06019K91H0", d: "GSB 183-LI Taladro Percutor (2 bat)"},
+            {c: "06019G91H0", d: "GSB 12V-30 Taladro Percutor (2 bat)"},
+            {c: "06019K31H0", d: "GSB 185-LI Taladro Percutor (2 bat)"},
+            {c: "06019N31H5", d: "GSB 18V-65 Taladro Percutor (2 bat)"},
+            {c: "06019K61H1", d: "GSB 18V-90 C Taladro Percutor (2 bat)"},
+            {c: "06019J51E0", d: "GSB 18V-150 C Taladro Percutor [Bare Tool]"},
+            {c: "06012831H1", d: "GVC 22 EX Vibrador de concreto"},
+            {c: "0600910CH0", d: "GHP 180 Hidrolavadora 1800 PSI"},
+            {c: "0600910EH0", d: "GHP 220 Hidrolavadora 2200 PSI"},
+            {c: "06019K10E0", d: "Pro Pruner Tijera de podar 12V"},
+            {c: "06008D0000", d: "GRT 18V-33 Podadora césped inalámbrica"},
+            {c: "06008D1000", d: "GFR 18V-23 Desbrozadora inalámbrica"},
+            {c: "06008D20E0", d: "GBL 18V-750 Soplador inalámbrico"},
+            {c: "06008C9000", d: "GHE 18V-60 Cortacercos inalámbrico"},
+            {c: "06008D3000", d: "GKE 18V-40 Motosierra inalámbrica"},
+            {c: "0601.072.XG0", d: "GLM 30-23 Medidor láser 30m"},
+            {c: "0601.072.RG0", d: "GLM 50-12 Medidor Láser 50m"},
+            {c: "0601.072.UH0", d: "GLM 50-27 CG Medidor Láser Verde"},
+            {c: "0601.074.000", d: "GWM 32 Odómetro"},
+            {c: "0601.065.220", d: "GLL 12-22 Nivel Laser"},
+            {c: "0601.066.J00", d: "GCL 2-15 G Nivel Láser Verde + Kit"},
+            {c: "0601.063.S00", d: "GLL 3-80 Nivel Láser 3 líneas"},
+            {c: "0601.065.500", d: "GLL 80-33 G Nivel Láser"},
+            {c: "0601.061.600", d: "GRL 250 HV Nivel Láser Rotativo"},
+            {c: "0601.068.000", d: "GOL 26 D Nivel Óptico"},
+            {c: "0601.083.300", d: "GIS 1000 C Medidor de Temperatura"},
+            {c: "0601.241.500", d: "GIC 12V 4-23 C Cámara de inspección"},
+            {c: "0601.096.B00", d: "BT 150 Trípode"},
 
-            // --- CALZADO ---
-            { c: "FUNCIONAL", d: "ZAPATO LANDER / BOTÍN TERRA / BOTA DRILL" },
-            { c: "MICHELIN", d: "BOTÍN EXPLORER / ZAPATO HIKER" },
-            { c: "VORAN", d: "ENERGY SPORT SAFE 410 / 510 / 910" },
+            // --- LISTA 4: ELECTRODOS (CONARCO / ESAB) ---
+            {c: "303401", d: "CONARCO 10 2,50 MM 30 KG (AWS E6010)"},
+            {c: "303405", d: "CONARCO 10 3,25 MM 30 KG (AWS E6010)"},
+            {c: "303431", d: "CONARCO 11 2,50 MM 30 KG (AWS E6011)"},
+            {c: "303433", d: "CONARCO 11 3,25 MM 30 KG (AWS E6011)"},
+            {c: "303456", d: "CONARCO 12D 2,50 MM 30 KG (AWS E6012)"},
+            {c: "303599", d: "CONARCO 24 3,25 MM 30 KG (AWS E7024)"},
+            {c: "303461", d: "CONARCO 13A 2,00 MM 30 KG (AWS E6013)"},
+            {c: "303468", d: "CONARCO 13A 2,50 MM 30 KG (AWS E6013)"},
+            {c: "303481", d: "CONARCO 13A 3,25 MM 30 KG (AWS E6013)"},
+            {c: "303493", d: "CONARCO 13A 4,00 MM 30 KG (AWS E6013)"},
+            {c: "303503", d: "CONARCO 13A 5,00 MM 30 KG (AWS E6013)"},
+            {c: "303511", d: "CONARCO 15 2,50 MM 30 KG (AWS E7015)"},
+            {c: "303519", d: "CONARCO 16 2,50 MM 30 KG (AWS E7016)"},
+            {c: "303530", d: "CONARCO 18 2,50 MM 30 KG (AWS E7018-1)"},
+            {c: "303533", d: "CONARCO 18 3,25 MM 30 KG (AWS E7018-1)"},
+            {c: "303535", d: "CONARCO 18 4,00 MM 30 KG (AWS E7018-1)"},
+            {c: "303537", d: "CONARCO 18 5,00 MM 30 KG (AWS E7018-1)"},
+            {c: "733771", d: "OK 74.55 2,50 MM 15 KG (AWS E7018-A1)"},
+            {c: "733772", d: "OK 74.55 3,25 MM 15 KG (AWS E7018-A1)"},
+            {c: "733782", d: "OK 76.18 2,50 MM 15 KG (AWS 8018-B2)"},
+            {c: "734482", d: "ATOM ARC 8018-C1 2,4 MM 22 KG"},
+            {c: "733774", d: "OK 75.60 2,50 MM 15 KG (AWS E9018-M)"},
+            {c: "728280", d: "OK 73.03 2,50 MM 15 KG (AWS E7018-W1)"},
+            {c: "716145", d: "PIPEWELD 8010 3,20 MM 20 KG"},
+            {c: "741271", d: "PIPEWELD 7010 PLUS 3,25 MM 20 KG"},
+            {c: "737340", d: "OK 83.65 3,25 MM 15KG (Recargue Duro)"},
+            {c: "303757", d: "CONARCROM 350 3,25 MM 20 KG"},
+            {c: "303768", d: "CONARCROM 600 2,50 MM 20 KG"},
+            {c: "303769", d: "CONARCROM 600 3,25 MM 20 KG"},
+            {c: "303966", d: "CONARCO NIMANG 4,00 MM 20 KG"},
+            {c: "729182", d: "OK 67.16 4,00 MM 10 KG (INOX E310)"},
+            {c: "729186", d: "OK 63.30 4,00 MM 10 KG (INOX E316L)"},
+            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disímiles E307)"},
+            {c: "309231", d: "CONARCO 308L 2,00 MM 20 KG"},
+            {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG"},
+            {c: "309234", d: "CONARCO 309L 2,50 MM 20 KG"},
+            {c: "309237", d: "CONARCO 310 3,25 MM 20 KG"},
+            {c: "309240", d: "CONARCO 316L 2,00 MM 20 KG"},
+            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundición)"},
+            {c: "309246", d: "CONARCO NI100 2,50 MM 20 KG"},
+            {c: "716079", d: "CONAL 2,50 MM 8 KG (Aluminio)"},
+            {c: "752530", d: "WELD 70S6 0,9MM 15KG (Alambre MIG)"},
+            {c: "303243", d: "OK ARISTOROD 12.50 0,90 MM 250 KG"},
+            {c: "303251", d: "OK AUTROD 12.51 0,9 MM 18 KG"},
+            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG (Arco Sum.)"},
+            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG (Tubular)"},
+            {c: "749662", d: "WELD M 307 1,0 MM 15 KG (MIG Inox)"},
+            {c: "742426", d: "WELD M 308LSi 0,8 MM 15 KG"},
+            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG (MIG Aluminio)"},
+            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG (Varilla TIG)"},
+            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Aluminio)"},
+            {c: "716159", d: "OK FLUX 10.81 25 KG (Fundente)"},
+            {c: "303849", d: "LOSARC 11 2,50 MM 20 KG"},
+            {c: "310512", d: "ESAB 13 2,00 MM X 20 KG"},
+            {c: "310427", d: "ESAB 13 2,50 MM X 20 KG"},
+            {c: "752985", d: "WELD WEST 6013 2,50X350MM CX 5KG"},
+            {c: "752989", d: "WELD WEST 7018 3,25X350MM CX 4,5KG"},
 
-            // --- BOSCH / FERRETERÍA ---
-            { c: "BOSCH", d: "AMOLADORA VULCANO / TALADRO 18V / MEDIDOR GLM" },
-            { c: "CONARCO", d: "ELECTRODO 13A (6013) / 18 (7018)" },
-            { c: "GUANTES", d: "ANIT 01 / GN16 ANTICORTE / GD11 SOLDADOR" },
-            { c: "VIAL", d: "CONOS PE 50CM/75CM/1MT / MALLA NARANJA" }
+            // --- LISTA 5: CALZADO ---
+            {c: "FUNCIONAL", d: "LANDER Zapato (Beige, Marron, Negro, Gris)"},
+            {c: "FUNCIONAL", d: "RANDER Botín (Gris, Marron)"},
+            {c: "FUNCIONAL", d: "CROSS Zapato (Negro)"},
+            {c: "FUNCIONAL", d: "TERRA Botín (Beige, Gris, Negro, Marron)"},
+            {c: "FUNCIONAL", d: "BRENT Borceguí (Gris, Marron)"},
+            {c: "FUNCIONAL", d: "STORM Borceguí (Marron)"},
+            {c: "FUNCIONAL", d: "TITANIUM Botín (Negro)"},
+            {c: "FUNCIONAL", d: "AURUM MGA Botín (Marron)"},
+            {c: "FUNCIONAL", d: "CROW Zapato (Blanco, Negro)"},
+            {c: "FUNCIONAL", d: "NIZA Zapato (Marron)"},
+            {c: "FUNCIONAL", d: "SILVER Zapato (Negro)"},
+            {c: "FUNCIONAL", d: "COBRA Botín (Blanco, Marron, Negro)"},
+            {c: "FUNCIONAL", d: "IRON 2 Zapato (Negro)"},
+            {c: "FUNCIONAL", d: "STEEL Botín (Negro, Marron)"},
+            {c: "FUNCIONAL", d: "DRILL Bota (Marron)"},
+            {c: "FUNCIONAL", d: "BRONZ Borceguí (Marron)"},
+            {c: "FUNCIONAL", d: "KUPRA Botín (Marron)"},
+            {c: "FUNCIONAL", d: "BARREL Bota (Marron)"},
+            {c: "FUNCIONAL", d: "TRACKER Borceguí (Marron)"},
+            {c: "MICHELIN", d: "EXPLORER Botín (Marron, Verde, Gris, Negro)"},
+            {c: "MICHELIN", d: "TANKER Bota (Marron, Negro)"},
+            {c: "MICHELIN", d: "HIKER Zapato (Negro, Gris, Azul, Marron, Verde)"},
+            {c: "MICHELIN", d: "SHELTER GTX Borceguí (Marron, Gris)"},
+            {c: "MICHELIN", d: "RISER Borceguí (Verde, Marron)"},
+            {c: "MICHELIN", d: "BOLT GTX Botín (Marron, Gris)"},
+            {c: "ULTRALIV.", d: "BOUND Zapato (Marron, Negro)"},
+            {c: "ULTRALIV.", d: "STREET Botín (Marron, Camel, Negro, Vison)"},
+            {c: "ULTRALIV.", d: "CITY Zapato (Marron, Camel, Negro, Vison)"},
+            {c: "ULTRALIV.", d: "TRACER Botín (Marron, Negro)"},
+            {c: "ULTRALIV.", d: "SOUL Zapato (Azul, Gris, Negro)"},
+            {c: "MUJER", d: "BALI Botín (Gris, Negro, Beige)"},
+            {c: "MUJER", d: "CAPRI Botín (Beige, Gris, Negro)"},
+            {c: "MUJER", d: "MAUI Zapato (Gris, Negro, Azul)"},
+            {c: "CAUCHO", d: "3002 Botín Marron"},
+            {c: "CAUCHO", d: "3901 Borceguí Negro/Marron"},
+            {c: "VORAN", d: "ENERGY 470/510/810/741 Sport Safe"},
+            {c: "VORAN", d: "ENERGY 770/441/410/610 Sport Safe"},
+            {c: "VORAN", d: "APOLO Botín (Negro, Marron)"},
+            {c: "VORAN", d: "ARGOS Botín (Marron, Negro, Blanco)"},
+            {c: "VORAN", d: "ARES Borceguí (Marron, Negro)"},
+            {c: "VORAN", d: "AQUILES Botín (Blanco, Negro)"},
+            {c: "VORAN", d: "ATTACK Zapato (Negro, Marron)"},
+            {c: "VORAN", d: "BREAK Zapato (Azul, Marron, Gris, Negro)"},
+            
+            // --- LISTA 6: OTROS ---
+            {c: "VISUAL", d: "ANTEOJO ECO LINE HC TRANSPARENTE/GRIS"},
+            {c: "VISUAL", d: "ANTEOJO ECO LINE HC AMARILLO"},
+            {c: "VISUAL", d: "ANTEOJO ARGON HC/AF TRANSPARENTE/GRIS"},
+            {c: "VISUAL", d: "ANTIPARRA NEW CLASSIC / AVIATOR"},
+            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO QUANTUM DISPENSER"},
+            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO L-320 VINCHA/CASCO"},
+            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO L-340 VINCHA/CASCO"},
+            {c: "FACIAL", d: "SOPORTE PROT FACIAL ARNES CREMALLERA/ESTANDAR"},
+            {c: "FACIAL", d: "FACIAL BURBUJA/PLANO TRANSP/GRIS"},
+            {c: "CRANEANA", d: "CASCO MILENIUM CLASS S/V BLANCO/AMARILLO"},
+            {c: "CRANEANA", d: "ARNES MILENIUM CREMALLERA/PLASTICO"},
+            {c: "SOLDADURA", d: "MASCARA SOLDADOR STRONG WELDER 500"},
+            {c: "ACCESORIOS", d: "MENTONERA GANCHO C / TEXTIL"},
+            {c: "VISUAL", d: "ANTEOJOS ATHOS ESPEJADOS, CHERRY, BLUE"},
+            {c: "221023E", d: "Guante Vaqueta Elast. Talle 8 Eco"},
+            {c: "221024E", d: "Guante Vaqueta Elast. Talle 9 Eco"},
+            {c: "DPS811093E", d: "Guante Algodon Moteado T8 Economico"},
+            {c: "DPS72091", d: "Guante Nitrilo Descartable Caja x100"},
+            {c: "DPS16123", d: "Guante Nitrilo Liviano Baño Completo Amarillo"},
+            {c: "UCU0001PV", d: "Cono PE Base Goma 50cm Rígido 1 Banda"},
+            {c: "UCU0002PV", d: "Cono PE Base Goma 75cm Rígido 2 Bandas"},
+            {c: "NUB5702", d: "Traje de lluvia Jardinero Amarillo Premium"}
         ];
 
         let carrito = [];
         function render(lista) {
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
-            lista.forEach((item, i) => {
+            // Renderizamos un máximo de 100 items iniciales para no trabar el navegador si la lista es gigante
+            const max = lista.length > 200 ? 200 : lista.length;
+            
+            for(let i=0; i<max; i++) {
+                const item = lista[i];
                 cont.innerHTML += `<div class="fila">
-                    <div style="color:#666; font-weight:bold">${item.c}</div>
-                    <div>${item.d}</div>
+                    <div class="code">${item.c}</div>
+                    <div class="desc">${item.d}</div>
                     <div><input type="number" id="p-${i}" placeholder="0.00"></div>
-                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">Añadir</button></div>
+                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">AGREGAR</button></div>
                 </div>`;
-            });
+            }
+            if(lista.length === 0) cont.innerHTML = '<div style="padding:20px; text-align:center; color:#666">No se encontraron artículos.</div>';
         }
+
         function filtrar() {
             const t = document.getElementById('buscador').value.toLowerCase();
-            render(ARTICULOS.filter(x => x.c.toLowerCase().includes(t) || x.d.toLowerCase().includes(t)));
+            const filtered = ARTICULOS.filter(x => 
+                x.c.toLowerCase().includes(t) || 
+                x.d.toLowerCase().includes(t)
+            );
+            render(filtered);
         }
+
         function agregar(idx, desc) {
-            const p = parseFloat(document.getElementById(`p-${idx}`).value);
-            if(!p || p <= 0) return alert("Ingrese un precio unitario");
+            // Buscamos el input correcto (cuidado con el índice al filtrar)
+            // En una app real usaríamos IDs únicos, aquí usaremos el valor del input renderizado
+            const inputPrice = document.getElementById(`p-${idx}`).value;
+            const p = parseFloat(inputPrice);
+            
+            if(!p || p <= 0) return alert("Ingrese un precio válido");
+            
             carrito.push({ desc, p, q: 1 });
             actualizarTabla();
+            
+            // Limpiar input visual
+            document.getElementById(`p-${idx}`).value = '';
         }
+
         function actualizarTabla() {
             const body = document.getElementById('body-items');
             body.innerHTML = '';
@@ -144,27 +403,73 @@
             carrito.forEach((it, i) => {
                 const sub = it.p * it.q;
                 total += sub;
-                body.innerHTML += `<tr><td>${it.desc}</td><td>$${it.p.toLocaleString()}</td><td><input type="number" value="${it.q}" style="width:50px" onchange="cambiarCant(${i}, this.value)"></td><td>$${sub.toLocaleString()}</td><td><button onclick="borrar(${i})" style="color:red; border:none; background:none; cursor:pointer">✖</button></td></tr>`;
+                body.innerHTML += `<tr>
+                    <td>${it.desc}</td>
+                    <td>$${it.p.toLocaleString()}</td>
+                    <td><input type="number" value="${it.q}" style="width:60px; padding:5px;" onchange="cambiarQ(${i}, this.value)"></td>
+                    <td>$${sub.toLocaleString()}</td>
+                    <td><button onclick="borrar(${i})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></td>
+                </tr>`;
             });
             const final = total * 1.21;
-            document.getElementById('total-final').innerText = `$${final.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('total-final').innerText = `TOTAL (IVA 21%): $${final.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         }
-        function cambiarCant(i, v) { carrito[i].q = parseInt(v); actualizarTabla(); }
-        function borrar(i) { carrito.splice(i, 1); actualizarTabla(); }
+
+        function cambiarQ(i, val) {
+            carrito[i].q = parseInt(val);
+            actualizarTabla();
+        }
+
+        function borrar(i) {
+            carrito.splice(i, 1);
+            actualizarTabla();
+        }
+
         function generarPDF() {
             const cli = document.getElementById('cliente-nombre').value;
-            if(!cli) return alert("Nombre del cliente obligatorio");
+            if(!cli) return alert("Por favor ingrese el nombre del cliente.");
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255); doc.setFontSize(20); doc.text("BULONERIA MITRE SRL", 14, 18);
-            doc.setFontSize(9); doc.text("Bernabé Aráoz 162 - Tucumán | Tel: 3816797611", 14, 26);
-            doc.setTextColor(0, 0, 0); doc.text(`CLIENTE: ${cli.toUpperCase()}`, 14, 50);
+
+            // Encabezado Rojo
+            doc.setFillColor(229, 31, 31);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.text("BULONERIA MITRE SRL", 14, 20);
+            doc.setFontSize(10);
+            doc.text("Bernabé Aráoz 162 - San Miguel de Tucumán", 14, 28);
+            doc.text("CUIT: 30-69179970-7 | Tel: 3816797611", 14, 33);
+
+            // Datos Cliente
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text(`PRESUPUESTO PARA: ${cli.toUpperCase()}`, 14, 55);
+            doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 150, 55);
+            
+            const pago = document.getElementById('pago-cliente').value;
+            if(pago) doc.text(`CONDICIÓN DE PAGO: ${pago.toUpperCase()}`, 14, 62);
+
+            // Tabla
             const filas = carrito.map(it => [it.desc, `$${it.p.toFixed(2)}`, it.q, `$${(it.p * it.q).toFixed(2)}`]);
-            doc.autoTable({ startY: 62, head: [['Descripción', 'P. Unit', 'Cant.', 'Subtotal']], body: filas, headStyles: { fillColor: [229, 31, 31] } });
-            doc.text(`TOTAL FINAL (IVA INC.): ${document.getElementById('total-final').innerText}`, 110, doc.lastAutoTable.finalY + 10);
-            doc.save(`Presupuesto_BMITRE_${cli}.pdf`);
+            doc.autoTable({
+                startY: 70,
+                head: [['Descripción', 'Precio U.', 'Cant.', 'Subtotal']],
+                body: filas,
+                headStyles: { fillColor: [50, 50, 50] },
+                theme: 'grid'
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text(document.getElementById('total-final').innerText, 110, finalY);
+            
+            doc.save(`Presupuesto_${cli}.pdf`);
         }
+
+        // Render inicial
         render(ARTICULOS);
     </script>
 </body>
