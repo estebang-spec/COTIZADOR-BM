@@ -1,0 +1,27 @@
+.datos-cliente {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--light);
+    border-left: 4px solid var(--accent); /* Línea roja como en tu logo */
+}
+
+.datos-cliente label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.datos-cliente input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.logo small {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #ccc;
+}
