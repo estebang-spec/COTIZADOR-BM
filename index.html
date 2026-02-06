@@ -11,7 +11,6 @@
         :root { --primary: #000; --accent: #e51f1f; --bg: #f4f4f4; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); font-size: 13px; }
         
-        /* ESTILOS VISUALES */
         header { background: white; border-bottom: 5px solid var(--accent); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
         .logo h1 { margin: 0; font-size: 24px; font-style: italic; font-weight: 900; letter-spacing: -1px; }
@@ -20,11 +19,9 @@
         
         .container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
         
-        /* BUSCADOR */
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; box-sizing: border-box; }
         
-        /* LISTA PRECIOS - AHORA MÁS ALTA */
         .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 600px; margin-bottom: 20px; }
         .tabla-scroll { flex-grow: 1; overflow-y: auto; }
         
@@ -39,12 +36,10 @@
         .btn-add { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .btn-add:hover { background: #b31414; }
 
-        /* SECCION MANUAL */
         .manual-section { background: #fff3f3; border: 1px dashed var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         .manual-grid { display: grid; grid-template-columns: 3fr 1fr 0.5fr 0.5fr; gap: 10px; align-items: center; margin-top: 10px; }
         .manual-title { font-weight: bold; color: var(--accent); margin-bottom: 5px; font-size: 14px; }
 
-        /* PRESUPUESTO */
         .presupuesto-box { background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .cliente-data { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         
@@ -65,9 +60,6 @@
     </style>
 </head>
 <body>
-    
-    <img id="img-logo-bm" src="image_901c84.png" style="display:none;" alt="Logo BM">
-    <img id="img-logo-iso" src="image_901cc7.png" style="display:none;" alt="Logo ISO">
 
     <header>
         <div class="header-flex">
@@ -129,7 +121,18 @@
     </div>
 
     <script>
-        // --- LISTADO COMPLETO DE ARTÍCULOS ---
+        // =========================================================================
+        // === ZONA DE IMÁGENES BASE64 (LA SOLUCIÓN DEFINITIVA) ===
+        // 1. Ve a https://www.base64-image.de/
+        // 2. Sube tu logo, copia el texto que te da (es muy largo)
+        // 3. Pégalo dentro de las comillas abajo.
+        // =========================================================================
+        
+        const LOGO_BM_BASE64 = "data:image/png;base64,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"        
+        const LOGO_ISO_BASE64 = "(data:image/png;base64,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)"; // <-- PEGA AQUÍ EL CÓDIGO DEL LOGO ISO
+
+        // =========================================================================
+
         const ARTICULOS = [
             {c: "NORTON", d: "Papel de Enmascar 12x50000"}, {c: "NORTON", d: "Papel de Enmascar 15x50000"}, {c: "NORTON", d: "Papel de Enmascar 18x50000"}, {c: "NORTON", d: "Papel de Enmascar 24x50000"}, {c: "NORTON", d: "Papel de Enmascar 36x40000"}, {c: "NORTON", d: "Papel de Enmascar 48x40000"},
             {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 250gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 140gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 250gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 140gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 250gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 140gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 140gr"}, {c: "TEK BOND", d: "TEK LUB Lubricante 300ml"}, {c: "TEK BOND", d: "Grafito Seco 200ml"}, {c: "TEK BOND", d: "Limpia Contacto 300ml"}, {c: "TEK BOND", d: "Grasa Lubricante 300ml"}, {c: "TEK BOND", d: "Vaselina Hidro 300ml"}, {c: "TEK BOND", d: "Limpia Aire Acond 300ml"}, {c: "TEK BOND", d: "Espuma Limpia Todo 400ml"}, {c: "TEK BOND", d: "Silicona Liquida 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 500ml"}, {c: "TEK BOND", d: "Espuma Expansiva 750ml"}, {c: "TEK BOND", d: "Adhesivo Inst 3x1g"}, {c: "TEK BOND", d: "Adhesivo Inst 2g"}, {c: "TEK BOND", d: "Adhesivo Inst 5g"}, {c: "TEK BOND", d: "Adhesivo Inst 12x2g"}, {c: "TEK BOND", d: "Adhesivo Inst 3g Gel"}, {c: "TEK BOND", d: "Pegamento Facil Agua Pomo 140"}, {c: "TEK BOND", d: "Pegamento Facil Agua Cartucho 420"}, {c: "TEK BOND", d: "Cola de Contacto 30g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 25g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 51g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 85g"}, {c: "TEK BOND", d: "Adhesivo Universal Pomo Blister 17g"}, {c: "TEK BOND", d: "Cola Blanca PVA 500g"}, {c: "TEK BOND", d: "Cola Blanca PVA 1kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 10kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 20kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 50kg"}, {c: "TEK BOND", d: "Cola Madera Frasco 100g"}, {c: "TEK BOND", d: "Cola Madera Frasco 250g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 50g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 256g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 270g OFERTA"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 280g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 50g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 280g"}, {c: "TEK BOND", d: "Silicona Acetica Gris 280g"}, {c: "TEK BOND", d: "Silicona Acetica Negra 280g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 280g"}, {c: "TEK BOND", d: "Silicona Neutra Transparente 280g"}, {c: "TEK BOND", d: "Silicona Neutra Blanco 280g"}, {c: "TEK BOND", d: "Silicona Neutra Gris 280g"}, {c: "TEK BOND", d: "Silicona Neutra Negro 280g"}, {c: "TEK BOND", d: "Adhesivo Acrilico 425g"}, {c: "TEK BOND", d: "PU FIX Cartucho Gris 387g"}, {c: "TEK BOND", d: "Veda Calha Transparente 280g"}, {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
@@ -145,13 +148,10 @@
 
         let carrito = [];
         
-        // --- FUNCIONES DEL COTIZADOR ---
-
         function render(lista) {
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
             
-            // Renderiza todo (si son muchos, el navegador puede tardar un poquito la primera vez)
             lista.forEach((item, i) => {
                 const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 1000);
                 cont.innerHTML += `<div class="fila">
@@ -229,7 +229,6 @@
             actualizarTabla();
         }
 
-        // --- FUNCIÓN GENERAR PDF CON IMÁGENES ---
         function generarPDF() {
             const cliInput = document.getElementById('cliente-nombre').value;
             const pago = document.getElementById('pago-cliente').value;
@@ -241,30 +240,28 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // 1. Obtener las imágenes del HTML
-            const logoBm = document.getElementById('img-logo-bm');
-            const logoIso = document.getElementById('img-logo-iso');
+            // ----------------------------------------------------
+            // 2. Insertar LOGOS DESDE BASE64
+            // ----------------------------------------------------
+            
+            // LOGO BM (Izquierda)
+            if(LOGO_BM_BASE64) {
+                 doc.addImage(LOGO_BM_BASE64, 'PNG', 10, 10, 60, 25);
+            }
 
-            // 2. Insertar LOGO BM (Izquierda)
-            try {
-                if(logoBm.complete && logoBm.naturalHeight !== 0) { 
-                    doc.addImage(logoBm, 'PNG', 10, 10, 60, 25);
-                }
-            } catch(e) { console.error("Error cargando logo BM", e); }
-
-            // 3. Insertar LOGO ISO (Derecha)
-            try {
-                if(logoIso.complete && logoIso.naturalHeight !== 0) {
-                    doc.addImage(logoIso, 'PNG', 170, 10, 25, 25);
-                }
-            } catch(e) { console.error("Error cargando logo ISO", e); }
+            // LOGO ISO (Derecha)
+            if(LOGO_ISO_BASE64) {
+                 doc.addImage(LOGO_ISO_BASE64, 'PNG', 170, 10, 25, 25);
+            }
+            
+            // ----------------------------------------------------
 
             // LÍNEA ROJA DECORATIVA
             doc.setDrawColor(229, 31, 31);
             doc.setLineWidth(1);
             doc.line(10, 40, 200, 40);
 
-            // DATOS DE LA EMPRESA (Centrado)
+            // DATOS DE LA EMPRESA
             doc.setFontSize(10);
             doc.setTextColor(100);
             doc.text("Bernabé Aráoz 162 - Tucumán | CUIT: 30-69179970-7", 105, 48, { align: "center" });
@@ -310,7 +307,6 @@
             doc.save(`Presupuesto_${nombreArchivo}.pdf`);
         }
 
-        // Render inicial de TODO
         render(ARTICULOS);
     </script>
 </body>
