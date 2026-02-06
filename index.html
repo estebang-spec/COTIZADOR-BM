@@ -19,19 +19,14 @@
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; }
         .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
         .tabla-scroll { max-height: 600px; overflow-y: auto; }
-        
-        /* Grid optimizado para mucha información */
         .fila { display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
         .fila:hover { background-color: #e9ecef; }
         .fila-header { background: #333; color: white; font-weight: bold; position: sticky; top: 0; z-index: 10; font-size: 12px; text-transform: uppercase; padding: 10px 15px; }
-        
         .code { color: #444; font-weight: bold; font-family: monospace; font-size: 12px; }
-        .desc { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .desc { font-weight: 500; }
         input[type="number"] { padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
         .btn-add { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .btn-add:hover { background: #b31414; }
-
-        .presupuesto-box { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .presupuesto-box { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #ddd; }
         .cliente-data { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .cliente-data input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -57,7 +52,8 @@
     <div class="container">
         <section class="search-section">
             <h2 style="margin:0 0 10px 0; font-size: 18px;">Buscador de Artículos</h2>
-            <input type="text" id="buscador" placeholder="Escriba código o nombre (Ej: 303401, 12x50000, 7018, Voran...)" onkeyup="filtrar()">
+            <input type="text" id="buscador" placeholder="Busque por código o nombre (Ej: 303401, 7018, Voran...)" onkeyup="filtrar()">
+            <small style="display:block; margin-top:5px; color:#ddd">Escriba para filtrar entre todos los productos cargados.</small>
         </section>
 
         <div class="card-lista">
@@ -99,153 +95,7 @@
             {c: "NORTON", d: "Papel de Enmascar 36x40000"},
             {c: "NORTON", d: "Papel de Enmascar 48x40000"},
 
-            // --- ELECTRODOS CONARCO (DETALLADO) ---
-            {c: "303401", d: "CONARCO 10 2,50 MM 30 KG (AWS E6010)"},
-            {c: "303405", d: "CONARCO 10 3,25 MM 30 KG (AWS E6010)"},
-            {c: "303408", d: "CONARCO 10 4,00 MM 30 KG (AWS E6010)"},
-            {c: "303411", d: "CONARCO 10 5,00 MM 30 KG (AWS E6010)"},
-            {c: "303431", d: "CONARCO 11 2,50 MM 30 KG (AWS E6011)"},
-            {c: "303433", d: "CONARCO 11 3,25 MM 30 KG (AWS E6011)"},
-            {c: "303435", d: "CONARCO 11 4,00 MM 30 KG (AWS E6011)"},
-            {c: "303456", d: "CONARCO 12D 2,50 MM 30 KG (AWS E6012)"},
-            {c: "303457", d: "CONARCO 12D 3,25 MM 30 KG (AWS E6012)"},
-            {c: "303459", d: "CONARCO 12D 4,00 MM 30 KG (AWS E6012)"},
-            {c: "303460", d: "CONARCO 12D 5,00 MM 30 KG (AWS E6012)"},
-            {c: "303599", d: "CONARCO 24 3,25 MM 30 KG (AWS E7024)"},
-            {c: "303600", d: "CONARCO 24 4,00 MM 30 KG (AWS E7024)"},
-            {c: "303601", d: "CONARCO 24 5,00 MM 30 KG (AWS E7024)"},
-            {c: "303461", d: "CONARCO 13A 2,00 MM 30 KG (AWS E6013)"},
-            {c: "303468", d: "CONARCO 13A 2,50 MM 30 KG (AWS E6013)"},
-            {c: "303481", d: "CONARCO 13A 3,25 MM 30 KG (AWS E6013)"},
-            {c: "303493", d: "CONARCO 13A 4,00 MM 30 KG (AWS E6013)"},
-            {c: "303503", d: "CONARCO 13A 5,00 MM 30 KG (AWS E6013)"},
-            {c: "303715", d: "CONARCO C 3,25 MM 30 KG"},
-            {c: "303717", d: "CONARCO C 4,00 MM 30 KG"},
-            {c: "303511", d: "CONARCO 15 2,50 MM 30 KG (AWS E7015)"},
-            {c: "303513", d: "CONARCO 15 3,00 MM 30 KG (AWS E7015)"},
-            {c: "303516", d: "CONARCO 15 4,00 MM 30 KG (AWS E7015)"},
-            {c: "303518", d: "CONARCO 15 5,00 MM 30 KG (AWS E7015)"},
-            {c: "303519", d: "CONARCO 16 2,50 MM 30 KG (AWS E7016)"},
-            {c: "303521", d: "CONARCO 16 3,25 MM 30 KG (AWS E7016)"},
-            {c: "303525", d: "CONARCO 16 4,00 MM 30 KG (AWS E7016)"},
-            {c: "303528", d: "CONARCO 16 5,00 MM 30 KG (AWS E7016)"},
-            {c: "303530", d: "CONARCO 18 2,50 MM 30 KG (AWS E7018-1)"},
-            {c: "303533", d: "CONARCO 18 3,25 MM 30 KG (AWS E7018-1)"},
-            {c: "303535", d: "CONARCO 18 4,00 MM 30 KG (AWS E7018-1)"},
-            {c: "303537", d: "CONARCO 18 5,00 MM 30 KG (AWS E7018-1)"},
-            {c: "733771", d: "OK 74.55 2,50 MM 15 KG (AWS E7018-A1)"},
-            {c: "733772", d: "OK 74.55 3,25 MM 15 KG (AWS E7018-A1)"},
-            {c: "733773", d: "OK 74.55 4,00 MM 25 KG (AWS E7018-A1)"},
-            {c: "733782", d: "OK 76.18 2,50 MM 15 KG (AWS 8018-B2)"},
-            {c: "733783", d: "OK 76.18 3,25 MM 15 KG (AWS 8018-B2)"},
-            {c: "733784", d: "OK 76.18 4,00 MM 20 KG (AWS 8018-B2)"},
-            {c: "733785", d: "OK 76.18 5,00 MM 20 KG (AWS 8018-B2)"},
-            {c: "734482", d: "ATOM ARC 8018-C1 2,4 MM 22,69 KG"},
-            {c: "734483", d: "ATOM ARC 8018-C1 3,2 MM 22,69 KG"},
-            {c: "734484", d: "ATOM ARC 8018-C1 4,0 MM 22,69 KG"},
-            {c: "733774", d: "OK 75.60 2,50 MM 15 KG (AWS E9018-M)"},
-            {c: "733775", d: "OK 75.60 3,25 MM 15 KG (AWS E9018-M)"},
-            {c: "733776", d: "OK 75.60 4,00 MM 20 KG (AWS E9018-M)"},
-            {c: "728280", d: "OK 73.03 2,50 MM 15 KG (AWS E7018-W1)"},
-            {c: "728272", d: "OK 73.03 3,25 MM 15 KG (AWS E7018-W1)"},
-            {c: "728273", d: "OK 73.03 4,00 MM 25 KG (AWS E7018-W1)"},
-            {c: "716145", d: "PIPEWELD 8010 3,20 MM 20 KG"},
-            {c: "716146", d: "PIPEWELD 8010 4,00 MM 20 KG"},
-            {c: "716147", d: "PIPEWELD 8010 5,00 MM 20 KG"},
-            {c: "741271", d: "PIPEWELD 7010 PLUS 3,25 MM 20 KG"},
-            {c: "741272", d: "PIPEWELD 7010 PLUS 4,00 MM 20 KG"},
-            {c: "741273", d: "PIPEWELD 7010 PLUS 5,00 MM 20 KG"},
-            {c: "737340", d: "OK 83.65 3,25 MM 15KG (Recargue Duro)"},
-            {c: "734040", d: "OK 83.65 4,00 MM 25KG (Recargue Duro)"},
-            {c: "734041", d: "OK 84.60 3,25 MM 8KG (Recargue Duro)"},
-            {c: "737342", d: "OK 84.60 4,00 MM 20KG (Recargue Duro)"},
-            {c: "303757", d: "CONARCROM 350 3,25 MM 20 KG"},
-            {c: "303758", d: "CONARCROM 350 4,00 MM 20 KG"},
-            {c: "303759", d: "CONARCROM 350 5,00 MM 20 KG"},
-            {c: "303768", d: "CONARCROM 600 2,50 MM 20 KG"},
-            {c: "303769", d: "CONARCROM 600 3,25 MM 20 KG"},
-            {c: "303770", d: "CONARCROM 600 4,00 MM 20 KG"},
-            {c: "303771", d: "CONARCROM 600 5,00 MM 20 KG"},
-            {c: "303966", d: "CONARCO NIMANG 4,00 MM 20 KG"},
-            {c: "729182", d: "OK 67.16 4,00 MM 10 KG (INOX E310)"},
-            {c: "729186", d: "OK 63.30 4,00 MM 10 KG (INOX E316L)"},
-            {c: "734252", d: "OK 68.15 3,2 MM 13,2 KG (E410-15)"},
-            {c: "739518", d: "OK 61.84 2,50 MM 8 KG (E347-17)"},
-            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disímiles E307)"},
-            {c: "734279", d: "OK 67.45 4,00 MM 8KG (Disímiles E307)"},
-            {c: "309231", d: "CONARCO 308L 2,00 MM 20 KG"},
-            {c: "309230", d: "CONARCO 308L 2,50 MM 20 KG"},
-            {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG"},
-            {c: "309233", d: "CONARCO 308L 4,00 MM 20 KG"},
-            {c: "309234", d: "CONARCO 309L 2,50 MM 20 KG"},
-            {c: "309235", d: "CONARCO 309L 3,25 MM 20 KG"},
-            {c: "309236", d: "CONARCO 309L 4,00 MM 20 KG"},
-            {c: "309237", d: "CONARCO 310 3,25 MM 20 KG"},
-            {c: "309240", d: "CONARCO 316L 2,00 MM 20 KG"},
-            {c: "309241", d: "CONARCO 316L 2,50 MM 20 KG"},
-            {c: "309242", d: "CONARCO 316L 3,25 MM 20 KG"},
-            {c: "310481", d: "CONARCO 316L 4,00 MM 20 KG"},
-            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundición)"},
-            {c: "309246", d: "CONARCO NI100 2,50 MM 20 KG"},
-            {c: "309245", d: "CONARCO NI100 3,25 MM 20 KG"},
-            {c: "716079", d: "CONAL 2,50 MM 8 KG (Aluminio)"},
-            {c: "716080", d: "CONAL 3,25 MM 8 KG (Aluminio)"},
-            {c: "716081", d: "CONAL 4,00 MM 8 KG (Aluminio)"},
-            
-            // --- ALAMBRES Y OTROS ---
-            {c: "752530", d: "WELD 70S6 0,9MM 15KG (Alambre MIG)"},
-            {c: "752531", d: "WELD 70S6 1,2MM 15KG (Alambre MIG)"},
-            {c: "310360", d: "OK ARISTOROD 12.50 0,90 MM 15 KG"},
-            {c: "303239", d: "OK ARISTOROD 12.50 0,90 MM 18 KG"},
-            {c: "303243", d: "OK ARISTOROD 12.50 0,90 MM 250 KG"},
-            {c: "303240", d: "OK ARISTOROD 12.50 1,00 MM 18 KG"},
-            {c: "303244", d: "OK ARISTOROD 12.50 1,00 MM 120 KG"},
-            {c: "303245", d: "OK ARISTOROD 12.50 1,00 MM 250 KG"},
-            {c: "309840", d: "OK AUTROD 12.51 0,80 MM 5 KG"},
-            {c: "303249", d: "OK AUTROD 12.51 0,80 MM 15 KG"},
-            {c: "303251", d: "OK AUTROD 12.51 0,9 MM 18 KG"},
-            {c: "303262", d: "OK AUTROD 12.51 0,9 MM 18 KG H/H"},
-            {c: "303255", d: "OK AUTROD 12.51 1,2 MM 18 KG"},
-            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG (Arco Sum.)"},
-            {c: "310162", d: "AL COBR OK12.10 C/CAJA 2,5MM 30 KG"},
-            {c: "310163", d: "AL COBR OK12.10 C/CAJA 3,25 MM 30 KG"},
-            {c: "734463", d: "OK AUTROD 12.10 2,00 MM 30 KG"},
-            {c: "734461", d: "OK AUTROD 12.10 2,50 MM 30 KG"},
-            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG (Tubular)"},
-            {c: "749414", d: "TUBROD 75 1,60 MM 12,5 KG (Tubular)"},
-            {c: "747542", d: "DUAL SHIELD 7100 1,20 MM 15 KG"},
-            {c: "747543", d: "DUAL SHIELD 7100 1,60 MM 15 KG"},
-            {c: "749662", d: "WELD M 307 1,0 MM 15 KG (MIG Inox)"},
-            {c: "742426", d: "WELD M 308LSi 0,8 MM 15 KG"},
-            {c: "742431", d: "WELD M 308LSi 0,8 MM 5 KG"},
-            {c: "742428", d: "WELD M 309LSi 0,8 MM 15 KG"},
-            {c: "742429", d: "WELD M 316LSi 0,8 MM 15 KG"},
-            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG (MIG Aluminio)"},
-            {c: "726166", d: "OK AUTROD 5356 1,2 MM 9 KG"},
-            {c: "726220", d: "OK AUTROD 4043 0,9 MM 7 KG"},
-            {c: "726221", d: "OK AUTROD 4043 1,2 MM 9 KG"},
-            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG (Varilla TIG)"},
-            {c: "719226", d: "OK TIGROD 12.60 2,40 MM 5 KG"},
-            {c: "719221", d: "OK TIGROD 12.62 1,6 MM 5 KG"},
-            {c: "742411", d: "WELD T 308L 1,6 MM 5 KG (TIG Inox)"},
-            {c: "742422", d: "WELD T 308L 2,0 MM 5 KG"},
-            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Aluminio)"},
-            {c: "726225", d: "OK TIGROD 4043 2,4 MM 2,5 KG"},
-            {c: "716159", d: "OK FLUX 10.81 25 KG (Fundente)"},
-            {c: "729211", d: "OK FLUX 350 25 Kg"},
-            {c: "303849", d: "LOSARC 11 2,50 MM 20 KG"},
-            {c: "303850", d: "LOSARC 11 3,00 MM 20 KG"},
-            {c: "310512", d: "ESAB 13 2,00 MM X 20 KG"},
-            {c: "310427", d: "ESAB 13 2,50 MM X 20 KG"},
-            {c: "310428", d: "ESAB 13 3,25 MM x 20 KG"},
-            {c: "310420", d: "ESAB 18 2,50 MM 20 KG"},
-            {c: "310421", d: "ESAB 18 3,25 MM x 20 KG"},
-            {c: "752985", d: "WELD WEST 6013 2,50X350MM CX 5KG"},
-            {c: "752986", d: "WELD WEST 6013 3,25X350MM CX 5KG"},
-            {c: "752988", d: "WELD WEST 7018 2,50X350MM CX 4,5KG"},
-            {c: "752989", d: "WELD WEST 7018 3,25X350MM CX 4,5KG"},
-
-            // --- TEK BOND AEROSOLES Y QUIMICOS ---
+            // --- TEK BOND ---
             {c: "TEK BOND", d: "AEROSOL Uso General 250gr / 350ml OFERTA"},
             {c: "TEK BOND", d: "AEROSOL Uso General 140gr / 200ml OFERTA"},
             {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"},
@@ -305,7 +155,7 @@
             {c: "TEK BOND", d: "Veda Calha Transparente 280g"},
             {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
 
-            // --- ESAB MAQUINARIA ---
+            // --- ESAB ---
             {c: "ESAB", d: "Soldadora Handy Arc 142i 140A"},
             {c: "ESAB", d: "Soldadora Handy Arc 162i 160A"},
             {c: "ESAB", d: "Soldadora LHN 202i 200A"},
@@ -438,8 +288,8 @@
             {c: "1619BZ0100", d: "Tool Bag Mediano"},
             {c: "1600A003BK", d: "Tool Bag Grande"},
             {c: "1619PC1129", d: "Tool Box Caja Herramientas"},
-            {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7\""},
-            {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9\""},
+            {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7 pulg"},
+            {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9 pulg"},
             {c: "06018F11H0", d: "GWS 2200-180 DM VULCANO"},
             {c: "06018F21H0", d: "GWS 2200-230 DM VULCANO"},
             {c: "06018F30H0", d: "GWS 25-180 VULCANO"},
@@ -516,7 +366,149 @@
             {c: "0601.241.500", d: "GIC 12V 4-23 C Camara Inspeccion"},
             {c: "0601.096.B00", d: "BT 150 Tripode"},
 
-            // --- VISUAL/FACIAL/CRANEANA ---
+            // --- ELECTRODOS ---
+            {c: "303401", d: "CONARCO 10 2,50 MM 30 KG (AWS E6010)"},
+            {c: "303405", d: "CONARCO 10 3,25 MM 30 KG (AWS E6010)"},
+            {c: "303408", d: "CONARCO 10 4,00 MM 30 KG (AWS E6010)"},
+            {c: "303411", d: "CONARCO 10 5,00 MM 30 KG (AWS E6010)"},
+            {c: "303431", d: "CONARCO 11 2,50 MM 30 KG (AWS E6011)"},
+            {c: "303433", d: "CONARCO 11 3,25 MM 30 KG (AWS E6011)"},
+            {c: "303435", d: "CONARCO 11 4,00 MM 30 KG (AWS E6011)"},
+            {c: "303456", d: "CONARCO 12D 2,50 MM 30 KG (AWS E6012)"},
+            {c: "303457", d: "CONARCO 12D 3,25 MM 30 KG (AWS E6012)"},
+            {c: "303459", d: "CONARCO 12D 4,00 MM 30 KG (AWS E6012)"},
+            {c: "303460", d: "CONARCO 12D 5,00 MM 30 KG (AWS E6012)"},
+            {c: "303599", d: "CONARCO 24 3,25 MM 30 KG (AWS E7024)"},
+            {c: "303600", d: "CONARCO 24 4,00 MM 30 KG (AWS E7024)"},
+            {c: "303601", d: "CONARCO 24 5,00 MM 30 KG (AWS E7024)"},
+            {c: "303461", d: "CONARCO 13A 2,00 MM 30 KG (AWS E6013)"},
+            {c: "303468", d: "CONARCO 13A 2,50 MM 30 KG (AWS E6013)"},
+            {c: "303481", d: "CONARCO 13A 3,25 MM 30 KG (AWS E6013)"},
+            {c: "303493", d: "CONARCO 13A 4,00 MM 30 KG (AWS E6013)"},
+            {c: "303503", d: "CONARCO 13A 5,00 MM 30 KG (AWS E6013)"},
+            {c: "303715", d: "CONARCO C 3,25 MM 30 KG"},
+            {c: "303717", d: "CONARCO C 4,00 MM 30 KG"},
+            {c: "303511", d: "CONARCO 15 2,50 MM 30 KG (AWS E7015)"},
+            {c: "303513", d: "CONARCO 15 3,00 MM 30 KG (AWS E7015)"},
+            {c: "303516", d: "CONARCO 15 4,00 MM 30 KG (AWS E7015)"},
+            {c: "303518", d: "CONARCO 15 5,00 MM 30 KG (AWS E7015)"},
+            {c: "303519", d: "CONARCO 16 2,50 MM 30 KG (AWS E7016)"},
+            {c: "303521", d: "CONARCO 16 3,25 MM 30 KG (AWS E7016)"},
+            {c: "303525", d: "CONARCO 16 4,00 MM 30 KG (AWS E7016)"},
+            {c: "303528", d: "CONARCO 16 5,00 MM 30 KG (AWS E7016)"},
+            {c: "303530", d: "CONARCO 18 2,50 MM 30 KG (AWS E7018-1)"},
+            {c: "303533", d: "CONARCO 18 3,25 MM 30 KG (AWS E7018-1)"},
+            {c: "303535", d: "CONARCO 18 4,00 MM 30 KG (AWS E7018-1)"},
+            {c: "303537", d: "CONARCO 18 5,00 MM 30 KG (AWS E7018-1)"},
+            {c: "733771", d: "OK 74.55 2,50 MM 15 KG (AWS E7018-A1)"},
+            {c: "733772", d: "OK 74.55 3,25 MM 15 KG (AWS E7018-A1)"},
+            {c: "733773", d: "OK 74.55 4,00 MM 25 KG (AWS E7018-A1)"},
+            {c: "733782", d: "OK 76.18 2,50 MM 15 KG (AWS 8018-B2)"},
+            {c: "733783", d: "OK 76.18 3,25 MM 15 KG (AWS 8018-B2)"},
+            {c: "733784", d: "OK 76.18 4,00 MM 20 KG (AWS 8018-B2)"},
+            {c: "733785", d: "OK 76.18 5,00 MM 20 KG (AWS 8018-B2)"},
+            {c: "734482", d: "ATOM ARC 8018-C1 2,4 MM 22,69 KG"},
+            {c: "734483", d: "ATOM ARC 8018-C1 3,2 MM 22,69 KG"},
+            {c: "734484", d: "ATOM ARC 8018-C1 4,0 MM 22,69 KG"},
+            {c: "733774", d: "OK 75.60 2,50 MM 15 KG (AWS E9018-M)"},
+            {c: "733775", d: "OK 75.60 3,25 MM 15 KG (AWS E9018-M)"},
+            {c: "733776", d: "OK 75.60 4,00 MM 20 KG (AWS E9018-M)"},
+            {c: "728280", d: "OK 73.03 2,50 MM 15 KG (AWS E7018-W1)"},
+            {c: "728272", d: "OK 73.03 3,25 MM 15 KG (AWS E7018-W1)"},
+            {c: "728273", d: "OK 73.03 4,00 MM 25 KG (AWS E7018-W1)"},
+            {c: "716145", d: "PIPEWELD 8010 3,20 MM 20 KG"},
+            {c: "716146", d: "PIPEWELD 8010 4,00 MM 20 KG"},
+            {c: "716147", d: "PIPEWELD 8010 5,00 MM 20 KG"},
+            {c: "741271", d: "PIPEWELD 7010 PLUS 3,25 MM 20 KG"},
+            {c: "741272", d: "PIPEWELD 7010 PLUS 4,00 MM 20 KG"},
+            {c: "741273", d: "PIPEWELD 7010 PLUS 5,00 MM 20 KG"},
+            {c: "737340", d: "OK 83.65 3,25 MM 15KG (Recargue Duro)"},
+            {c: "734040", d: "OK 83.65 4,00 MM 25KG (Recargue Duro)"},
+            {c: "734041", d: "OK 84.60 3,25 MM 8KG (Recargue Duro)"},
+            {c: "737342", d: "OK 84.60 4,00 MM 20KG (Recargue Duro)"},
+            {c: "303757", d: "CONARCROM 350 3,25 MM 20 KG"},
+            {c: "303758", d: "CONARCROM 350 4,00 MM 20 KG"},
+            {c: "303759", d: "CONARCROM 350 5,00 MM 20 KG"},
+            {c: "303768", d: "CONARCROM 600 2,50 MM 20 KG"},
+            {c: "303769", d: "CONARCROM 600 3,25 MM 20 KG"},
+            {c: "303770", d: "CONARCROM 600 4,00 MM 20 KG"},
+            {c: "303771", d: "CONARCROM 600 5,00 MM 20 KG"},
+            {c: "303966", d: "CONARCO NIMANG 4,00 MM 20 KG"},
+            {c: "729182", d: "OK 67.16 4,00 MM 10 KG (INOX E310)"},
+            {c: "729186", d: "OK 63.30 4,00 MM 10 KG (INOX E316L)"},
+            {c: "734252", d: "OK 68.15 3,2 MM 13,2 KG (E410-15)"},
+            {c: "739518", d: "OK 61.84 2,50 MM 8 KG (E347-17)"},
+            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disímiles E307)"},
+            {c: "734279", d: "OK 67.45 4,00 MM 8KG (Disímiles E307)"},
+            {c: "309231", d: "CONARCO 308L 2,00 MM 20 KG"},
+            {c: "309230", d: "CONARCO 308L 2,50 MM 20 KG"},
+            {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG"},
+            {c: "309233", d: "CONARCO 308L 4,00 MM 20 KG"},
+            {c: "309234", d: "CONARCO 309L 2,50 MM 20 KG"},
+            {c: "309235", d: "CONARCO 309L 3,25 MM 20 KG"},
+            {c: "309236", d: "CONARCO 309L 4,00 MM 20 KG"},
+            {c: "309237", d: "CONARCO 310 3,25 MM 20 KG"},
+            {c: "309240", d: "CONARCO 316L 2,00 MM 20 KG"},
+            {c: "309241", d: "CONARCO 316L 2,50 MM 20 KG"},
+            {c: "309242", d: "CONARCO 316L 3,25 MM 20 KG"},
+            {c: "310481", d: "CONARCO 316L 4,00 MM 20 KG"},
+            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundición)"},
+            {c: "309246", d: "CONARCO NI100 2,50 MM 20 KG"},
+            {c: "309245", d: "CONARCO NI100 3,25 MM 20 KG"},
+            {c: "716079", d: "CONAL 2,50 MM 8 KG (Aluminio)"},
+            {c: "716080", d: "CONAL 3,25 MM 8 KG (Aluminio)"},
+            {c: "716081", d: "CONAL 4,00 MM 8 KG (Aluminio)"},
+            {c: "752530", d: "WELD 70S6 0,9MM 15KG (Alambre MIG)"},
+            {c: "752531", d: "WELD 70S6 1,2MM 15KG (Alambre MIG)"},
+            {c: "310360", d: "OK ARISTOROD 12.50 0,90 MM 15 KG"},
+            {c: "303239", d: "OK ARISTOROD 12.50 0,90 MM 18 KG"},
+            {c: "303243", d: "OK ARISTOROD 12.50 0,90 MM 250 KG"},
+            {c: "303240", d: "OK ARISTOROD 12.50 1,00 MM 18 KG"},
+            {c: "303244", d: "OK ARISTOROD 12.50 1,00 MM 120 KG"},
+            {c: "303245", d: "OK ARISTOROD 12.50 1,00 MM 250 KG"},
+            {c: "309840", d: "OK AUTROD 12.51 0,80 MM 5 KG"},
+            {c: "303249", d: "OK AUTROD 12.51 0,80 MM 15 KG"},
+            {c: "303251", d: "OK AUTROD 12.51 0,9 MM 18 KG"},
+            {c: "303262", d: "OK AUTROD 12.51 0,9 MM 18 KG H/H"},
+            {c: "303255", d: "OK AUTROD 12.51 1,2 MM 18 KG"},
+            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG (Arco Sum.)"},
+            {c: "310162", d: "AL COBR OK12.10 C/CAJA 2,5MM 30 KG"},
+            {c: "310163", d: "AL COBR OK12.10 C/CAJA 3,25 MM 30 KG"},
+            {c: "734463", d: "OK AUTROD 12.10 2,00 MM 30 KG"},
+            {c: "734461", d: "OK AUTROD 12.10 2,50 MM 30 KG"},
+            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG (Tubular)"},
+            {c: "749414", d: "TUBROD 75 1,60 MM 12,5 KG (Tubular)"},
+            {c: "747542", d: "DUAL SHIELD 7100 1,20 MM 15 KG"},
+            {c: "747543", d: "DUAL SHIELD 7100 1,60 MM 15 KG"},
+            {c: "749662", d: "WELD M 307 1,0 MM 15 KG (MIG Inox)"},
+            {c: "742426", d: "WELD M 308LSi 0,8 MM 15 KG"},
+            {c: "742431", d: "WELD M 308LSi 0,8 MM 5 KG"},
+            {c: "742428", d: "WELD M 309LSi 0,8 MM 15 KG"},
+            {c: "742429", d: "WELD M 316LSi 0,8 MM 15 KG"},
+            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG (MIG Aluminio)"},
+            {c: "726166", d: "OK AUTROD 5356 1,2 MM 9 KG"},
+            {c: "726220", d: "OK AUTROD 4043 0,9 MM 7 KG"},
+            {c: "726221", d: "OK AUTROD 4043 1,2 MM 9 KG"},
+            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG (Varilla TIG)"},
+            {c: "719226", d: "OK TIGROD 12.60 2,40 MM 5 KG"},
+            {c: "719221", d: "OK TIGROD 12.62 1,6 MM 5 KG"},
+            {c: "742411", d: "WELD T 308L 1,6 MM 5 KG (TIG Inox)"},
+            {c: "742422", d: "WELD T 308L 2,0 MM 5 KG"},
+            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Aluminio)"},
+            {c: "726225", d: "OK TIGROD 4043 2,4 MM 2,5 KG"},
+            {c: "716159", d: "OK FLUX 10.81 25 KG (Fundente)"},
+            {c: "729211", d: "OK FLUX 350 25 Kg"},
+            {c: "303849", d: "LOSARC 11 2,50 MM 20 KG"},
+            {c: "303850", d: "LOSARC 11 3,00 MM 20 KG"},
+            {c: "310512", d: "ESAB 13 2,00 MM X 20 KG"},
+            {c: "310427", d: "ESAB 13 2,50 MM X 20 KG"},
+            {c: "310428", d: "ESAB 13 3,25 MM x 20 KG"},
+            {c: "310420", d: "ESAB 18 2,50 MM 20 KG"},
+            {c: "310421", d: "ESAB 18 3,25 MM x 20 KG"},
+            {c: "752985", d: "WELD WEST 6013 2,50X350MM CX 5KG"},
+            {c: "752986", d: "WELD WEST 6013 3,25X350MM CX 5KG"},
+            {c: "752988", d: "WELD WEST 7018 2,50X350MM CX 4,5KG"},
+            {c: "752989", d: "WELD WEST 7018 3,25X350MM CX 4,5KG"},
             {c: "VISUAL", d: "Anteojo ECO LINE HC Transp/Gris"},
             {c: "VISUAL", d: "Anteojo ECO LINE HC Amarillo"},
             {c: "VISUAL", d: "Anteojo ECO LINE AF Transp/Gris"},
@@ -543,10 +535,10 @@
             {c: "ACCESORIOS", d: "Mentonera Textil"},
             {c: "DESCART.", d: "Mascarilla Celeste Tricapa x50"},
             {c: "ACCESORIOS", d: "Adaptador Casco Facial/Audit"},
-            {c: "VISUAL", d: "Anteojos ATHOS Espejados/Cherry/Blue"},
+            {c: "VISUAL", d: "Anteojos ATHOS Espejados, Cherry, Blue"},
             {c: "VISUAL", d: "Anteojos ECO SPORT AF"},
             {c: "VISUAL", d: "Anteojos MARVEL Tte/Gris AF"},
-            {c: "VISUAL", d: "Anteojos HAYAT (Recetados) AF"},
+            {c: "VISUAL", d: "Anteojos HAYAT (soporte recetados) AF"},
             {c: "VISUAL", d: "Anteojos URANO I/O"},
             {c: "ACCESORIOS", d: "Malla Plastica Forestal"},
             {c: "ACCESORIOS", d: "Sombra para Casco Amarilla"}
@@ -554,11 +546,10 @@
 
         let carrito = [];
         
-        // Función optimizada para renderizar listas grandes
         function render(lista) {
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
-            // Renderizamos solo los primeros 100 resultados para no colgar el navegador
+            // Renderizamos los primeros 200 para no trabar el navegador
             const max = lista.length > 200 ? 200 : lista.length;
             
             for(let i=0; i<max; i++) {
@@ -567,7 +558,7 @@
                     <div class="code">${item.c}</div>
                     <div class="desc">${item.d}</div>
                     <div><input type="number" id="p-${i}" placeholder="0.00"></div>
-                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">Añadir</button></div>
+                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">AGREGAR</button></div>
                 </div>`;
             }
             if(lista.length === 0) cont.innerHTML = '<div style="padding:20px; text-align:center; color:#666">No se encontraron artículos.</div>';
@@ -602,9 +593,9 @@
                 body.innerHTML += `<tr>
                     <td>${it.desc}</td>
                     <td>$${it.p.toLocaleString()}</td>
-                    <td><input type="number" value="${it.q}" style="width:60px; padding:5px" onchange="cambiarQ(${i}, this.value)"></td>
+                    <td><input type="number" value="${it.q}" style="width:60px; padding:5px;" onchange="cambiarQ(${i}, this.value)"></td>
                     <td>$${sub.toLocaleString()}</td>
-                    <td><button onclick="borrar(${i})" style="color:red; border:none; background:none; cursor:pointer">X</button></td>
+                    <td><button onclick="borrar(${i})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">X</button></td>
                 </tr>`;
             });
             const final = total * 1.21;
@@ -653,7 +644,7 @@
                 startY: 70,
                 head: [['Descripción', 'Precio U.', 'Cant.', 'Subtotal']],
                 body: filas,
-                headStyles: { fillColor: [60, 60, 60] },
+                headStyles: { fillColor: [50, 50, 50] },
                 theme: 'grid'
             });
 
@@ -665,7 +656,7 @@
             doc.save(`Presupuesto_${cli}.pdf`);
         }
 
-        // Cargar todo al inicio
+        // Render inicial
         render(ARTICULOS);
     </script>
 </body>
