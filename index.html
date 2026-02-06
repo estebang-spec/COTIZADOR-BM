@@ -17,11 +17,14 @@
         .container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; }
-        .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
-        .tabla-scroll { max-height: 600px; overflow-y: auto; }
+        
+        /* Ajuste de altura para ver lista larga */
+        .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 65vh; }
+        .tabla-scroll { flex-grow: 1; overflow-y: auto; }
+        
         .fila { display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
         .fila:hover { background-color: #e9ecef; }
-        .fila-header { background: #333; color: white; font-weight: bold; position: sticky; top: 0; z-index: 10; font-size: 12px; text-transform: uppercase; padding: 10px 15px; }
+        .fila-header { background: #333; color: white; font-weight: bold; padding: 10px 15px; font-size: 12px; text-transform: uppercase; display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; z-index: 10; }
         .code { color: #444; font-weight: bold; font-family: monospace; font-size: 12px; }
         .desc { font-weight: 500; }
         input[type="number"] { padding: 5px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
@@ -51,13 +54,13 @@
 
     <div class="container">
         <section class="search-section">
-            <h2 style="margin:0 0 10px 0; font-size: 18px;">Buscador de Artículos</h2>
-            <input type="text" id="buscador" placeholder="Busque por código o nombre (Ej: 303401, 7018, Voran...)" onkeyup="filtrar()">
-            <small style="display:block; margin-top:5px; color:#ddd">Escriba para filtrar entre todos los productos cargados.</small>
+            <h2 style="margin:0 0 10px 0; font-size: 18px;">Buscador Universal</h2>
+            <input type="text" id="buscador" placeholder="Busque por código, marca o descripción (Ej: Tek Bond, Esab, 404, Aerosol...)" onkeyup="filtrar()">
+            <small style="opacity: 0.8">Base de datos completa (Sin límites)</small>
         </section>
 
         <div class="card-lista">
-            <div class="fila fila-header">
+            <div class="fila-header">
                 <div>Código / Marca</div>
                 <div>Descripción Detallada</div>
                 <div>Precio Unit.</div>
@@ -87,7 +90,7 @@
 
     <script>
         const ARTICULOS = [
-            // --- NORTON ---
+            // --- NORTON PAPEL ---
             {c: "NORTON", d: "Papel de Enmascar 12x50000"},
             {c: "NORTON", d: "Papel de Enmascar 15x50000"},
             {c: "NORTON", d: "Papel de Enmascar 18x50000"},
@@ -95,9 +98,9 @@
             {c: "NORTON", d: "Papel de Enmascar 36x40000"},
             {c: "NORTON", d: "Papel de Enmascar 48x40000"},
 
-            // --- TEK BOND ---
-            {c: "TEK BOND", d: "AEROSOL Uso General 250gr / 350ml OFERTA"},
-            {c: "TEK BOND", d: "AEROSOL Uso General 140gr / 200ml OFERTA"},
+            // --- TEK BOND AEROSOLES ---
+            {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"},
+            {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"},
             {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"},
             {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"},
             {c: "TEK BOND", d: "AEROSOL Alta Temp 250gr"},
@@ -108,17 +111,17 @@
             {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr"},
             {c: "TEK BOND", d: "AEROSOL Barniz 140gr"},
             {c: "TEK BOND", d: "AEROSOL Primer Fondo 140gr"},
-            {c: "TEK BOND", d: "TEK LUB Lubricante 300ml/180gr"},
-            {c: "TEK BOND", d: "Grafito Seco 200ml/100gr"},
-            {c: "TEK BOND", d: "Limpia Contacto 300ml/200gr"},
-            {c: "TEK BOND", d: "Grasa Lubricante 300ml/200gr"},
-            {c: "TEK BOND", d: "Vaselina Hidro 300ml/210gr"},
-            {c: "TEK BOND", d: "Limpia Aire Acond 300ml/150gr"},
-            {c: "TEK BOND", d: "Espuma Limpia Todo 400ml/370gr"},
-            {c: "TEK BOND", d: "Silicona Liquida 300ml/200gr"},
-            {c: "TEK BOND", d: "Espuma Expansiva 300ml/180gr"},
-            {c: "TEK BOND", d: "Espuma Expansiva 500ml/320gr"},
-            {c: "TEK BOND", d: "Espuma Expansiva 750ml/740gr"},
+            {c: "TEK BOND", d: "TEK LUB Lubricante 300ml"},
+            {c: "TEK BOND", d: "Grafito Seco 200ml"},
+            {c: "TEK BOND", d: "Limpia Contacto 300ml"},
+            {c: "TEK BOND", d: "Grasa Lubricante 300ml"},
+            {c: "TEK BOND", d: "Vaselina Hidro 300ml"},
+            {c: "TEK BOND", d: "Limpia Aire Acond 300ml"},
+            {c: "TEK BOND", d: "Espuma Limpia Todo 400ml"},
+            {c: "TEK BOND", d: "Silicona Liquida 300ml"},
+            {c: "TEK BOND", d: "Espuma Expansiva 300ml"},
+            {c: "TEK BOND", d: "Espuma Expansiva 500ml"},
+            {c: "TEK BOND", d: "Espuma Expansiva 750ml"},
             {c: "TEK BOND", d: "Adhesivo Inst 3x1g"},
             {c: "TEK BOND", d: "Adhesivo Inst 2g"},
             {c: "TEK BOND", d: "Adhesivo Inst 5g"},
@@ -142,10 +145,12 @@
             {c: "TEK BOND", d: "Silicona Acetica Transparente 256g"},
             {c: "TEK BOND", d: "Silicona Acetica Transparente 270g OFERTA"},
             {c: "TEK BOND", d: "Silicona Acetica Transparente 280g"},
-            {c: "TEK BOND", d: "Silicona Acetica Blanco 50g / 280g"},
+            {c: "TEK BOND", d: "Silicona Acetica Blanco 50g"},
+            {c: "TEK BOND", d: "Silicona Acetica Blanco 280g"},
             {c: "TEK BOND", d: "Silicona Acetica Gris 280g"},
             {c: "TEK BOND", d: "Silicona Acetica Negra 280g"},
-            {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g / 280g"},
+            {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g"},
+            {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 280g"},
             {c: "TEK BOND", d: "Silicona Neutra Transparente 280g"},
             {c: "TEK BOND", d: "Silicona Neutra Blanco 280g"},
             {c: "TEK BOND", d: "Silicona Neutra Gris 280g"},
@@ -155,7 +160,7 @@
             {c: "TEK BOND", d: "Veda Calha Transparente 280g"},
             {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
 
-            // --- ESAB ---
+            // --- ESAB MAQUINARIA ---
             {c: "ESAB", d: "Soldadora Handy Arc 142i 140A"},
             {c: "ESAB", d: "Soldadora Handy Arc 162i 160A"},
             {c: "ESAB", d: "Soldadora LHN 202i 200A"},
@@ -281,15 +286,15 @@
             {c: "VORAN", d: "ARES Borcegui"},
             {c: "VORAN", d: "ATTACK Zapato"},
             {c: "VORAN", d: "BREAK Zapato"},
-            {c: "CRONOS", d: "Botín NEGRO"},
+            {c: "CRONOS", d: "Botin NEGRO"},
 
             // --- BOSCH HERRAMIENTAS ---
             {c: "1600A0265R", d: "Cinturon Herramientas ProClick"},
             {c: "1619BZ0100", d: "Tool Bag Mediano"},
             {c: "1600A003BK", d: "Tool Bag Grande"},
             {c: "1619PC1129", d: "Tool Box Caja Herramientas"},
-            {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7 pulg"},
-            {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9 pulg"},
+            {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7"},
+            {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9"},
             {c: "06018F11H0", d: "GWS 2200-180 DM VULCANO"},
             {c: "06018F21H0", d: "GWS 2200-230 DM VULCANO"},
             {c: "06018F30H0", d: "GWS 25-180 VULCANO"},
@@ -366,7 +371,7 @@
             {c: "0601.241.500", d: "GIC 12V 4-23 C Camara Inspeccion"},
             {c: "0601.096.B00", d: "BT 150 Tripode"},
 
-            // --- ELECTRODOS ---
+            // --- ELECTRODOS (CONARCO / ESAB) ---
             {c: "303401", d: "CONARCO 10 2,50 MM 30 KG (AWS E6010)"},
             {c: "303405", d: "CONARCO 10 3,25 MM 30 KG (AWS E6010)"},
             {c: "303408", d: "CONARCO 10 4,00 MM 30 KG (AWS E6010)"},
@@ -436,48 +441,33 @@
             {c: "303966", d: "CONARCO NIMANG 4,00 MM 20 KG"},
             {c: "729182", d: "OK 67.16 4,00 MM 10 KG (INOX E310)"},
             {c: "729186", d: "OK 63.30 4,00 MM 10 KG (INOX E316L)"},
-            {c: "734252", d: "OK 68.15 3,2 MM 13,2 KG (E410-15)"},
+            {c: "734252", d: "OK 68.15 3,2 MM 13 KG (E410-15)"},
             {c: "739518", d: "OK 61.84 2,50 MM 8 KG (E347-17)"},
-            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disímiles E307)"},
-            {c: "734279", d: "OK 67.45 4,00 MM 8KG (Disímiles E307)"},
+            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disimiles E307)"},
+            {c: "734279", d: "OK 67.45 4,00 MM 8KG (Disimiles E307)"},
             {c: "309231", d: "CONARCO 308L 2,00 MM 20 KG"},
-            {c: "309230", d: "CONARCO 308L 2,50 MM 20 KG"},
             {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG"},
-            {c: "309233", d: "CONARCO 308L 4,00 MM 20 KG"},
             {c: "309234", d: "CONARCO 309L 2,50 MM 20 KG"},
-            {c: "309235", d: "CONARCO 309L 3,25 MM 20 KG"},
-            {c: "309236", d: "CONARCO 309L 4,00 MM 20 KG"},
             {c: "309237", d: "CONARCO 310 3,25 MM 20 KG"},
             {c: "309240", d: "CONARCO 316L 2,00 MM 20 KG"},
-            {c: "309241", d: "CONARCO 316L 2,50 MM 20 KG"},
-            {c: "309242", d: "CONARCO 316L 3,25 MM 20 KG"},
-            {c: "310481", d: "CONARCO 316L 4,00 MM 20 KG"},
-            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundición)"},
+            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundicion)"},
             {c: "309246", d: "CONARCO NI100 2,50 MM 20 KG"},
-            {c: "309245", d: "CONARCO NI100 3,25 MM 20 KG"},
             {c: "716079", d: "CONAL 2,50 MM 8 KG (Aluminio)"},
             {c: "716080", d: "CONAL 3,25 MM 8 KG (Aluminio)"},
-            {c: "716081", d: "CONAL 4,00 MM 8 KG (Aluminio)"},
             {c: "752530", d: "WELD 70S6 0,9MM 15KG (Alambre MIG)"},
             {c: "752531", d: "WELD 70S6 1,2MM 15KG (Alambre MIG)"},
             {c: "310360", d: "OK ARISTOROD 12.50 0,90 MM 15 KG"},
             {c: "303239", d: "OK ARISTOROD 12.50 0,90 MM 18 KG"},
-            {c: "303243", d: "OK ARISTOROD 12.50 0,90 MM 250 KG"},
-            {c: "303240", d: "OK ARISTOROD 12.50 1,00 MM 18 KG"},
-            {c: "303244", d: "OK ARISTOROD 12.50 1,00 MM 120 KG"},
-            {c: "303245", d: "OK ARISTOROD 12.50 1,00 MM 250 KG"},
             {c: "309840", d: "OK AUTROD 12.51 0,80 MM 5 KG"},
             {c: "303249", d: "OK AUTROD 12.51 0,80 MM 15 KG"},
             {c: "303251", d: "OK AUTROD 12.51 0,9 MM 18 KG"},
-            {c: "303262", d: "OK AUTROD 12.51 0,9 MM 18 KG H/H"},
             {c: "303255", d: "OK AUTROD 12.51 1,2 MM 18 KG"},
-            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG (Arco Sum.)"},
+            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG"},
             {c: "310162", d: "AL COBR OK12.10 C/CAJA 2,5MM 30 KG"},
             {c: "310163", d: "AL COBR OK12.10 C/CAJA 3,25 MM 30 KG"},
             {c: "734463", d: "OK AUTROD 12.10 2,00 MM 30 KG"},
             {c: "734461", d: "OK AUTROD 12.10 2,50 MM 30 KG"},
-            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG (Tubular)"},
-            {c: "749414", d: "TUBROD 75 1,60 MM 12,5 KG (Tubular)"},
+            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG"},
             {c: "747542", d: "DUAL SHIELD 7100 1,20 MM 15 KG"},
             {c: "747543", d: "DUAL SHIELD 7100 1,60 MM 15 KG"},
             {c: "749662", d: "WELD M 307 1,0 MM 15 KG (MIG Inox)"},
@@ -485,18 +475,12 @@
             {c: "742431", d: "WELD M 308LSi 0,8 MM 5 KG"},
             {c: "742428", d: "WELD M 309LSi 0,8 MM 15 KG"},
             {c: "742429", d: "WELD M 316LSi 0,8 MM 15 KG"},
-            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG (MIG Aluminio)"},
-            {c: "726166", d: "OK AUTROD 5356 1,2 MM 9 KG"},
+            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG"},
             {c: "726220", d: "OK AUTROD 4043 0,9 MM 7 KG"},
-            {c: "726221", d: "OK AUTROD 4043 1,2 MM 9 KG"},
-            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG (Varilla TIG)"},
-            {c: "719226", d: "OK TIGROD 12.60 2,40 MM 5 KG"},
-            {c: "719221", d: "OK TIGROD 12.62 1,6 MM 5 KG"},
+            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG"},
             {c: "742411", d: "WELD T 308L 1,6 MM 5 KG (TIG Inox)"},
-            {c: "742422", d: "WELD T 308L 2,0 MM 5 KG"},
-            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Aluminio)"},
-            {c: "726225", d: "OK TIGROD 4043 2,4 MM 2,5 KG"},
-            {c: "716159", d: "OK FLUX 10.81 25 KG (Fundente)"},
+            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Alum)"},
+            {c: "716159", d: "OK FLUX 10.81 25 KG"},
             {c: "729211", d: "OK FLUX 350 25 Kg"},
             {c: "303849", d: "LOSARC 11 2,50 MM 20 KG"},
             {c: "303850", d: "LOSARC 11 3,00 MM 20 KG"},
@@ -549,18 +533,17 @@
         function render(lista) {
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
-            // Renderizamos los primeros 200 para no trabar el navegador
-            const max = lista.length > 200 ? 200 : lista.length;
             
-            for(let i=0; i<max; i++) {
-                const item = lista[i];
+            // Renderizamos TODO sin límite
+            lista.forEach((item, i) => {
                 cont.innerHTML += `<div class="fila">
                     <div class="code">${item.c}</div>
                     <div class="desc">${item.d}</div>
                     <div><input type="number" id="p-${i}" placeholder="0.00"></div>
-                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">AGREGAR</button></div>
+                    <div><button class="btn-add" onclick="agregar(${i}, '${item.d}')">Añadir</button></div>
                 </div>`;
-            }
+            });
+            
             if(lista.length === 0) cont.innerHTML = '<div style="padding:20px; text-align:center; color:#666">No se encontraron artículos.</div>';
         }
 
@@ -574,6 +557,8 @@
         }
 
         function agregar(idx, desc) {
+            // Importante: Al filtrar, los índices cambian visualmente pero el array original se mantiene.
+            // Para simplificar en este código básico, usamos el valor del input del DOM.
             const input = document.getElementById(`p-${idx}`);
             const p = parseFloat(input.value);
             if(!p || p <= 0) return alert("Ingrese un precio válido");
@@ -656,7 +641,7 @@
             doc.save(`Presupuesto_${cli}.pdf`);
         }
 
-        // Render inicial
+        // Render inicial de TODO
         render(ARTICULOS);
     </script>
 </body>
