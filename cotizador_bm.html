@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador - Buloneria Mitre SRL</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #000000;
+            --secondary: #333333;
+            --accent: #e51f1f; /* Rojo BM Group */
+            --light: #f4f4f4;
+        }
+
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f9f9f9; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        
+        header { background: white; border-bottom: 4px solid var(--accent); padding: 15px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { margin: 0; font-size: 28px; letter-spacing: -1px; }
+        .logo span { color: var(--accent); font-weight: bold; }
+        .info-empresa { text-align: right; font-size: 12px; line-height: 1.4; }
+
+        .banner { background: var(--primary); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+
+        /* Grid de productos */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; text-align: center; }
+        .card h4 { margin: 10px 0; font-size: 14px; height: 35px; overflow: hidden; }
+        .price { color: var(--accent); font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+        input[type="number"] { width: 50px; padding: 5px; margin-bottom: 10px; border: 1px solid #ccc; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; width: 100%; }
+        .btn-add:hover { background: var(--accent); }
+
+        /* Resumen */
+        .resumen { background: white; padding: 25px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .cliente-input { margin-bottom: 20px; padding: 15px; background: #fff5f5; border-radius: 5px; }
+        .cliente-input input { width: 100%; max-width: 400px; padding: 10px; margin-top: 10px; border: 1px solid #ddd; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #eee; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        
+        .totales { text-align: right; margin-top: 20px; font-size: 18px; }
+        .total-boldeado { font-size: 24px; color: var(--accent); font-weight: bold; }
+
+        .acciones { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .btn-pdf { background: #28a745; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn-clear { background: #666; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; }
+        
+        footer { margin-top: 50px; text-align: center; font-size: 12px; color: #777; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-flex">
+            <div class="logo">
+                <h1>BM <span>GROUP</span></h1>
+                <small>Buloneria Mitre SRL</small>
+            </div>
+            <div class="info-empresa">
+                <strong>CUIT: 30-69179970-7</strong><br>
+                Bernabé Aráoz 162 - Tucumán<br>
+                Tel: 3816797611
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="banner">
+            <h2>Cotizador Express</h2>
+            <p>Seleccione productos y cantidades para generar su presupuesto oficial.</p>
+        </div>
+
+        <h3>Catálogo de Productos</h3>
+        <div class="grid" id="catalogo">
+            </div>
+
+        <div class="resumen">
+            <h3>Presupuesto para el Cliente</h3>
+            <div class="cliente-input">
+                <label>Nombre del Cliente o Empresa:</label><br>
+                <input type="text" id="cliente-nombre" placeholder="Ingrese el nombre aquí...">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unit.</th>
+                        <th>Cant.</th>
+                        <th>Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="items-cotizacion">
+                    </tbody>
+            </table>
+
+            <div class="totales">
+                <div>Subtotal: <span id="st-val">$0</span></div>
+                <div>IVA (21%): <span id="iva-val">$0</span></div>
+                <div class="total-boldeado">TOTAL: <span id="total-val">$0</span></div>
+            </div>
+
+            <div class="acciones">
+                <button class="btn-clear" onclick="limpiar()">Limpiar Todo</button>
+                <button class="btn-pdf" onclick="descargarPDF()">DESCARGAR PRESUPUESTO PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Buloneria Mitre SRL - San Miguel de Tucumán
+    </footer>
+
+    <script>
+        const PRODUCTOS = [
+            { id: 1, nombre: "Taladro Bosch GSB 13 RE", precio: 85000 },
+            { id: 2, nombre: "Amoladora Bosch GWS 700", precio: 72000 },
+            { id: 3, nombre: "Sierra Circular Bosch GKS 150", precio: 125000 },
+            { id: 4, nombre: "Casco de Seguridad (Amarillo)", precio: 4500 },
+            { id: 5, nombre: "Guantes de Nitrilo Reforzados", precio: 1200 },
+            { id: 6, nombre: "Gafas Protectoras Transparentes", precio: 1800 },
+            { id: 7, nombre: "Electrodo 6013 2.5mm (1kg)", precio: 4800 },
+            { id: 8, nombre: "Martillo Galponero 20oz", precio: 9500 },
+            { id: 9, nombre: "Caja Tornillos Madera (100u)", precio: 3200 },
+            { id: 10, nombre: "Medidor Láser Bosch GLM 20", precio: 68000 }
+        ];
+
+        let carrito = [];
+
+        // Cargar catálogo al iniciar
+        const catalogoDiv = document.getElementById('catalogo');
+        PRODUCTOS.forEach(p => {
+            catalogoDiv.innerHTML += `
+                <div class="card">
+                    <h4>${p.nombre}</h4>
+                    <div class="price">$${p.precio.toLocaleString()}</div>
+                    <input type="number" id="q-${p.id}" value="1" min="1"><br>
+                    <button class="btn-add" onclick="agregar(${p.id})">Agregar</button>
+                </div>
+            `;
+        });
+
+        function agregar(id) {
+            const cant = parseInt(document.getElementById(`q-${id}`).value);
+            const producto = PRODUCTOS.find(p => p.id === id);
+            
+            const existente = carrito.find(item => item.id === id);
+            if(existente) {
+                existente.cantidad += cant;
+            } else {
+                carrito.push({ ...producto, cantidad: cant });
+            }
+            actualizarUI();
+        }
+
+        function actualizarUI() {
+            const body = document.getElementById('items-cotizacion');
+            body.innerHTML = '';
+            let subtotal = 0;
+
+            carrito.forEach((item, index) => {
+                const filaSub = item.precio * item.cantidad;
+                subtotal += filaSub;
+                body.innerHTML += `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>$${item.precio.toLocaleString()}</td>
+                        <td>${item.cantidad}</td>
+                        <td>$${filaSub.toLocaleString()}</td>
+                        <td><button onclick="borrar(${index})" style="background:none; border:none; color:red; cursor:pointer">✖</button></td>
+                    </tr>
+                `;
+            });
+
+            const iva = subtotal * 0.21;
+            const total = subtotal + iva;
+
+            document.getElementById('st-val').innerText = `$${subtotal.toLocaleString()}`;
+            document.getElementById('iva-val').innerText = `$${iva.toLocaleString()}`;
+            document.getElementById('total-val').innerText = `$${total.toLocaleString()}`;
+        }
+
+        function borrar(index) {
+            carrito.splice(index, 1);
+            actualizarUI();
+        }
+
+        function limpiar() {
+            carrito = [];
+            document.getElementById('cliente-nombre').value = '';
+            actualizarUI();
+        }
+
+        function descargarPDF() {
+            const cliente = document.getElementById('cliente-nombre').value;
+            if(!cliente) return alert("Ingrese el nombre del cliente");
+            if(carrito.length === 0) return alert("Agregue productos primero");
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Cabecera Empresa
+            doc.setFontSize(18);
+            doc.text("BULONERIA MITRE SRL", 14, 20);
+            doc.setFontSize(10);
+            doc.text("CUIT: 30-69179970-7", 14, 27);
+            doc.text("Bernabé Aráoz 162 - S.M. de Tucumán", 14, 32);
+            
+            doc.line(14, 38, 196, 38);
+
+            // Datos Cliente
+            doc.setFontSize(12);
+            doc.text(`CLIENTE: ${cliente.toUpperCase()}`, 14, 48);
+            doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 150, 48);
+
+            // Tabla
+            const filas = carrito.map(i => [i.nombre, `$${i.precio.toLocaleString()}`, i.cantidad, `$${(i.precio * i.cantidad).toLocaleString()}`]);
+            doc.autoTable({
+                startY: 55,
+                head: [['Producto', 'P. Unit', 'Cant.', 'Subtotal']],
+                body: filas,
+                theme: 'striped',
+                headStyles: { fillColor: [0, 0, 0] }
+            });
+
+            // Totales
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.text(`Subtotal: ${document.getElementById('st-val').innerText}`, 140, finalY);
+            doc.text(`IVA (21%): ${document.getElementById('iva-val').innerText}`, 140, finalY + 7);
+            doc.setFontSize(14);
+            doc.text(`TOTAL: ${document.getElementById('total-val').innerText}`, 140, finalY + 15);
+
+            doc.save(`Presupuesto_${cliente}.pdf`);
+        }
+    </script>
+</body>
+</html>
