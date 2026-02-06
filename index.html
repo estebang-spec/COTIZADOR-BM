@@ -12,6 +12,16 @@
         :root { --primary: #000; --accent: #e51f1f; --bg: #f4f4f4; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); font-size: 13px; }
         
+        /* ESTADO DEL SISTEMA (DIAGNÓSTICO) */
+        #status-box {
+            position: fixed; top: 10px; right: 10px; padding: 10px; 
+            border-radius: 5px; color: white; font-weight: bold; z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .status-loading { background: orange; }
+        .status-ok { background: green; }
+        .status-error { background: red; }
+
         header { background: white; border-bottom: 5px solid var(--accent); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
         .logo h1 { margin: 0; font-size: 24px; font-style: italic; font-weight: 900; letter-spacing: -1px; }
@@ -19,7 +29,6 @@
         .header-info { text-align: right; font-size: 11px; color: #444; line-height: 1.4; }
         
         .container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
-        
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; box-sizing: border-box; }
         
@@ -63,13 +72,15 @@
 </head>
 <body>
 
+    <div id="status-box" class="status-loading">Cargando Sistema PDF...</div>
+
     <header>
         <div class="header-flex">
             <div class="logo"><h1>BM <span>GROUP</span></h1><small>Buloneria Mitre SRL</small></div>
             <div class="header-info">
-                <strong>BM GROUP BULONERIA MITRE</strong><br>
+                <strong>BM GROUP - BULONERIA MITRE SRL</strong><br>
                 Parque Industrial Av.Circunvalacion Ruta 9<br>
-                KM 1294 Mz B - Fracción A y B
+                KM 1294 Mz B - Fracción A y B | Tel: 3816797611
             </div>
         </div>
     </header>
@@ -119,22 +130,25 @@
 
             <div class="controles">
                 <button onclick="window.location.reload()" style="padding:10px 20px; cursor:pointer; border:1px solid #ccc; background:white;">Borrar Todo</button>
-                <button type="button" id="btn-descarga" class="btn-pdf" onclick="generarPDF()">DESCARGAR PRESUPUESTO</button>
+                <button id="btn-descarga" class="btn-pdf" onclick="generarPDF()">DESCARGAR PRESUPUESTO</button>
             </div>
         </section>
     </div>
 
     <script>
-        // =========================================================================
-        // === ZONA DE IMÁGENES (CÓDIGOS BASE64) ===
-        // Instrucción: Pega el texto largo ENTRE las comillas invertidas ` `
-        // =========================================================================
-        
-        const LOGO_BM_BASE64 = ``; // <--- Pega aquí el código de BM entre las comillas
-        
-        const LOGO_ISO_BASE64 = ``; // <--- Pega aquí el código de ISO entre las comillas
-
-        // =========================================================================
+        // Verificación de Librería
+        window.addEventListener('load', function() {
+            const statusBox = document.getElementById('status-box');
+            if (window.jspdf) {
+                statusBox.textContent = "SISTEMA LISTO";
+                statusBox.className = "status-ok";
+                setTimeout(() => { statusBox.style.display = 'none'; }, 3000); // Ocultar si está ok
+            } else {
+                statusBox.textContent = "ERROR: LIBRERÍA PDF NO CARGÓ";
+                statusBox.className = "status-error";
+                alert("Error crítico: No se pudo cargar el generador de PDF. Revisa tu conexión a internet.");
+            }
+        });
 
         const ARTICULOS = [
             {c: "NORTON", d: "Papel de Enmascar 12x50000"}, {c: "NORTON", d: "Papel de Enmascar 15x50000"}, {c: "NORTON", d: "Papel de Enmascar 18x50000"}, {c: "NORTON", d: "Papel de Enmascar 24x50000"}, {c: "NORTON", d: "Papel de Enmascar 36x40000"}, {c: "NORTON", d: "Papel de Enmascar 48x40000"},
@@ -237,6 +251,7 @@
 
         async function generarPDF() {
             try {
+                // Validación básica
                 const cliInput = document.getElementById('cliente-nombre').value;
                 const pago = document.getElementById('pago-cliente').value;
 
@@ -247,6 +262,7 @@
                 
                 const nombreArchivo = cliInput.replace(/[^a-z0-9]/gi, '_').toUpperCase();
 
+                // Intentar cargar jsPDF
                 if(!window.jspdf) throw new Error("La librería PDF no se cargó correctamente.");
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
