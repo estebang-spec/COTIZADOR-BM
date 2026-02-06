@@ -18,9 +18,8 @@
         .search-section { background: var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 12px; border-radius: 5px; border: none; font-size: 16px; outline: none; }
         .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
-        .tabla-scroll { max-height: 600px; overflow-y: auto; }
-        /* Grid ajustado para mostrar mejor los datos */
-        .fila { display: grid; grid-template-columns: 130px 1fr 100px 90px; gap: 10px; padding: 8px 15px; border-bottom: 1px solid #eee; align-items: center; }
+        .tabla-scroll { max-height: 550px; overflow-y: auto; }
+        .fila { display: grid; grid-template-columns: 140px 1fr 100px 90px; gap: 10px; padding: 8px 15px; border-bottom: 1px solid #eee; align-items: center; }
         .fila:hover { background-color: #f9f9f9; }
         .fila-header { background: #eee; font-weight: bold; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #ccc; font-size: 12px; text-transform: uppercase; }
         .code { color: #666; font-weight: bold; font-family: monospace; font-size: 12px; }
@@ -53,13 +52,13 @@
     <div class="container">
         <section class="search-section">
             <h2 style="margin:0 0 10px 0; font-size: 20px;">Buscador Universal de Artículos</h2>
-            <input type="text" id="buscador" placeholder="Busque por Código SAP, Modelo, Marca o Descripción (Ej: 303468, GWS 2200, ANIT 01...)" onkeyup="filtrar()">
-            <small style="opacity: 0.8">Base de datos cargada: Herramientas Bosch, Electrodos Conarco/ESAB, Calzado, Seguridad y más.</small>
+            <input type="text" id="buscador" placeholder="Busque por código, marca o descripción (Ej: Tek Bond, Esab, 404, Aerosol...)" onkeyup="filtrar()">
+            <small style="opacity: 0.8">Base de datos completa cargada.</small>
         </section>
 
         <div class="card-lista">
             <div class="fila fila-header">
-                <div>Código / Modelo</div>
+                <div>Código / Marca</div>
                 <div>Descripción</div>
                 <div>Precio Unit.</div>
                 <div>Acción</div>
@@ -87,278 +86,135 @@
     </div>
 
     <script>
-        // BASE DE DATOS UNIFICADA
+        // BASE DE DATOS COMPLETA
         const ARTICULOS = [
-            // --- LISTA 1: PROTECCIÓN RESPIRATORIA (LIBUS/3M) ---
+            // --- NORTON ---
+            {c: "NORTON", d: "Papel de Enmascar 12x50000"},
+            {c: "NORTON", d: "Papel de Enmascar 15x50000"},
+            {c: "NORTON", d: "Papel de Enmascar 18x50000"},
+            {c: "NORTON", d: "Papel de Enmascar 24x50000"},
+            {c: "NORTON", d: "Papel de Enmascar 36x40000"},
+            {c: "NORTON", d: "Papel de Enmascar 48x40000"},
+            
+            // --- TEK BOND AEROSOLES Y QUIMICOS ---
+            {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"},
+            {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"},
+            {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"},
+            {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"},
+            {c: "TEK BOND", d: "AEROSOL Alta Temperatura 250gr"},
+            {c: "TEK BOND", d: "AEROSOL Alta Temperatura 140gr"},
+            {c: "TEK BOND", d: "AEROSOL Metalico 250gr"},
+            {c: "TEK BOND", d: "AEROSOL Metalico 140gr"},
+            {c: "TEK BOND", d: "AEROSOL Barniz 250gr / 140gr"},
+            {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr / 140gr"},
+            {c: "TEK BOND", d: "AEROSOL Lubricante TEK LUB 300ml"},
+            {c: "TEK BOND", d: "AEROSOL Grafito Seco 200ml"},
+            {c: "TEK BOND", d: "AEROSOL Limpia Contacto 300ml"},
+            {c: "TEK BOND", d: "AEROSOL Grasa Lubricante 300ml"},
+            {c: "TEK BOND", d: "AEROSOL Vaselina Hidro 300ml"},
+            {c: "TEK BOND", d: "AEROSOL Limpia Aire Acondicionado 300ml"},
+            {c: "TEK BOND", d: "AEROSOL Espuma Limpia Todo 400ml"},
+            {c: "TEK BOND", d: "AEROSOL Silicona Liquida 300ml"},
+            {c: "TEK BOND", d: "Espuma Expansiva PU 300ml / 500ml / 750ml"},
+            {c: "TEK BOND", d: "Adhesivo Instantáneo 2g / 3g / 5g / 12x2g"},
+            {c: "TEK BOND", d: "PEGAMENTO FACIL AGUA Pomo 140g / Cartucho 420g"},
+            {c: "TEK BOND", d: "Cola de Contacto 30g"},
+            {c: "TEK BOND", d: "Silicona Liquida Frasco 25g / 51g / 85g"},
+            {c: "TEK BOND", d: "Adhesivo Universal Pomo Blister 17g"},
+            {c: "TEK BOND", d: "Cola Blanca PVA 500g / 1kg / 10kg / 20kg / 50kg"},
+            {c: "TEK BOND", d: "Cola Madera Frasco 100g / 250g"},
+            {c: "TEK BOND", d: "Silicona Acética Transparente 50g / 256g / 270g / 280g"},
+            {c: "TEK BOND", d: "Silicona Acética Blanco / Gris / Negro 50g / 280g"},
+            {c: "TEK BOND", d: "Silicona Acética Alta Temperatura Rojo 50g / 280g"},
+            {c: "TEK BOND", d: "Silicona Neutra Transp / Blanco / Gris / Negro 280g"},
+            {c: "TEK BOND", d: "Adhesivo Acrilico 425g"},
+            {c: "TEK BOND", d: "PU FIX Cartucho Gris 387g"},
+            {c: "TEK BOND", d: "Veda Calha Transparente / Aluminio 280g"},
+
+            // --- ESAB MAQUINARIA Y SOLDADURA ---
+            {c: "ESAB", d: "Soldadora Handy Arc 142i 140A"},
+            {c: "ESAB", d: "Soldadora Handy Arc 162i 160A"},
+            {c: "ESAB", d: "Soldadora LHN 202i 200A"},
+            {c: "ESAB", d: "Soldadora LHN 242i 240A"},
+            {c: "ESAB", d: "Careta Fotosensible A-10"},
+            {c: "ESAB", d: "Careta Fotosensible A-20"},
+            {c: "ESAB", d: "Careta Fotosensible A-40"},
+            {c: "ESAB", d: "Electrodo Tungsteno Punta Gold 1.6mm / 2.4mm x10un"},
+            {c: "ESAB", d: "Electrodo Tungsteno Punta Gris 1.6mm / 2.4mm x10un"},
+            {c: "EUTETIC", d: "Electrodo CONARBRONCE N 2850 3.25mm"},
+
+            // --- SEGURIDAD ALTURA (ARNESES Y COLAS) ---
+            {c: "10075", d: "Cola de amarre simple 1.5mts mosq 55mm c/amort"},
+            {c: "10079", d: "Cola de amarre doble 1.5mts mosq 55mm c/amort"},
+            {c: "404", d: "Arnes completo 3 argollas"},
+            {c: "403", d: "Arnes anticaídas enganche dorsal + sujeción"},
+            {c: "403F", d: "Arnes anticaídas dorsal + frontal + sujeción"},
+            {c: "20071", d: "Cola de amarre sin amort simple 1.5mts mosq 55mm"},
+            {c: "207", d: "Cinturon liniero"},
+            {c: "20072", d: "Cola de amarre Doble Sin Amort 1.5mts mosq 55mm"},
+            {c: "35500025", d: "Estribo Antitrauma para Arnes"},
+            {c: "10077", d: "Cola Amarre Elast 1.5mts c/amort y mosq 55mm"},
+            {c: "10089", d: "Cola Amarre Elast 1.5mts c/amort y mosq 110mm"},
+
+            // --- CRONOS ---
+            {c: "CRONOS", d: "Botín de Seguridad NEGRO"},
+
+            // --- RESPIRATORIA (ANTERIOR) ---
             {c: "FFS990", d: "MASCARA CARA COMPLETA SILICONADA"},
             {c: "S950", d: "SEMIMASCARA SILICONADA"},
             {c: "S900", d: "SEMIMASCARA CAUCHO"},
             {c: "F200P3", d: "FILTRO PARA PARTICULAS (X2UN)"},
-            {c: "F200VP3", d: "FILTRO PARA PARTICULAS Y VAPORES (X2UN)"},
-            {c: "F200GP3", d: "FILTRO PARA PARTICULAS Y GASES (X2UN)"},
-            {c: "F200VGP3", d: "FILTRO PARA PARTICULAS, GASES Y VAPORES (X2UN)"},
-            {c: "F700P3", d: "FILTRO PARA PARTICULAS (X2UN)"},
-            {c: "F700VGP3", d: "FILTRO PARA PARTICULAS, GASES Y VAPORES (X2UN)"},
-            {c: "F600V", d: "CARTUCHO VAPORES ORGANICOS (X2UN)"},
-            {c: "F600VG", d: "CARTUCHO VAPORES Y GASES (X2UN)"},
+            {c: "F200VP3", d: "FILTRO PARTICULAS Y VAPORES (X2UN)"},
+            {c: "F200GP3", d: "FILTRO PARTICULAS Y GASES (X2UN)"},
+            {c: "F200VGP3", d: "FILTRO PART, GASES Y VAPORES (X2UN)"},
             {c: "F600M", d: "CARTUCHO MULTIGAS (X2UN)"},
-            {c: "F600VGP3", d: "Cartucho p/Part, Gases Acidos, Vap. Orgánicos e Inor"},
-            {c: "F600MP3", d: "CARTUCHO MULTIGAS PARTICULAS (X2UN)"},
-            {c: "PFP2 P2 R", d: "PREFILTRO PARTICULAS"},
-            {c: "D801", d: "BARBIJO SIN VALVULA"},
             {c: "D802", d: "BARBIJO CON VALVULA"},
-            {c: "D803", d: "BARBIJO CON VALVULA Y ALIVIO VAPORES"},
-            {c: "D804", d: "BARBIJO CON VALVULA Y ALIVIO GASES"},
-            {c: "A200", d: "RETENEDOR DE FILTROS"},
-            {c: "RPF1", d: "RETENEDOR DE FILTROS"},
 
-            // --- LISTA 2: GUANTES Y ROPA DE TRABAJO ---
-            {c: "ANIT 01", d: "Guante de Acrilo Nitrilo con interior flocado y palma antideslizante"},
-            {c: "GPU02", d: "Guantes tejido poliester G13 y spandex con baño de PU en palma"},
-            {c: "GN17", d: "Guantes tejido poliester G13 y spandex con baño de NITRILO en palma"},
-            {c: "GL01", d: "Guantes tejido poliester G13 y spandex con baño de LATEX NATURAL RUGOSO"},
-            {c: "GN16", d: "Guante Ultraliviano HPPE G18 Nivel 5 corte doble baño Nitrilo + Refuerzo"},
-            {c: "GN18", d: "Guante Tejido Ultraliviano G18 doble baño de Nitrilo Palma Antideslizante"},
-            {c: "GD04", d: "Guantes de descarne mod. medio paseo con refuerzo en palma amarillo"},
-            {c: "GD05", d: "Guantes de descarne modelo americano puño descarne corto"},
-            {c: "GD06", d: "Guantes de descarne modelo americano puño de lona corto"},
-            {c: "GD08", d: "Guantes de descarne modelo americano puño descarne largo"},
-            {c: "GD11", d: "Guantes descarne soldador forro GUATA y costuras Kevlar"},
-            {c: "GD11 M", d: "Guantes descarne soldador forro ALGODÓN y costuras Kevlar MARRÓN"},
-            {c: "GV05", d: "Guantes vaqueta amarilla 1/2 paseo elastizado dorso / c/protec impacto"},
-            {c: "GV06", d: "Guantes vaqueta amarilla 1/2 paseo elastizado dorso forrado"},
-            {c: "GV01", d: "Guantes vaqueta amarilla americano puño descarne corto T10"},
-            {c: "GV02", d: "Guantes vaqueta amarilla americano puño descarne largo T10"},
-            {c: "CD TL", d: "Campera descarne soldador cierre y velcro Talle L"},
-            {c: "CD TXL", d: "Campera descarne soldador cierre y velcro Talle XL"},
-            {c: "CD T2XL", d: "Campera descarne soldador cierre y velcro Talle 2XL"},
-            {c: "CD T3XL", d: "Campera descarne soldador cierre y velcro Talle 3XL"},
-            {c: "CD T4XL", d: "Campera descarne soldador cierre y velcro Talle 4XL"},
-            {c: "CD T5XL", d: "Campera descarne soldador cierre y velcro Talle 5XL"},
+            // --- VISUAL/AUDITIVA ---
+            {c: "VISUAL", d: "Anteojo ECO LINE HC Transp/Gris/Amarillo"},
+            {c: "VISUAL", d: "Anteojo ARGON HC/AF Transp/Gris"},
+            {c: "VISUAL", d: "Antiparra NEW CLASSIC / AVIATOR"},
+            {c: "AUDITIVO", d: "Protector Auditivo L-320 / L-340 Vincha/Casco"},
+            {c: "FACIAL", d: "Soporte Facial c/arnés y Facial Burbuja/Plano"},
+            {c: "CRANEANA", d: "Casco MILENIUM Class S/V (Colores)"},
             
-            // --- LISTA 3: BOSCH (HERRAMIENTAS Y ACCESORIOS) ---
-            {c: "1600A0265R", d: "Cinturón de herramientas ProClick"},
-            {c: "1619BZ0100", d: "Bolso de transporte - Mediano"},
-            {c: "1600A003BK", d: "Bolso de transporte - Grande"},
-            {c: "1619PC1129", d: "Tool Box - Caja de Herramientas"},
-            {c: "1600A001SA", d: "Carrito de transporte - L-Boxx"},
+            // --- BOSCH HERRAMIENTAS (SELECCION) ---
             {c: "06018F10H0", d: "GWS 2200-180 VULCANO Amoladora 7\""},
             {c: "06018F20H0", d: "GWS 2200-230 VULCANO Amoladora 9\""},
-            {c: "06018F11H0", d: "GWS 2200-180 DM VULCANO Amoladora 9\""},
-            {c: "06018F21H0", d: "GWS 2200-230 DM VULCANO Amoladora 9\""},
-            {c: "06018F30H0", d: "GWS 25-180 VULCANO Amoladora 7\""},
-            {c: "06018F40H0", d: "GWS 25-230 VULCANO Amoladora 9\""},
-            {c: "06018F50H0", d: "GWS 28-180 VULCANO Amoladora 7\""},
-            {c: "06018F60H0", d: "GWS 28-230 VULCANO Amoladora 9\""},
-            {c: "06018F71H0", d: "GWS 25-180 LVI Amoladora 7\""},
-            {c: "06018F81H0", d: "GWS 25-230 LVI Amoladora 9\""},
-            {c: "06018G01H0", d: "GWS 30-180 PB Amoladora Brushless"},
-            {c: "06018G11H0", d: "GWS 30-230 PB Amoladora Brushless"},
             {c: "06013A30H0", d: "GWS 700 Mini amoladora 4 1/2\""},
-            {c: "06013980H0", d: "GWS 770 Mini amoladora 4 1/2\""},
-            {c: "06013775H0", d: "GWS 850 Mini amoladora 4 1/2\""},
-            {c: "06013A90H0", d: "GWS 9-125 Mini amoladora 5\""},
-            {c: "06013A92H0", d: "GWS 9-125 S Mini amoladora 5\" Variable"},
-            {c: "06013A60H0", d: "GWS 12-125 S Amoladora 5\" Variable"},
-            {c: "06017D03H0", d: "GWS 17-125 S Amoladora Variable"},
-            {c: "06019N90E0", d: "GWS 18V-8 Amoladora Inalámbrica [Bare Tool]"},
-            {c: "06019J40E0", d: "GWS 18V-10 Amoladora Inalámbrica [Bare Tool]"},
-            {c: "06019H60E0", d: "GWS 18V-15 C Amoladora BiTurbo [Bare Tool]"},
-            {c: "06019F2000", d: "GWS 12V-76 Minipulidora 3\" [Bare Tool]"},
-            {c: "06012B50H0", d: "GGS 30 LS Amoladora Recta"},
-            {c: "06019H22E0", d: "Bosch GO 3 Atornillador"},
-            {c: "06019K30H0", d: "GSR 185-LI Taladro Atornillador (2 bat)"},
-            {c: "06019K70H0", d: "GTB 185-LI Atornillador Drywall (2 bat)"},
-            {c: "06014470H0", d: "GSR 7-14 E Taladro/Atornillador cable"},
-            {c: "1600Z00036", d: "GBA 18V 2,0 Ah Batería"},
-            {c: "1600Z00038", d: "GBA 18V 4,0 Ah Batería"},
-            {c: "1600A016GK", d: "ProCORE 18V 8,0 Ah Batería"},
-            {c: "1600A028U0", d: "GAL 18V-40 CARGADOR"},
-            {c: "06015A90H0", d: "GHO 700 Cepillo"},
-            {c: "06016B70H0", d: "GOF 130 Ruteadora"},
-            {c: "0601B51100", d: "GCM 18V-254 D Ingleteadora Inalámbrica [Bare Tool]"},
-            {c: "0601B440K0", d: "GTS 18V-216 SIERRA DE MESA BITURBO [Bare Tool]"},
-            {c: "06015B30E1", d: "GST 185-LI Sierra Caladora [Bare Tool]"},
-            {c: "06016C00E0", d: "GSA 185-LI Sierra Sable"},
-            {c: "06016A1001", d: "GKS 12V-26 Sierra Circular [Bare Tool]"},
-            {c: "06019E3000", d: "GAS 12V-LI Aspiradora Inalámbrica [Bare Tool]"},
-            {c: "06013A50E0", d: "GEX 185-LI Lijadora Roto orbital [Bare Tool]"},
-            {c: "06018G20D0", d: "GOP 185-LI Multicortadora [Bare Tool]"},
-            {c: "06012A6580", d: "GHG 18V-50 Pistola de calor [Bare Tool]"},
-            {c: "06014A1100", d: "GLI 18V-300 Linterna [Bare Tool]"},
-            {c: "06012C10H0", d: "GBS 750 Lijadora de banda"},
-            {c: "06013A80H0", d: "GEX 125 Lijadora Excéntrica 5\""},
-            {c: "06012A80H1", d: "GSS 140 Lijadora Orbital"},
-            {c: "06019G80H0", d: "GSR 120-LI Taladro/Atornillador (2 bat)"},
-            {c: "06019F60H0", d: "GSR 12V-15 FC FlexiClick (2 bat)"},
-            {c: "06011B50H0", d: "GSB 450 Taladro Percutor"},
-            {c: "06011B60H0", d: "GSB 550 Taladro Percutor"},
-            {c: "06012B80H0", d: "GSB 13 RE Taladro Percutor"},
-            {c: "06012B90H0", d: "GSB 16 RE Taladro Percutor"},
-            {c: "06019K91H0", d: "GSB 183-LI Taladro Percutor (2 bat)"},
-            {c: "06019G91H0", d: "GSB 12V-30 Taladro Percutor (2 bat)"},
-            {c: "06019K31H0", d: "GSB 185-LI Taladro Percutor (2 bat)"},
-            {c: "06019N31H5", d: "GSB 18V-65 Taladro Percutor (2 bat)"},
-            {c: "06019K61H1", d: "GSB 18V-90 C Taladro Percutor (2 bat)"},
-            {c: "06019J51E0", d: "GSB 18V-150 C Taladro Percutor [Bare Tool]"},
-            {c: "06012831H1", d: "GVC 22 EX Vibrador de concreto"},
-            {c: "0600910CH0", d: "GHP 180 Hidrolavadora 1800 PSI"},
-            {c: "0600910EH0", d: "GHP 220 Hidrolavadora 2200 PSI"},
-            {c: "06019K10E0", d: "Pro Pruner Tijera de podar 12V"},
-            {c: "06008D0000", d: "GRT 18V-33 Podadora césped inalámbrica"},
-            {c: "06008D1000", d: "GFR 18V-23 Desbrozadora inalámbrica"},
-            {c: "06008D20E0", d: "GBL 18V-750 Soplador inalámbrico"},
-            {c: "06008C9000", d: "GHE 18V-60 Cortacercos inalámbrico"},
-            {c: "06008D3000", d: "GKE 18V-40 Motosierra inalámbrica"},
-            {c: "0601.072.XG0", d: "GLM 30-23 Medidor láser 30m"},
-            {c: "0601.072.RG0", d: "GLM 50-12 Medidor Láser 50m"},
+            {c: "06019K30H0", d: "GSR 185-LI Taladro Atornillador"},
+            {c: "06019K70H0", d: "GTB 185-LI Atornillador Drywall"},
             {c: "0601.072.UH0", d: "GLM 50-27 CG Medidor Láser Verde"},
-            {c: "0601.074.000", d: "GWM 32 Odómetro"},
-            {c: "0601.065.220", d: "GLL 12-22 Nivel Laser"},
-            {c: "0601.066.J00", d: "GCL 2-15 G Nivel Láser Verde + Kit"},
-            {c: "0601.063.S00", d: "GLL 3-80 Nivel Láser 3 líneas"},
-            {c: "0601.065.500", d: "GLL 80-33 G Nivel Láser"},
-            {c: "0601.061.600", d: "GRL 250 HV Nivel Láser Rotativo"},
-            {c: "0601.068.000", d: "GOL 26 D Nivel Óptico"},
-            {c: "0601.083.300", d: "GIS 1000 C Medidor de Temperatura"},
-            {c: "0601.241.500", d: "GIC 12V 4-23 C Cámara de inspección"},
-            {c: "0601.096.B00", d: "BT 150 Trípode"},
+            {c: "1600A028U0", d: "GAL 18V-40 Cargador Batería"},
 
-            // --- LISTA 4: ELECTRODOS (CONARCO / ESAB) ---
-            {c: "303401", d: "CONARCO 10 2,50 MM 30 KG (AWS E6010)"},
-            {c: "303405", d: "CONARCO 10 3,25 MM 30 KG (AWS E6010)"},
-            {c: "303431", d: "CONARCO 11 2,50 MM 30 KG (AWS E6011)"},
-            {c: "303433", d: "CONARCO 11 3,25 MM 30 KG (AWS E6011)"},
-            {c: "303456", d: "CONARCO 12D 2,50 MM 30 KG (AWS E6012)"},
-            {c: "303599", d: "CONARCO 24 3,25 MM 30 KG (AWS E7024)"},
-            {c: "303461", d: "CONARCO 13A 2,00 MM 30 KG (AWS E6013)"},
+            // --- ELECTRODOS (CONARCO) ---
             {c: "303468", d: "CONARCO 13A 2,50 MM 30 KG (AWS E6013)"},
             {c: "303481", d: "CONARCO 13A 3,25 MM 30 KG (AWS E6013)"},
-            {c: "303493", d: "CONARCO 13A 4,00 MM 30 KG (AWS E6013)"},
-            {c: "303503", d: "CONARCO 13A 5,00 MM 30 KG (AWS E6013)"},
-            {c: "303511", d: "CONARCO 15 2,50 MM 30 KG (AWS E7015)"},
-            {c: "303519", d: "CONARCO 16 2,50 MM 30 KG (AWS E7016)"},
-            {c: "303530", d: "CONARCO 18 2,50 MM 30 KG (AWS E7018-1)"},
             {c: "303533", d: "CONARCO 18 3,25 MM 30 KG (AWS E7018-1)"},
-            {c: "303535", d: "CONARCO 18 4,00 MM 30 KG (AWS E7018-1)"},
-            {c: "303537", d: "CONARCO 18 5,00 MM 30 KG (AWS E7018-1)"},
-            {c: "733771", d: "OK 74.55 2,50 MM 15 KG (AWS E7018-A1)"},
-            {c: "733772", d: "OK 74.55 3,25 MM 15 KG (AWS E7018-A1)"},
-            {c: "733782", d: "OK 76.18 2,50 MM 15 KG (AWS 8018-B2)"},
-            {c: "734482", d: "ATOM ARC 8018-C1 2,4 MM 22 KG"},
-            {c: "733774", d: "OK 75.60 2,50 MM 15 KG (AWS E9018-M)"},
-            {c: "728280", d: "OK 73.03 2,50 MM 15 KG (AWS E7018-W1)"},
-            {c: "716145", d: "PIPEWELD 8010 3,20 MM 20 KG"},
-            {c: "741271", d: "PIPEWELD 7010 PLUS 3,25 MM 20 KG"},
-            {c: "737340", d: "OK 83.65 3,25 MM 15KG (Recargue Duro)"},
-            {c: "303757", d: "CONARCROM 350 3,25 MM 20 KG"},
-            {c: "303768", d: "CONARCROM 600 2,50 MM 20 KG"},
-            {c: "303769", d: "CONARCROM 600 3,25 MM 20 KG"},
-            {c: "303966", d: "CONARCO NIMANG 4,00 MM 20 KG"},
-            {c: "729182", d: "OK 67.16 4,00 MM 10 KG (INOX E310)"},
-            {c: "729186", d: "OK 63.30 4,00 MM 10 KG (INOX E316L)"},
-            {c: "729207", d: "OK 67.45 3,25 MM 8KG (Disímiles E307)"},
-            {c: "309231", d: "CONARCO 308L 2,00 MM 20 KG"},
-            {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG"},
-            {c: "309234", d: "CONARCO 309L 2,50 MM 20 KG"},
-            {c: "309237", d: "CONARCO 310 3,25 MM 20 KG"},
-            {c: "309240", d: "CONARCO 316L 2,00 MM 20 KG"},
-            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (Fundición)"},
-            {c: "309246", d: "CONARCO NI100 2,50 MM 20 KG"},
-            {c: "716079", d: "CONAL 2,50 MM 8 KG (Aluminio)"},
-            {c: "752530", d: "WELD 70S6 0,9MM 15KG (Alambre MIG)"},
-            {c: "303243", d: "OK ARISTOROD 12.50 0,90 MM 250 KG"},
-            {c: "303251", d: "OK AUTROD 12.51 0,9 MM 18 KG"},
-            {c: "310160", d: "AL COBR OK12.10 C/CAJA 2MM 30 KG (Arco Sum.)"},
-            {c: "749413", d: "TUBROD 75 1,20 MM 12,5 KG (Tubular)"},
-            {c: "749662", d: "WELD M 307 1,0 MM 15 KG (MIG Inox)"},
-            {c: "742426", d: "WELD M 308LSi 0,8 MM 15 KG"},
-            {c: "726208", d: "OK AUTROD 5356 0,9 MM 7 KG (MIG Aluminio)"},
-            {c: "719225", d: "OK TIGROD 12.60 1,60 MM 5 KG (Varilla TIG)"},
-            {c: "719211", d: "OK TIGROD 4043 1,6 MM 2,5 KG (TIG Aluminio)"},
-            {c: "716159", d: "OK FLUX 10.81 25 KG (Fundente)"},
-            {c: "303849", d: "LOSARC 11 2,50 MM 20 KG"},
-            {c: "310512", d: "ESAB 13 2,00 MM X 20 KG"},
-            {c: "310427", d: "ESAB 13 2,50 MM X 20 KG"},
-            {c: "752985", d: "WELD WEST 6013 2,50X350MM CX 5KG"},
-            {c: "752989", d: "WELD WEST 7018 3,25X350MM CX 4,5KG"},
+            {c: "309232", d: "CONARCO 308L 3,25 MM 20 KG (INOX)"},
+            {c: "309244", d: "CONARCO NI55 3,25 MM 20 KG (FUNDICIÓN)"},
 
-            // --- LISTA 5: CALZADO ---
-            {c: "FUNCIONAL", d: "LANDER Zapato (Beige, Marron, Negro, Gris)"},
-            {c: "FUNCIONAL", d: "RANDER Botín (Gris, Marron)"},
-            {c: "FUNCIONAL", d: "CROSS Zapato (Negro)"},
-            {c: "FUNCIONAL", d: "TERRA Botín (Beige, Gris, Negro, Marron)"},
-            {c: "FUNCIONAL", d: "BRENT Borceguí (Gris, Marron)"},
-            {c: "FUNCIONAL", d: "STORM Borceguí (Marron)"},
-            {c: "FUNCIONAL", d: "TITANIUM Botín (Negro)"},
-            {c: "FUNCIONAL", d: "AURUM MGA Botín (Marron)"},
-            {c: "FUNCIONAL", d: "CROW Zapato (Blanco, Negro)"},
-            {c: "FUNCIONAL", d: "NIZA Zapato (Marron)"},
-            {c: "FUNCIONAL", d: "SILVER Zapato (Negro)"},
-            {c: "FUNCIONAL", d: "COBRA Botín (Blanco, Marron, Negro)"},
-            {c: "FUNCIONAL", d: "IRON 2 Zapato (Negro)"},
-            {c: "FUNCIONAL", d: "STEEL Botín (Negro, Marron)"},
-            {c: "FUNCIONAL", d: "DRILL Bota (Marron)"},
-            {c: "FUNCIONAL", d: "BRONZ Borceguí (Marron)"},
-            {c: "FUNCIONAL", d: "KUPRA Botín (Marron)"},
-            {c: "FUNCIONAL", d: "BARREL Bota (Marron)"},
-            {c: "FUNCIONAL", d: "TRACKER Borceguí (Marron)"},
-            {c: "MICHELIN", d: "EXPLORER Botín (Marron, Verde, Gris, Negro)"},
-            {c: "MICHELIN", d: "TANKER Bota (Marron, Negro)"},
-            {c: "MICHELIN", d: "HIKER Zapato (Negro, Gris, Azul, Marron, Verde)"},
-            {c: "MICHELIN", d: "SHELTER GTX Borceguí (Marron, Gris)"},
-            {c: "MICHELIN", d: "RISER Borceguí (Verde, Marron)"},
-            {c: "MICHELIN", d: "BOLT GTX Botín (Marron, Gris)"},
-            {c: "ULTRALIV.", d: "BOUND Zapato (Marron, Negro)"},
-            {c: "ULTRALIV.", d: "STREET Botín (Marron, Camel, Negro, Vison)"},
-            {c: "ULTRALIV.", d: "CITY Zapato (Marron, Camel, Negro, Vison)"},
-            {c: "ULTRALIV.", d: "TRACER Botín (Marron, Negro)"},
-            {c: "ULTRALIV.", d: "SOUL Zapato (Azul, Gris, Negro)"},
-            {c: "MUJER", d: "BALI Botín (Gris, Negro, Beige)"},
-            {c: "MUJER", d: "CAPRI Botín (Beige, Gris, Negro)"},
-            {c: "MUJER", d: "MAUI Zapato (Gris, Negro, Azul)"},
-            {c: "CAUCHO", d: "3002 Botín Marron"},
-            {c: "CAUCHO", d: "3901 Borceguí Negro/Marron"},
-            {c: "VORAN", d: "ENERGY 470/510/810/741 Sport Safe"},
-            {c: "VORAN", d: "ENERGY 770/441/410/610 Sport Safe"},
-            {c: "VORAN", d: "APOLO Botín (Negro, Marron)"},
-            {c: "VORAN", d: "ARGOS Botín (Marron, Negro, Blanco)"},
-            {c: "VORAN", d: "ARES Borceguí (Marron, Negro)"},
-            {c: "VORAN", d: "AQUILES Botín (Blanco, Negro)"},
-            {c: "VORAN", d: "ATTACK Zapato (Negro, Marron)"},
-            {c: "VORAN", d: "BREAK Zapato (Azul, Marron, Gris, Negro)"},
-            
-            // --- LISTA 6: OTROS ---
-            {c: "VISUAL", d: "ANTEOJO ECO LINE HC TRANSPARENTE/GRIS"},
-            {c: "VISUAL", d: "ANTEOJO ECO LINE HC AMARILLO"},
-            {c: "VISUAL", d: "ANTEOJO ARGON HC/AF TRANSPARENTE/GRIS"},
-            {c: "VISUAL", d: "ANTIPARRA NEW CLASSIC / AVIATOR"},
-            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO QUANTUM DISPENSER"},
-            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO L-320 VINCHA/CASCO"},
-            {c: "AUDITIVO", d: "PROTECTOR AUDITIVO L-340 VINCHA/CASCO"},
-            {c: "FACIAL", d: "SOPORTE PROT FACIAL ARNES CREMALLERA/ESTANDAR"},
-            {c: "FACIAL", d: "FACIAL BURBUJA/PLANO TRANSP/GRIS"},
-            {c: "CRANEANA", d: "CASCO MILENIUM CLASS S/V BLANCO/AMARILLO"},
-            {c: "CRANEANA", d: "ARNES MILENIUM CREMALLERA/PLASTICO"},
-            {c: "SOLDADURA", d: "MASCARA SOLDADOR STRONG WELDER 500"},
-            {c: "ACCESORIOS", d: "MENTONERA GANCHO C / TEXTIL"},
-            {c: "VISUAL", d: "ANTEOJOS ATHOS ESPEJADOS, CHERRY, BLUE"},
-            {c: "221023E", d: "Guante Vaqueta Elast. Talle 8 Eco"},
-            {c: "221024E", d: "Guante Vaqueta Elast. Talle 9 Eco"},
-            {c: "DPS811093E", d: "Guante Algodon Moteado T8 Economico"},
-            {c: "DPS72091", d: "Guante Nitrilo Descartable Caja x100"},
-            {c: "DPS16123", d: "Guante Nitrilo Liviano Baño Completo Amarillo"},
-            {c: "UCU0001PV", d: "Cono PE Base Goma 50cm Rígido 1 Banda"},
-            {c: "UCU0002PV", d: "Cono PE Base Goma 75cm Rígido 2 Bandas"},
-            {c: "NUB5702", d: "Traje de lluvia Jardinero Amarillo Premium"}
+            // --- CALZADO ---
+            {c: "FUNCIONAL", d: "LANDER Zapato (Beige, Marron, Negro)"},
+            {c: "FUNCIONAL", d: "TERRA Botín (Beige, Gris, Negro)"},
+            {c: "MICHELIN", d: "EXPLORER Botín (Marron, Verde, Negro)"},
+            {c: "VORAN", d: "ENERGY 410 / 510 / 810 Sport Safe"},
+            {c: "VORAN", d: "APOLO / ARGOS / AQUILES Flex"},
+
+            // --- GUANTES ---
+            {c: "ANIT 01", d: "Guante Acrilo Nitrilo Flocado"},
+            {c: "GN16", d: "Guante Anticorte Nivel 5 c/Refuerzo"},
+            {c: "GD11 M", d: "Guante Soldador Algodon Marron"},
+            {c: "DPS72091", d: "Guante Nitrilo Descartable x100"},
+            {c: "221023E", d: "Guante Vaqueta Elastizado T8 Eco"}
         ];
 
         let carrito = [];
         function render(lista) {
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
-            // Renderizamos un máximo de 100 items iniciales para no trabar el navegador si la lista es gigante
-            const max = lista.length > 200 ? 200 : lista.length;
+            // Limite de visualización inicial para rendimiento
+            const max = lista.length > 300 ? 300 : lista.length;
             
             for(let i=0; i<max; i++) {
                 const item = lista[i];
@@ -382,17 +238,11 @@
         }
 
         function agregar(idx, desc) {
-            // Buscamos el input correcto (cuidado con el índice al filtrar)
-            // En una app real usaríamos IDs únicos, aquí usaremos el valor del input renderizado
             const inputPrice = document.getElementById(`p-${idx}`).value;
             const p = parseFloat(inputPrice);
-            
             if(!p || p <= 0) return alert("Ingrese un precio válido");
-            
             carrito.push({ desc, p, q: 1 });
             actualizarTabla();
-            
-            // Limpiar input visual
             document.getElementById(`p-${idx}`).value = '';
         }
 
