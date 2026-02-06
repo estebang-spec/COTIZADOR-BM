@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cotizador Maestro - Buloneria Mitre SRL</title>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     
@@ -20,10 +19,17 @@
         
         .container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
         
+        /* ZONA DE CARGA DE LOGOS */
+        .config-logos { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+        .logo-upload-box { flex: 1; min-width: 200px; }
+        .logo-upload-box label { font-weight: bold; display: block; margin-bottom: 5px; }
+        .preview-img { max-height: 50px; margin-top: 10px; border: 1px solid #ccc; display: none; }
+        .btn-reset { background: #666; color: white; border: none; padding: 5px 10px; cursor: pointer; font-size: 10px; margin-top: 5px; border-radius: 3px; }
+
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; box-sizing: border-box; }
         
-        .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 600px; margin-bottom: 20px; }
+        .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 500px; margin-bottom: 20px; }
         .tabla-scroll { flex-grow: 1; overflow-y: auto; }
         
         .fila { display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
@@ -54,7 +60,6 @@
         .controles { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
         .btn-pdf { background: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .btn-pdf:hover { background: #218838; }
-        .btn-pdf:active { background: #1e7e34; }
 
         @media (max-width: 768px) {
             .fila, .fila-header, .manual-grid { grid-template-columns: 1fr; gap: 5px; }
@@ -75,6 +80,25 @@
     </header>
 
     <div class="container">
+        
+        <section class="config-logos">
+            <div class="logo-upload-box">
+                <label>1. Cargar Logo BM (Izquierda):</label>
+                <input type="file" id="input-bm" accept="image/*" onchange="cargarLogo('bm')">
+                <img id="preview-bm" class="preview-img" alt="Vista previa BM">
+                <button onclick="borrarLogo('bm')" class="btn-reset">Borrar</button>
+            </div>
+            <div class="logo-upload-box">
+                <label>2. Cargar Logo ISO (Derecha):</label>
+                <input type="file" id="input-iso" accept="image/*" onchange="cargarLogo('iso')">
+                <img id="preview-iso" class="preview-img" alt="Vista previa ISO">
+                <button onclick="borrarLogo('iso')" class="btn-reset">Borrar</button>
+            </div>
+            <div style="width: 100%; font-size: 11px; color: #666; margin-top: 5px;">
+                * Selecciona tus imágenes una sola vez. El sistema las recordará para la próxima.
+            </div>
+        </section>
+
         <section class="search-section">
             <h2 style="margin:0 0 10px 0; font-size: 18px;">Buscador de Artículos</h2>
             <input type="text" id="buscador" placeholder="Busque por código, marca o descripción..." onkeyup="filtrar()">
@@ -124,17 +148,58 @@
     </div>
 
     <script>
-        // =========================================================================
-        // === IMÁGENES INCRUSTADAS (NO TOCAR) ===
-        // =========================================================================
-        
-        // Uso ` (comillas invertidas) para evitar errores si hay saltos de línea
-        const LOGO_BM_BASE64 = `data:image/png;base64,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`;
-        
-        const LOGO_ISO_BASE64 = `data:image/png;base64,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`;
+        // --- GESTIÓN DE LOGOS (localStorage) ---
+        let logoBmBase64 = localStorage.getItem('logo_bm_data') || "";
+        let logoIsoBase64 = localStorage.getItem('logo_iso_data') || "";
 
-        // =========================================================================
+        // Mostrar previsualización si ya existen
+        if(logoBmBase64) {
+            document.getElementById('preview-bm').src = logoBmBase64;
+            document.getElementById('preview-bm').style.display = 'block';
+        }
+        if(logoIsoBase64) {
+            document.getElementById('preview-iso').src = logoIsoBase64;
+            document.getElementById('preview-iso').style.display = 'block';
+        }
 
+        function cargarLogo(tipo) {
+            const input = document.getElementById(tipo === 'bm' ? 'input-bm' : 'input-iso');
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                if(tipo === 'bm') {
+                    logoBmBase64 = base64;
+                    localStorage.setItem('logo_bm_data', base64);
+                    document.getElementById('preview-bm').src = base64;
+                    document.getElementById('preview-bm').style.display = 'block';
+                } else {
+                    logoIsoBase64 = base64;
+                    localStorage.setItem('logo_iso_data', base64);
+                    document.getElementById('preview-iso').src = base64;
+                    document.getElementById('preview-iso').style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function borrarLogo(tipo) {
+            if(tipo === 'bm') {
+                logoBmBase64 = "";
+                localStorage.removeItem('logo_bm_data');
+                document.getElementById('preview-bm').style.display = 'none';
+                document.getElementById('input-bm').value = "";
+            } else {
+                logoIsoBase64 = "";
+                localStorage.removeItem('logo_iso_data');
+                document.getElementById('preview-iso').style.display = 'none';
+                document.getElementById('input-iso').value = "";
+            }
+        }
+
+        // --- DATOS PRODUCTOS ---
         const ARTICULOS = [
             {c: "NORTON", d: "Papel de Enmascar 12x50000"}, {c: "NORTON", d: "Papel de Enmascar 15x50000"}, {c: "NORTON", d: "Papel de Enmascar 18x50000"}, {c: "NORTON", d: "Papel de Enmascar 24x50000"}, {c: "NORTON", d: "Papel de Enmascar 36x40000"}, {c: "NORTON", d: "Papel de Enmascar 48x40000"},
             {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 250gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 140gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 250gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 140gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 250gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 140gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 140gr"}, {c: "TEK BOND", d: "TEK LUB Lubricante 300ml"}, {c: "TEK BOND", d: "Grafito Seco 200ml"}, {c: "TEK BOND", d: "Limpia Contacto 300ml"}, {c: "TEK BOND", d: "Grasa Lubricante 300ml"}, {c: "TEK BOND", d: "Vaselina Hidro 300ml"}, {c: "TEK BOND", d: "Limpia Aire Acond 300ml"}, {c: "TEK BOND", d: "Espuma Limpia Todo 400ml"}, {c: "TEK BOND", d: "Silicona Liquida 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 500ml"}, {c: "TEK BOND", d: "Espuma Expansiva 750ml"}, {c: "TEK BOND", d: "Adhesivo Inst 3x1g"}, {c: "TEK BOND", d: "Adhesivo Inst 2g"}, {c: "TEK BOND", d: "Adhesivo Inst 5g"}, {c: "TEK BOND", d: "Adhesivo Inst 12x2g"}, {c: "TEK BOND", d: "Adhesivo Inst 3g Gel"}, {c: "TEK BOND", d: "Pegamento Facil Agua Pomo 140"}, {c: "TEK BOND", d: "Pegamento Facil Agua Cartucho 420"}, {c: "TEK BOND", d: "Cola de Contacto 30g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 25g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 51g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 85g"}, {c: "TEK BOND", d: "Adhesivo Universal Pomo Blister 17g"}, {c: "TEK BOND", d: "Cola Blanca PVA 500g"}, {c: "TEK BOND", d: "Cola Blanca PVA 1kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 10kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 20kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 50kg"}, {c: "TEK BOND", d: "Cola Madera Frasco 100g"}, {c: "TEK BOND", d: "Cola Madera Frasco 250g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 50g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 256g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 270g OFERTA"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 280g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 50g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 280g"}, {c: "TEK BOND", d: "Silicona Acetica Gris 280g"}, {c: "TEK BOND", d: "Silicona Acetica Negra 280g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 280g"}, {c: "TEK BOND", d: "Silicona Neutra Transparente 280g"}, {c: "TEK BOND", d: "Silicona Neutra Blanco 280g"}, {c: "TEK BOND", d: "Silicona Neutra Gris 280g"}, {c: "TEK BOND", d: "Silicona Neutra Negro 280g"}, {c: "TEK BOND", d: "Adhesivo Acrilico 425g"}, {c: "TEK BOND", d: "PU FIX Cartucho Gris 387g"}, {c: "TEK BOND", d: "Veda Calha Transparente 280g"}, {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
@@ -154,12 +219,11 @@
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
             
-            // Limitamos a renderizar los primeros 300 para no saturar si son muchos
-            const itemsToShow = lista.length > 300 ? lista.slice(0, 300) : lista;
+            // Limitamos para rendimiento
+            const mostrar = lista.length > 300 ? lista.slice(0, 300) : lista;
 
-            itemsToShow.forEach((item, i) => {
-                // Generar ID único
-                const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 10000);
+            mostrar.forEach((item, i) => {
+                const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 1000);
                 cont.innerHTML += `<div class="fila">
                     <div class="code">${item.c}</div>
                     <div class="desc">${item.d}</div>
@@ -252,10 +316,10 @@
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
 
-                    // --- LOGOS ---
+                    // --- LOGOS DESDE VARIABLES DINÁMICAS ---
                     try {
-                        if(LOGO_BM_BASE64) doc.addImage(LOGO_BM_BASE64, 'PNG', 10, 10, 60, 25);
-                        if(LOGO_ISO_BASE64) doc.addImage(LOGO_ISO_BASE64, 'PNG', 170, 10, 25, 25);
+                        if(logoBmBase64) doc.addImage(logoBmBase64, 'PNG', 10, 10, 60, 25);
+                        if(logoIsoBase64) doc.addImage(logoIsoBase64, 'PNG', 170, 10, 25, 25);
                     } catch(e) { console.log("Error imagen", e); }
 
                     // LINEA ROJA
