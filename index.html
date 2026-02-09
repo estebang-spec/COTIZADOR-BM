@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador Maestro - Multiempresa</title>
+    <title>Cotizador Maestro - Buloneria Mitre SRL</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="alert('Error al cargar librería jsPDF. Revisa tu conexión.')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js" onerror="alert('Error al cargar librería AutoTable.')"></script>
     
     <style>
         :root { --primary: #000; --accent: #e51f1f; --bg: #f4f4f4; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); font-size: 13px; }
         
-        /* CABECERA DINÁMICA */
         header { background: white; border-bottom: 5px solid var(--accent); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
         
@@ -29,11 +28,10 @@
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; box-sizing: border-box; }
         
-        /* TABLA DE PRECIOS CON COLUMNA CANTIDAD */
         .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 500px; margin-bottom: 20px; }
         .tabla-scroll { flex-grow: 1; overflow-y: auto; }
         
-        /* GRILLA: Código | Desc | Precio | Cant | Boton */
+        /* GRILLA */
         .fila { display: grid; grid-template-columns: 140px 1fr 100px 60px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
         .fila:hover { background-color: #e9ecef; }
         .fila-header { background: #333; color: white; font-weight: bold; padding: 10px 15px; font-size: 12px; text-transform: uppercase; display: grid; grid-template-columns: 140px 1fr 100px 60px 80px; gap: 10px; z-index: 10; }
@@ -70,6 +68,11 @@
             .empresa-selector, .info-dinamica { text-align: center; }
         }
     </style>
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("⚠️ Error detectado:\n" + message + "\nLínea: " + lineno);
+        };
+    </script>
 </head>
 <body>
 
@@ -83,8 +86,7 @@
                     <option value="mitre">BULONERIA MITRE SRL</option>
                     <option value="mineria">BM MINERIA SALTA S.A.S.</option>
                 </select>
-                <div id="info-pantalla" class="info-dinamica">
-                    </div>
+                <div id="info-pantalla" class="info-dinamica"></div>
             </div>
         </div>
     </header>
@@ -141,7 +143,19 @@
     </div>
 
     <script>
-        // --- BASE DE DATOS DE EMPRESAS ---
+        // =========================================================================
+        // === ZONA DE IMÁGENES (CÓDIGOS BASE64) ===
+        // =========================================================================
+        
+        // Pega el código de BM entre las comillas invertidas ` `
+        const LOGO_BM_BASE64 = ``; 
+        
+        // Pega el código de ISO entre las comillas invertidas ` `
+        const LOGO_ISO_BASE64 = ``; 
+
+        // =========================================================================
+
+        // DATOS DE LAS EMPRESAS
         const DATOS_EMPRESAS = {
             mitre: {
                 nombre: "BM GROUP - BULONERIA MITRE SRL",
@@ -164,10 +178,9 @@
             div.innerHTML = `<strong>${datos.cuit}</strong><br>${datos.direccion1}<br>${datos.direccion2}`;
         }
         
-        // Iniciar con la info correcta en pantalla
         actualizarInfoPantalla();
 
-        // --- ARTÍCULOS ---
+        // ARTÍCULOS
         const ARTICULOS = [
             {c: "NORTON", d: "Papel de Enmascar 12x50000"}, {c: "NORTON", d: "Papel de Enmascar 15x50000"}, {c: "NORTON", d: "Papel de Enmascar 18x50000"}, {c: "NORTON", d: "Papel de Enmascar 24x50000"}, {c: "NORTON", d: "Papel de Enmascar 36x40000"}, {c: "NORTON", d: "Papel de Enmascar 48x40000"},
             {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 250gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 140gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 250gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 140gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 250gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 140gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 140gr"}, {c: "TEK BOND", d: "TEK LUB Lubricante 300ml"}, {c: "TEK BOND", d: "Grafito Seco 200ml"}, {c: "TEK BOND", d: "Limpia Contacto 300ml"}, {c: "TEK BOND", d: "Grasa Lubricante 300ml"}, {c: "TEK BOND", d: "Vaselina Hidro 300ml"}, {c: "TEK BOND", d: "Limpia Aire Acond 300ml"}, {c: "TEK BOND", d: "Espuma Limpia Todo 400ml"}, {c: "TEK BOND", d: "Silicona Liquida 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 500ml"}, {c: "TEK BOND", d: "Espuma Expansiva 750ml"}, {c: "TEK BOND", d: "Adhesivo Inst 3x1g"}, {c: "TEK BOND", d: "Adhesivo Inst 2g"}, {c: "TEK BOND", d: "Adhesivo Inst 5g"}, {c: "TEK BOND", d: "Adhesivo Inst 12x2g"}, {c: "TEK BOND", d: "Adhesivo Inst 3g Gel"}, {c: "TEK BOND", d: "Pegamento Facil Agua Pomo 140"}, {c: "TEK BOND", d: "Pegamento Facil Agua Cartucho 420"}, {c: "TEK BOND", d: "Cola de Contacto 30g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 25g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 51g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 85g"}, {c: "TEK BOND", d: "Adhesivo Universal Pomo Blister 17g"}, {c: "TEK BOND", d: "Cola Blanca PVA 500g"}, {c: "TEK BOND", d: "Cola Blanca PVA 1kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 10kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 20kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 50kg"}, {c: "TEK BOND", d: "Cola Madera Frasco 100g"}, {c: "TEK BOND", d: "Cola Madera Frasco 250g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 50g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 256g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 270g OFERTA"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 280g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 50g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 280g"}, {c: "TEK BOND", d: "Silicona Acetica Gris 280g"}, {c: "TEK BOND", d: "Silicona Acetica Negra 280g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 280g"}, {c: "TEK BOND", d: "Silicona Neutra Transparente 280g"}, {c: "TEK BOND", d: "Silicona Neutra Blanco 280g"}, {c: "TEK BOND", d: "Silicona Neutra Gris 280g"}, {c: "TEK BOND", d: "Silicona Neutra Negro 280g"}, {c: "TEK BOND", d: "Adhesivo Acrilico 425g"}, {c: "TEK BOND", d: "PU FIX Cartucho Gris 387g"}, {c: "TEK BOND", d: "Veda Calha Transparente 280g"}, {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
@@ -187,21 +200,17 @@
             const cont = document.getElementById('contenedor-items');
             cont.innerHTML = '';
             
-            // Limitamos a renderizar los primeros 300 para no saturar si son muchos
-            // (Si son miles, mejor paginar, pero por ahora limitamos para seguridad)
-            const itemsToShow = lista.length > 300 ? lista.slice(0, 300) : lista;
+            // Limitamos para rendimiento (renderizar todo puede bloquear el navegador)
+            const mostrar = lista.length > 500 ? lista.slice(0, 500) : lista;
 
-            itemsToShow.forEach((item, i) => {
-                // Generar ID único
-                const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 10000);
-                // Nuevo campo cantidad
-                const uniqueIdCant = "cant-" + i + "-" + Math.floor(Math.random() * 10000);
-                
+            mostrar.forEach((item, i) => {
+                const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 1000);
+                const uniqueIdCant = "cant-" + i + "-" + Math.floor(Math.random() * 1000);
                 cont.innerHTML += `<div class="fila">
                     <div class="code">${item.c}</div>
                     <div class="desc">${item.d}</div>
                     <div><input type="number" id="${uniqueId}" placeholder="0.00"></div>
-                    <div><input type="number" id="${uniqueIdCant}" placeholder="1" value="1" style="width: 50px;"></div>
+                    <div><input type="number" id="${uniqueIdCant}" value="1" style="width: 50px;"></div>
                     <div><button class="btn-add" onclick="agregar('${item.d}', '${uniqueId}', '${uniqueIdCant}')">Añadir</button></div>
                 </div>`;
             });
@@ -230,7 +239,6 @@
             carrito.push({ desc, p, q: q || 1 });
             actualizarTabla();
             
-            // Limpiar inputs
             inputPrecio.value = '';
             inputCant.value = '1';
         }
@@ -243,7 +251,6 @@
             if(!desc) return alert("Ingrese una descripción");
             if(!p || p <= 0) return alert("Ingrese un precio válido");
 
-            // Ya NO se agrega " (MANUAL)" al final
             carrito.push({ desc: desc, p, q: q || 1 });
             actualizarTabla();
 
@@ -294,8 +301,7 @@
                 
                 const nombreArchivo = cliInput.replace(/[^a-z0-9]/gi, '_').toUpperCase();
 
-                // Intentar cargar jsPDF
-                if(!window.jspdf) throw new Error("La librería PDF no se cargó correctamente.");
+                if(!window.jspdf) throw new Error("La librería PDF no se cargó correctamente. Verifique su conexión.");
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
 
@@ -326,12 +332,12 @@
                 
                 // Nombre Empresa
                 doc.setFont("helvetica", "bold");
-                doc.setFontSize(16);
+                doc.setFontSize(14);
                 doc.text(datosEmpresa.nombre, 105, 20, { align: "center" });
 
                 // Dirección y CUIT
                 doc.setFont("helvetica", "normal");
-                doc.setFontSize(10);
+                doc.setFontSize(9);
                 doc.setTextColor(80); // Gris oscuro
                 doc.text(datosEmpresa.direccion1, 105, 26, { align: "center" });
                 doc.text(datosEmpresa.direccion2 + " | " + datosEmpresa.cuit, 105, 31, { align: "center" });
@@ -376,7 +382,7 @@
                 doc.save(`Presupuesto_${nombreArchivo}.pdf`);
 
             } catch(err) {
-                alert("Hubo un error al generar el PDF: " + err.message);
+                alert("Hubo un error al generar el PDF:\n" + err.message);
                 console.error(err);
             }
         }
