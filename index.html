@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador Maestro - Buloneria Mitre SRL</title>
+    <title>Cotizador Maestro - Multiempresa</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -12,22 +12,31 @@
         :root { --primary: #000; --accent: #e51f1f; --bg: #f4f4f4; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); font-size: 13px; }
         
+        /* CABECERA DINÁMICA */
         header { background: white; border-bottom: 5px solid var(--accent); padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
-        .logo h1 { margin: 0; font-size: 24px; font-style: italic; font-weight: 900; letter-spacing: -1px; }
-        .logo span { color: var(--accent); }
-        .header-info { text-align: right; font-size: 11px; color: #444; line-height: 1.4; }
+        
+        .logo-area h1 { margin: 0; font-size: 24px; font-style: italic; font-weight: 900; letter-spacing: -1px; }
+        .logo-area span { color: var(--accent); }
+        
+        /* SELECTOR DE EMPRESA */
+        .empresa-selector { text-align: right; }
+        .empresa-selector select { padding: 8px; font-size: 14px; font-weight: bold; border: 2px solid var(--accent); border-radius: 4px; background: #fff; cursor: pointer; }
+        .info-dinamica { font-size: 11px; color: #444; margin-top: 5px; line-height: 1.3; text-align: right; }
         
         .container { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
+        
         .search-section { background: var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px; color: white; }
         #buscador { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 16px; outline: none; box-sizing: border-box; }
         
+        /* TABLA DE PRECIOS CON COLUMNA CANTIDAD */
         .card-lista { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; display: flex; flex-direction: column; height: 500px; margin-bottom: 20px; }
         .tabla-scroll { flex-grow: 1; overflow-y: auto; }
         
-        .fila { display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
+        /* GRILLA: Código | Desc | Precio | Cant | Boton */
+        .fila { display: grid; grid-template-columns: 140px 1fr 100px 60px 80px; gap: 10px; padding: 6px 15px; border-bottom: 1px solid #eee; align-items: center; }
         .fila:hover { background-color: #e9ecef; }
-        .fila-header { background: #333; color: white; font-weight: bold; padding: 10px 15px; font-size: 12px; text-transform: uppercase; display: grid; grid-template-columns: 140px 1fr 100px 80px; gap: 10px; z-index: 10; }
+        .fila-header { background: #333; color: white; font-weight: bold; padding: 10px 15px; font-size: 12px; text-transform: uppercase; display: grid; grid-template-columns: 140px 1fr 100px 60px 80px; gap: 10px; z-index: 10; }
         
         .code { color: #444; font-weight: bold; font-family: monospace; font-size: 12px; }
         .desc { font-weight: 500; }
@@ -57,6 +66,8 @@
         @media (max-width: 768px) {
             .fila, .fila-header, .manual-grid { grid-template-columns: 1fr; gap: 5px; }
             .card-lista { height: auto; max-height: 400px; }
+            .header-flex { flex-direction: column; gap: 10px; text-align: center; }
+            .empresa-selector, .info-dinamica { text-align: center; }
         }
     </style>
 </head>
@@ -64,11 +75,16 @@
 
     <header>
         <div class="header-flex">
-            <div class="logo"><h1>BM <span>GROUP</span></h1><small>Buloneria Mitre SRL</small></div>
-            <div class="header-info">
-                <strong>BM GROUP BULONERIA MITRE</strong><br>
-                Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294<br>
-                Mz B - Fracción A y B | Tel: 3816797611
+            <div class="logo-area"><h1>BM <span>GROUP</span></h1><small>Sistema de Cotización</small></div>
+            
+            <div class="empresa-selector">
+                <label style="font-size:10px; color:#666;">COTIZAR COMO:</label><br>
+                <select id="select-empresa" onchange="actualizarInfoPantalla()">
+                    <option value="mitre">BULONERIA MITRE SRL</option>
+                    <option value="mineria">BM MINERIA SALTA S.A.S.</option>
+                </select>
+                <div id="info-pantalla" class="info-dinamica">
+                    </div>
             </div>
         </div>
     </header>
@@ -85,6 +101,7 @@
                 <div>Código / Marca</div>
                 <div>Descripción Detallada</div>
                 <div>Precio Unit.</div>
+                <div>Cant.</div>
                 <div>Acción</div>
             </div>
             <div id="contenedor-items" class="tabla-scroll"></div>
@@ -95,7 +112,7 @@
             <div class="manual-section">
                 <div class="manual-title">+ AGREGAR ÍTEM MANUAL / FUERA DE LISTA</div>
                 <div class="manual-grid">
-                    <input type="text" id="man-desc" placeholder="Descripción del producto (Ej: Flete, Tornillo especial...)">
+                    <input type="text" id="man-desc" placeholder="Descripción del producto">
                     <input type="number" id="man-precio" placeholder="$ Precio Unit.">
                     <input type="number" id="man-cant" value="1" placeholder="Cant.">
                     <button class="btn-add" onclick="agregarManual()">AGREGAR</button>
@@ -124,18 +141,33 @@
     </div>
 
     <script>
-        // =========================================================================
-        // === ZONA DE IMÁGENES (SOLUCIÓN DEFINITIVA) ===
-        // Instrucción: Pega el texto que obtienes de la web ENTRE las comillas invertidas ` `
-        // IMPORTANTE: Asegúrate de que el código empiece con "data:image..."
-        // =========================================================================
-        
-        const LOGO_BM_BASE64 = `PEGAR_AQUI_CODIGO_BM`; 
-        
-        const LOGO_ISO_BASE64 = `PEGAR_AQUI_CODIGO_ISO`; 
+        // --- BASE DE DATOS DE EMPRESAS ---
+        const DATOS_EMPRESAS = {
+            mitre: {
+                nombre: "BM GROUP - BULONERIA MITRE SRL",
+                direccion1: "Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294",
+                direccion2: "Mz B - Fracción A y B | Tel: 3816797611",
+                cuit: "CUIT: 30-69179970-7"
+            },
+            mineria: {
+                nombre: "BM MINERIA SALTA S. A. S.",
+                direccion1: "RIVADAVIA 491 - SALTA",
+                direccion2: "4400 - SALTA",
+                cuit: "CUIT: 30-71882856-9"
+            }
+        };
 
-        // =========================================================================
+        function actualizarInfoPantalla() {
+            const key = document.getElementById('select-empresa').value;
+            const datos = DATOS_EMPRESAS[key];
+            const div = document.getElementById('info-pantalla');
+            div.innerHTML = `<strong>${datos.cuit}</strong><br>${datos.direccion1}<br>${datos.direccion2}`;
+        }
+        
+        // Iniciar con la info correcta en pantalla
+        actualizarInfoPantalla();
 
+        // --- ARTÍCULOS ---
         const ARTICULOS = [
             {c: "NORTON", d: "Papel de Enmascar 12x50000"}, {c: "NORTON", d: "Papel de Enmascar 15x50000"}, {c: "NORTON", d: "Papel de Enmascar 18x50000"}, {c: "NORTON", d: "Papel de Enmascar 24x50000"}, {c: "NORTON", d: "Papel de Enmascar 36x40000"}, {c: "NORTON", d: "Papel de Enmascar 48x40000"},
             {c: "TEK BOND", d: "AEROSOL Uso General 250gr/350ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Uso General 140gr/200ml OFERTA"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 250gr"}, {c: "TEK BOND", d: "AEROSOL Fluorescente 140gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 250gr"}, {c: "TEK BOND", d: "AEROSOL Alta Temp 140gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 250gr"}, {c: "TEK BOND", d: "AEROSOL Metalico 140gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 250gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 250gr"}, {c: "TEK BOND", d: "AEROSOL Barniz 140gr"}, {c: "TEK BOND", d: "AEROSOL Primer Fondo 140gr"}, {c: "TEK BOND", d: "TEK LUB Lubricante 300ml"}, {c: "TEK BOND", d: "Grafito Seco 200ml"}, {c: "TEK BOND", d: "Limpia Contacto 300ml"}, {c: "TEK BOND", d: "Grasa Lubricante 300ml"}, {c: "TEK BOND", d: "Vaselina Hidro 300ml"}, {c: "TEK BOND", d: "Limpia Aire Acond 300ml"}, {c: "TEK BOND", d: "Espuma Limpia Todo 400ml"}, {c: "TEK BOND", d: "Silicona Liquida 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 300ml"}, {c: "TEK BOND", d: "Espuma Expansiva 500ml"}, {c: "TEK BOND", d: "Espuma Expansiva 750ml"}, {c: "TEK BOND", d: "Adhesivo Inst 3x1g"}, {c: "TEK BOND", d: "Adhesivo Inst 2g"}, {c: "TEK BOND", d: "Adhesivo Inst 5g"}, {c: "TEK BOND", d: "Adhesivo Inst 12x2g"}, {c: "TEK BOND", d: "Adhesivo Inst 3g Gel"}, {c: "TEK BOND", d: "Pegamento Facil Agua Pomo 140"}, {c: "TEK BOND", d: "Pegamento Facil Agua Cartucho 420"}, {c: "TEK BOND", d: "Cola de Contacto 30g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 25g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 51g"}, {c: "TEK BOND", d: "Silicona Liquida Frasco 85g"}, {c: "TEK BOND", d: "Adhesivo Universal Pomo Blister 17g"}, {c: "TEK BOND", d: "Cola Blanca PVA 500g"}, {c: "TEK BOND", d: "Cola Blanca PVA 1kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 10kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 20kg"}, {c: "TEK BOND", d: "Cola Blanca PVA 50kg"}, {c: "TEK BOND", d: "Cola Madera Frasco 100g"}, {c: "TEK BOND", d: "Cola Madera Frasco 250g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 50g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 256g"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 270g OFERTA"}, {c: "TEK BOND", d: "Silicona Acetica Transparente 280g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 50g"}, {c: "TEK BOND", d: "Silicona Acetica Blanco 280g"}, {c: "TEK BOND", d: "Silicona Acetica Gris 280g"}, {c: "TEK BOND", d: "Silicona Acetica Negra 280g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 50g"}, {c: "TEK BOND", d: "Silicona Acetica Roja Alta Temp 280g"}, {c: "TEK BOND", d: "Silicona Neutra Transparente 280g"}, {c: "TEK BOND", d: "Silicona Neutra Blanco 280g"}, {c: "TEK BOND", d: "Silicona Neutra Gris 280g"}, {c: "TEK BOND", d: "Silicona Neutra Negro 280g"}, {c: "TEK BOND", d: "Adhesivo Acrilico 425g"}, {c: "TEK BOND", d: "PU FIX Cartucho Gris 387g"}, {c: "TEK BOND", d: "Veda Calha Transparente 280g"}, {c: "TEK BOND", d: "Veda Calha Aluminio 280g"},
@@ -156,15 +188,21 @@
             cont.innerHTML = '';
             
             // Limitamos a renderizar los primeros 300 para no saturar si son muchos
+            // (Si son miles, mejor paginar, pero por ahora limitamos para seguridad)
             const itemsToShow = lista.length > 300 ? lista.slice(0, 300) : lista;
 
             itemsToShow.forEach((item, i) => {
+                // Generar ID único
                 const uniqueId = "precio-" + i + "-" + Math.floor(Math.random() * 10000);
+                // Nuevo campo cantidad
+                const uniqueIdCant = "cant-" + i + "-" + Math.floor(Math.random() * 10000);
+                
                 cont.innerHTML += `<div class="fila">
                     <div class="code">${item.c}</div>
                     <div class="desc">${item.d}</div>
                     <div><input type="number" id="${uniqueId}" placeholder="0.00"></div>
-                    <div><button class="btn-add" onclick="agregar('${item.d}', '${uniqueId}')">Añadir</button></div>
+                    <div><input type="number" id="${uniqueIdCant}" placeholder="1" value="1" style="width: 50px;"></div>
+                    <div><button class="btn-add" onclick="agregar('${item.d}', '${uniqueId}', '${uniqueIdCant}')">Añadir</button></div>
                 </div>`;
             });
             
@@ -180,14 +218,21 @@
             render(filtered);
         }
 
-        function agregar(desc, idInput) {
-            const input = document.getElementById(idInput);
-            const p = parseFloat(input.value);
+        function agregar(desc, idInputPrecio, idInputCant) {
+            const inputPrecio = document.getElementById(idInputPrecio);
+            const inputCant = document.getElementById(idInputCant);
+            
+            const p = parseFloat(inputPrecio.value);
+            const q = parseInt(inputCant.value);
+            
             if(!p || p <= 0) return alert("Ingrese un precio válido");
             
-            carrito.push({ desc, p, q: 1 });
+            carrito.push({ desc, p, q: q || 1 });
             actualizarTabla();
-            input.value = '';
+            
+            // Limpiar inputs
+            inputPrecio.value = '';
+            inputCant.value = '1';
         }
 
         function agregarManual() {
@@ -198,7 +243,8 @@
             if(!desc) return alert("Ingrese una descripción");
             if(!p || p <= 0) return alert("Ingrese un precio válido");
 
-            carrito.push({ desc: desc + " (MANUAL)", p, q: q || 1 });
+            // Ya NO se agrega " (MANUAL)" al final
+            carrito.push({ desc: desc, p, q: q || 1 });
             actualizarTabla();
 
             document.getElementById('man-desc').value = '';
@@ -266,25 +312,31 @@
                     console.warn("No se pudieron cargar las imágenes (probablemente vacías o rotas). Generando sin logos.", e);
                 }
 
-                // LINEA ROJA Y DATOS EMPRESA ACTUALIZADOS
+                // OBTENER DATOS DE LA EMPRESA SELECCIONADA
+                const key = document.getElementById('select-empresa').value;
+                const datosEmpresa = DATOS_EMPRESAS[key];
+
+                // LINEA ROJA
                 doc.setDrawColor(229, 31, 31);
                 doc.setLineWidth(1);
                 doc.line(10, 40, 200, 40);
 
-                // TITULO EMPRESA (Negrita y más grande)
+                // --- HEADER DINÁMICO ---
+                doc.setTextColor(0, 0, 0); // Negro
+                
+                // Nombre Empresa
                 doc.setFont("helvetica", "bold");
                 doc.setFontSize(16);
-                doc.setTextColor(0, 0, 0); // Negro
-                doc.text("BM GROUP - BULONERIA MITRE SRL", 105, 20, { align: "center" });
+                doc.text(datosEmpresa.nombre, 105, 20, { align: "center" });
 
-                // DIRECCIÓN (Normal y más chico)
+                // Dirección y CUIT
                 doc.setFont("helvetica", "normal");
                 doc.setFontSize(10);
-                doc.setTextColor(100); // Gris oscuro
-                doc.text("Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294", 105, 26, { align: "center" });
-                doc.text("Mz B - Fracción A y B | Tel: 3816797611", 105, 31, { align: "center" });
+                doc.setTextColor(80); // Gris oscuro
+                doc.text(datosEmpresa.direccion1, 105, 26, { align: "center" });
+                doc.text(datosEmpresa.direccion2 + " | " + datosEmpresa.cuit, 105, 31, { align: "center" });
 
-                // DATOS CLIENTE
+                // --- DATOS CLIENTE ---
                 doc.setTextColor(0, 0, 0);
                 doc.setFontSize(12);
                 doc.setFont("helvetica", "bold");
