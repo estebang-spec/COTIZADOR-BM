@@ -86,6 +86,8 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .action-btns{display:flex;gap:8px;margin-top:12px;}
 .btn-pdf{flex:1;background:var(--green);color:#000;border:none;padding:11px;border-radius:7px;font-family:"Barlow Condensed",sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.5px;transition:opacity .2s;}
 .btn-pdf:hover{opacity:.85;}
+.btn-picking{flex:1;background:var(--blue);color:#fff;border:none;padding:11px;border-radius:7px;font-family:"Barlow Condensed",sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.5px;transition:opacity .2s;}
+.btn-picking:hover{opacity:.85;}
 .btn-clear{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:11px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;}
 .btn-clear:hover{border-color:#ef4444;color:#ef4444;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;}
@@ -226,7 +228,8 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         </div>
       </div>
       <div class="action-btns">
-        <button class="btn-pdf" onclick="generarPDF()">⬇ Descargar PDF</button>
+        <button class="btn-pdf" onclick="generarPDF()">⬇ Presupuesto</button>
+        <button class="btn-picking" onclick="generarPicking()">📋 Hoja de Picking</button>
         <button class="btn-clear" onclick="limpiarCarrito()">Limpiar</button>
       </div>
     </div>
@@ -8745,6 +8748,83 @@ async function generarPDF(){
   doc.text("Este presupuesto no constituye factura — BM GROUP",105,284,{align:'center'});
   doc.save(`Presupuesto_${nroPresupuesto}_${archivo}.pdf`);
   showToast('✓ PDF generado correctamente');
+}
+
+async function generarPicking(){
+  const cli=document.getElementById('cliente-nombre').value.trim();
+  if(!cli){showToast('Ingresá el nombre del cliente','#ef4444');return;}
+  if(carrito.length===0){showToast('El presupuesto está vacío','#ef4444');return;}
+  if(!window.jspdf){showToast('Error: librería PDF','#ef4444');return;}
+  const archivo=cli.replace(/[^a-z0-9]/gi,'_').toUpperCase();
+  const doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const emp=DATOS_EMPRESAS[document.getElementById('select-empresa').value];
+  const pago=document.getElementById('pago-cliente').value;
+  const R=[229,31,31],B=[10,10,10],G=[100,100,100],LG=[245,245,245];
+
+  // Header bar
+  doc.setFillColor(...R);doc.rect(0,0,210,5,'F');
+
+  // Empresa
+  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...B);doc.text(emp.nombre,105,15,{align:'center'});
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
+  doc.text(emp.dir1,105,20,{align:'center'});doc.text(emp.dir2+" | "+emp.cuit,105,24,{align:'center'});
+
+  // Título HOJA DE PICKING destacado
+  doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(14,28,196,28);
+  doc.setFillColor(229,31,31);doc.roundedRect(75,31,60,10,2,2,'F');
+  doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(255,255,255);
+  doc.text("HOJA DE PICKING",105,38,{align:'center'});
+
+  // Nro y fecha
+  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("N°:",14,37);
+  doc.setTextColor(...R);doc.setFontSize(10);doc.text(nroPresupuesto,22,37);
+  const hoy=new Date();
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
+  doc.text("Fecha: "+hoy.toLocaleDateString('es-AR'),150,35);
+
+  // Cliente box
+  doc.setFillColor(...LG);doc.roundedRect(14,44,182,12,2,2,'F');
+  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("CLIENTE:",17,50);
+  doc.setTextColor(...B);doc.setFontSize(10);doc.text(cli.toUpperCase(),36,50);
+  if(pago){doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Cond. Pago: "+pago.toUpperCase(),17,54);}
+
+  // Tabla SIN PRECIOS — con columna de tilde para picking
+  const rows=carrito.map(it=>[it.cod, it.desc, it.q, '']);
+  doc.autoTable({
+    startY:60,
+    head:[['Código','Descripción','Cant.','✓ Check']],
+    body:rows,
+    headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
+    columnStyles:{
+      0:{cellWidth:25,fontSize:7.5},
+      1:{fontSize:8.5},
+      2:{halign:'center',cellWidth:15,fontStyle:'bold'},
+      3:{halign:'center',cellWidth:20,textColor:[180,180,180]}
+    },
+    theme:'striped',
+    styles:{fontSize:8.5,cellPadding:3},
+    alternateRowStyles:{fillColor:[248,248,248]}
+  });
+
+  // Resumen abajo
+  const finalY=doc.lastAutoTable.finalY+8;
+  doc.setFillColor(...LG);doc.roundedRect(14,finalY,182,10,2,2,'F');
+  doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...G);
+  doc.text(`Total de artículos: ${carrito.reduce((s,it)=>s+it.q,0)} unidades en ${carrito.length} líneas`,105,finalY+6,{align:'center'});
+
+  // Firma depósito
+  const firmaY=finalY+22;
+  doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);
+  doc.line(20,firmaY,90,firmaY);doc.line(120,firmaY,190,firmaY);
+  doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);
+  doc.text("Preparado por",55,firmaY+4,{align:'center'});
+  doc.text("Recibido / Conforme",155,firmaY+4,{align:'center'});
+
+  doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
+  doc.text("Documento interno — NO incluye precios — BM GROUP",105,284,{align:'center'});
+
+  doc.save(`Picking_${nroPresupuesto}_${archivo}.pdf`);
+  showToast('✓ Hoja de Picking generada');
 }
 
 cargarPrecios();
