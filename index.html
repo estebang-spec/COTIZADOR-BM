@@ -30,6 +30,7 @@ body{font-family:"Barlow",sans-serif;background:var(--dark);color:var(--text);fo
 .user-chip strong{color:var(--text);}
 .btn-logout{background:transparent;border:none;color:var(--muted);padding:4px 8px;border-radius:5px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .2s;}
 .btn-logout:hover{color:#ef4444;}
+/* LAYOUT */
 header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px;position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;height:54px;gap:12px;}
 .logo{font-family:"Barlow Condensed",sans-serif;font-weight:900;font-size:20px;letter-spacing:1px;color:#fff;white-space:nowrap;}
 .logo span{color:var(--red);}
@@ -106,6 +107,8 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .btn-pdf:hover{opacity:.85;}
 .btn-picking{flex:1;background:var(--blue);color:#fff;border:none;padding:11px;border-radius:7px;font-family:"Barlow Condensed",sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.5px;transition:opacity .2s;}
 .btn-picking:hover{opacity:.85;}
+.btn-clear{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:11px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;}
+.btn-clear:hover{border-color:#ef4444;color:#ef4444;}
 /* HISTORIAL */
 .hist-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:8px 0;}
 .btn-hist-clear{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .2s;}
@@ -130,8 +133,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .btn-hist-act{flex:1;padding:8px;border-radius:6px;border:none;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;transition:opacity .2s;}
 .btn-hist-act:hover{opacity:.85;}
 .hist-empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:13px;}
-.btn-clear{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:11px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s;}
-.btn-clear:hover{border-color:#ef4444;color:#ef4444;}
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--panel);border:1px solid var(--border);border-radius:12px;width:95%;max-width:920px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);}
@@ -146,7 +148,6 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 #admin-buscador{width:100%;background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 10px 7px 32px;border-radius:6px;font-family:inherit;font-size:13px;}
 #admin-buscador:focus{outline:none;border-color:var(--yellow);}
 .admin-hoja-sel{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-family:inherit;font-size:12px;cursor:pointer;min-width:130px;}
-.admin-hoja-sel:focus{outline:none;border-color:var(--blue);}
 .modal-stats{padding:7px 20px;background:var(--dark);border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;}
 .stat-item{display:flex;align-items:center;gap:4px;}
 .stat-dot{width:7px;height:7px;border-radius:50%;}
@@ -168,43 +169,13 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .badge-precios{background:var(--green);color:#000;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:6px;}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#000;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
-/* HISTORIAL */
-.hist-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.btn-hist-clear{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .2s;}
-.btn-hist-clear:hover{border-color:#ef4444;color:#ef4444;}
-.hist-empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:13px;}
-.hist-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;transition:border-color .2s;}
-.hist-card:hover{border-color:var(--red);}
-.hist-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:10px;}
-.hist-head-left{display:flex;align-items:center;gap:12px;}
-.hist-nro{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;color:var(--red);}
-.hist-cliente{font-weight:600;font-size:14px;color:var(--text);}
-.hist-meta{font-size:11px;color:var(--muted);margin-top:2px;}
-.hist-total{font-family:"Barlow Condensed",sans-serif;font-weight:900;font-size:17px;color:var(--green);white-space:nowrap;}
-.hist-chevron{color:var(--muted);transition:transform .2s;font-size:14px;}
-.hist-card.open .hist-chevron{transform:rotate(180deg);}
-.hist-body{display:none;border-top:1px solid var(--border);padding:14px 16px;}
-.hist-card.open .hist-body{display:block;}
-.hist-items-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;}
-.hist-items-table th{background:var(--card);color:var(--muted);padding:6px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
-.hist-items-table td{padding:6px 8px;border-bottom:1px solid var(--border);}
-.hist-items-table tr:last-child td{border-bottom:none;}
-.hist-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn-hist-pdf{background:var(--green);color:#000;border:none;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;transition:opacity .2s;}
-.btn-hist-pdf:hover{opacity:.85;}
-.btn-hist-picking{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;transition:opacity .2s;}
-.btn-hist-picking:hover{opacity:.85;}
-.btn-hist-editar{background:var(--yellow);color:#000;border:none;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;transition:opacity .2s;}
-.btn-hist-editar:hover{opacity:.85;}
-.btn-hist-borrar{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .2s;margin-left:auto;}
-.btn-hist-borrar:hover{border-color:#ef4444;color:#ef4444;}
 @media(max-width:1100px){.main{grid-template-columns:1fr;}}
 @media(max-width:600px){.lista-header,.fila{grid-template-columns:85px 1fr 90px 50px 65px;}.form-grid{grid-template-columns:1fr;}.manual-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">BM <span>GROUP</span></div>
@@ -230,17 +201,17 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
       Precios
       <span id="badge-count" class="badge-precios" style="display:none">0</span>
     </button>
-    <div class="user-chip">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <strong id="user-nombre">-</strong>
-      <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">✕ Salir</button>
-    </div>
     <div>
       <select id="select-empresa" class="empresa-select" onchange="actualizarInfoPantalla()">
         <option value="mitre">BULONERIA MITRE SRL</option>
         <option value="mineria">BM MINERIA SALTA S.A.S.</option>
       </select>
       <div id="info-pantalla" class="empresa-info" style="margin-top:2px"></div>
+    </div>
+    <div class="user-chip">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <strong id="user-nombre">-</strong>
+      <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">✕ Salir</button>
     </div>
   </div>
 </header>
@@ -298,8 +269,6 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         </div>
       </div>
     </div>
-
-    <!-- HISTORIAL -->
     <div id="tab-historial" style="display:none">
       <div class="hist-toolbar">
         <span id="hist-count" style="font-size:12px;color:var(--muted)"></span>
@@ -346,7 +315,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 <div class="modal-overlay" id="modal-admin">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-title">⚡ Administrar Precios</div><div class="modal-subtitle">8314 artículos de 14 hojas · Guardados en este navegador</div></div>
+      <div><div class="modal-title">⚡ Administrar Precios</div><div class="modal-subtitle">8314 artículos de 15 hojas · Guardados en este navegador</div></div>
       <button class="modal-close" onclick="cerrarAdmin()">✕</button>
     </div>
     <div class="modal-filters">
@@ -376,7 +345,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
     <div class="modal-stats">
       <div class="stat-item"><div class="stat-dot" style="background:var(--green)"></div><span id="stat-con-precio">0 con precio</span></div>
       <div class="stat-item"><div class="stat-dot" style="background:var(--muted)"></div><span id="stat-sin-precio">0 sin precio</span></div>
-      <div class="stat-item" style="margin-left:auto"><span style="color:var(--blue)">✓ Precios pre-cargados desde Excel</span></div>
+      <div class="stat-item" style="margin-left:auto"><span style="color:var(--blue)">✓ Precios cargados desde Excel</span></div>
     </div>
     <div class="admin-list-header"><div>Código / Hoja</div><div>Descripción</div><div>Precio ($)</div></div>
     <div class="modal-body" id="admin-body"></div>
@@ -393,59 +362,47 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── USUARIOS ────────────────────────────────────────────────
-const USUARIOS = [
-  {user:'egonzalez@buloneriamitre.com.ar', pass:'febe1016',    nombre:'Esteban González'},
-  {user:'patricios@buloneriamitre.com.ar', pass:'simon162',    nombre:'Patricio Studdert'},
-  {user:'jvrarguelles@outlook.com',         pass:'guille162',   nombre:'Javier Arguelles'},
-  {user:'rodrigocano@buloneriamitre.com.ar',pass:'rodrigobuloneria', nombre:'Rodrigo Cano'},
+// ─── USUARIOS ─────────────────────────────────────────────
+const USUARIOS=[
+  {user:'estebang@buloneriamitre.com.ar',  pass:'febe1016',         nombre:'Esteban González',  tel:'3816797611', mail:'estebang@buloneriamitre.com.ar'},
+  {user:'patricios@buloneriamitre.com.ar', pass:'simon162',         nombre:'Patricio Studdert', tel:'3814900503', mail:'patricios@buloneriamitre.com.ar'},
+  {user:'jvrarguelles@outlook.com',         pass:'guille162',        nombre:'Javier Arguelles',  tel:'3815541717', mail:'jvrarguelles@outlook.com'},
+  {user:'rodrigocano@buloneriamitre.com.ar',pass:'rodrigobuloneria', nombre:'Rodrigo Cano',      tel:'',           mail:'rodrigocano@buloneriamitre.com.ar'},
 ];
-
-let usuarioActivo = null;
+let usuarioActivo=null;
 
 function doLogin(){
-  const u = document.getElementById('login-user').value.trim().toLowerCase();
-  const p = document.getElementById('login-pass').value;
-  const match = USUARIOS.find(x => x.user.toLowerCase()===u && x.pass===p);
-  if(!match){
-    document.getElementById('login-error').textContent = 'Usuario o contraseña incorrectos.';
-    document.getElementById('login-pass').value = '';
-    return;
-  }
-  usuarioActivo = match;
-  try{ sessionStorage.setItem('bm_session', JSON.stringify({user:match.user, nombre:match.nombre})); }catch(e){}
+  const u=document.getElementById('login-user').value.trim().toLowerCase();
+  const p=document.getElementById('login-pass').value;
+  const match=USUARIOS.find(x=>x.user.toLowerCase()===u&&x.pass===p);
+  if(!match){document.getElementById('login-error').textContent='Usuario o contraseña incorrectos.';document.getElementById('login-pass').value='';return;}
+  usuarioActivo=match;
+  try{sessionStorage.setItem('bm_session',JSON.stringify({user:match.user,nombre:match.nombre}));}catch(e){}
   document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('user-nombre').textContent = match.nombre.split(' ')[0];
-  document.getElementById('login-error').textContent = '';
+  document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];
+  document.getElementById('login-error').textContent='';
 }
 
 function doLogout(){
-  if(!confirm('¿Cerrar sesión?')) return;
-  usuarioActivo = null;
-  try{ sessionStorage.removeItem('bm_session'); }catch(e){}
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
+  if(!confirm('¿Cerrar sesión?'))return;
+  usuarioActivo=null;
+  try{sessionStorage.removeItem('bm_session');}catch(e){}
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
   document.getElementById('login-screen').classList.remove('hidden');
 }
 
 function checkSession(){
   try{
-    const s = sessionStorage.getItem('bm_session');
-    if(s){
-      const data = JSON.parse(s);
-      const match = USUARIOS.find(x => x.user===data.user);
-      if(match){
-        usuarioActivo = match;
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('user-nombre').textContent = match.nombre.split(' ')[0];
-        return;
-      }
+    const s=sessionStorage.getItem('bm_session');
+    if(s){const data=JSON.parse(s);const match=USUARIOS.find(x=>x.user===data.user);
+      if(match){usuarioActivo=match;document.getElementById('login-screen').classList.add('hidden');document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];return;}
     }
   }catch(e){}
-  // Sin sesión válida — mostrar login
   document.getElementById('login-screen').classList.remove('hidden');
 }
-// ─────────────────────────────────────────────────────────────
+
+// ─── DATOS ────────────────────────────────────────────────
 const DATOS_EMPRESAS={
   mitre:{nombre:"BM GROUP - BULONERIA MITRE SRL",dir1:"Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294",dir2:"Mz B - Fracción A y B | Tel: 3816797611",cuit:"CUIT: 30-69179970-7"},
   mineria:{nombre:"BM MINERIA SALTA S.A.S.",dir1:"RIVADAVIA 491 - SALTA",dir2:"4400 - SALTA",cuit:"CUIT: 30-71882856-9"}
@@ -8766,7 +8723,10 @@ const ARTICULOS=[{c:"1100FER",d:"GAMISOL — Guante G7 algodón moteado ferreter
 {c:"2569820",d:"Loctite SF 7979 Power Clean — Descarbonizante biodegradable para inyectores y carburadores",p:7574.9974448289595,h:"LOCTITE"},
 {c:"718808",d:"Loctite Disc Brake Quiet — Antichillido del conjunto de frenos a disco",p:28353.04269773531,h:"LOCTITE"}];
 
-let carrito=[], precios={}, nroPresupuesto=generarNro();
+// ─── PRECIOS: siempre desde Excel, sin persistir cambios ──
+// Los precios del Excel son la fuente de verdad. Se cargan frescos cada vez.
+let precios={};
+let carrito=[], nroPresupuesto=generarNro();
 
 function artKey(a){return a.c+"||"+a.d;}
 function generarNro(){const n=new Date();return `P${String(n.getFullYear()).slice(-2)}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}-${Math.floor(Math.random()*9000)+1000}`;}
@@ -8774,14 +8734,12 @@ function fmt(n){return n.toLocaleString('es-AR',{minimumFractionDigits:2,maximum
 function showToast(msg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=color||'var(--green)';t.style.color=color?'#fff':'#000';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 function cargarPrecios(){
-  try{const raw=localStorage.getItem('bm_precios_v3');precios=raw?JSON.parse(raw):{};}catch(e){precios={};}
-  if(Object.keys(precios).length===0){
-    ARTICULOS.forEach(a=>{if(a.p>0)precios[artKey(a)]=a.p;});
-    guardarPreciosStorage();
-  }
+  // Siempre cargar desde el Excel embebido — ignorar localStorage para precios
+  precios={};
+  ARTICULOS.forEach(a=>{if(a.p>0) precios[artKey(a)]=a.p;});
   actualizarBadge();
 }
-function guardarPreciosStorage(){try{localStorage.setItem('bm_precios_v3',JSON.stringify(precios));}catch(e){}}
+
 function actualizarBadge(){const c=Object.values(precios).filter(v=>v>0).length;const b=document.getElementById('badge-count');if(c>0){b.style.display='';b.textContent=c;}else b.style.display='none';}
 
 function actualizarInfoPantalla(){const k=document.getElementById('select-empresa').value;const d=DATOS_EMPRESAS[k];document.getElementById('info-pantalla').innerHTML=`<strong>${d.cuit}</strong> · ${d.dir1}`;}
@@ -8808,8 +8766,7 @@ function filtrar(){
   const h=document.getElementById('filtro-hoja').value;
   const lista=ARTICULOS.filter(x=>{
     const mt=!t||(x.c.toLowerCase().includes(t)||x.d.toLowerCase().includes(t)||(x.h&&x.h.toLowerCase().includes(t)));
-    const mh=!h||x.h===h;
-    return mt&&mh;
+    const mh=!h||x.h===h;return mt&&mh;
   });
   render(lista);
 }
@@ -8818,7 +8775,8 @@ function onPrecioChange(input){
   const key=input.dataset.key;const val=parseFloat(input.value);
   if(val>0){precios[key]=val;input.classList.add('tiene-precio');}
   else{delete precios[key];input.classList.remove('tiene-precio');}
-  guardarPreciosStorage();actualizarBadge();
+  // No guardar en localStorage — los cambios son solo para esta sesión
+  actualizarBadge();
 }
 
 function agregarDesdeFila(btn){
@@ -8829,7 +8787,7 @@ function agregarDesdeFila(btn){
   const cod=fila.querySelector('.code-tag').getAttribute('title')||fila.querySelector('.code-tag').textContent;
   const p=parseFloat(pi.value);const q=parseInt(ci.value)||1;
   if(!p||p<=0){showToast('⚠ Ingresá un precio válido','#f59e0b');pi.focus();return;}
-  precios[pi.dataset.key]=p;guardarPreciosStorage();actualizarBadge();
+  precios[pi.dataset.key]=p;
   carrito.push({cod,desc,p,q});actualizarTabla();ci.value='1';
   showToast('✓ Agregado al presupuesto');
 }
@@ -8870,6 +8828,7 @@ function actualizarTabla(){
   document.getElementById('total-final').textContent='$'+fmt(total);
 }
 
+// ─── ADMIN MODAL (solo para ver / ajuste temporal) ────────
 function abrirAdmin(){renderAdmin(ARTICULOS);actualizarStats();document.getElementById('modal-admin').classList.add('open');document.getElementById('admin-buscador').value='';document.getElementById('admin-hoja').value='';}
 function cerrarAdmin(){document.getElementById('modal-admin').classList.remove('open');filtrar();}
 function filtrarAdmin(){
@@ -8889,14 +8848,53 @@ function renderAdmin(lista){
 }
 function onAdminPrecio(input){const key=input.dataset.key;const val=parseFloat(input.value);if(val>0){precios[key]=val;input.classList.add('set');}else{delete precios[key];input.classList.remove('set');}actualizarStats();}
 function actualizarStats(){const cp=Object.values(precios).filter(v=>v>0).length;document.getElementById('stat-con-precio').textContent=`${cp} con precio`;document.getElementById('stat-sin-precio').textContent=`${ARTICULOS.length-cp} sin precio`;}
-function guardarPrecios(){guardarPreciosStorage();actualizarBadge();cerrarAdmin();showToast('✓ Precios guardados');}
-function borrarTodosPrecios(){if(!confirm('¿Borrar TODOS los precios?'))return;precios={};guardarPreciosStorage();actualizarBadge();renderAdmin(ARTICULOS);showToast('Precios borrados','#ef4444');}
+function guardarPrecios(){cerrarAdmin();showToast('✓ Listo');}
+function borrarTodosPrecios(){if(!confirm('¿Resetear todos los precios al valor del Excel?'))return;cargarPrecios();renderAdmin(ARTICULOS);showToast('Precios restablecidos desde Excel');}
 
+// ─── TABS ─────────────────────────────────────────────────
 function switchTab(el,targetId){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   ['tab-cotizador','tab-manual','tab-historial'].forEach(id=>document.getElementById(id).style.display=id===targetId?'':'none');
   if(targetId==='tab-historial') renderHistorial();
+}
+
+// ─── PDF helpers ──────────────────────────────────────────
+function _pdfHeader(doc, emp, nro, fecha, cli, pago, titulo){
+  const R=[229,31,31],B=[10,10,10],G=[100,100,100],LG=[245,245,245];
+  doc.setFillColor(...R);doc.rect(0,0,210,5,'F');
+  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...B);doc.text(emp.nombre,105,15,{align:'center'});
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
+  doc.text(emp.dir1,105,20,{align:'center'});doc.text(emp.dir2+" | "+emp.cuit,105,24,{align:'center'});
+  doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(14,28,196,28);
+  if(titulo){
+    doc.setFillColor(...R);doc.roundedRect(75,31,60,10,2,2,'F');
+    doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(255,255,255);doc.text(titulo,105,38,{align:'center'});
+    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("N°:",14,37);
+    doc.setTextColor(...R);doc.setFontSize(10);doc.text(nro,22,37);
+    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Fecha: "+fecha,150,35);
+  } else {
+    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("PRESUPUESTO N°",14,35);
+    doc.setTextColor(...R);doc.setFontSize(10);doc.text(nro,52,35);
+    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Fecha: "+fecha,150,35);
+  }
+  const by=titulo?44:42;
+  doc.setFillColor(...LG);doc.roundedRect(14,by,182,12,2,2,'F');
+  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("CLIENTE:",17,by+6);
+  doc.setTextColor(...B);doc.setFontSize(10);doc.text((cli||'').toUpperCase(),36,by+6);
+  if(pago){doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Cond. Pago: "+pago.toUpperCase(),17,by+10);}
+  return by+16;
+}
+
+function _pdfVendedor(doc, u, yPos){
+  // Datos del vendedor al pie, antes del footer
+  const G=[100,100,100],B=[10,10,10];
+  doc.setDrawColor(220,220,220);doc.setLineWidth(0.3);doc.line(14,yPos,196,yPos);
+  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...B);
+  doc.text("Vendedor: "+u.nombre,14,yPos+5);
+  doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);
+  doc.text(u.mail,14,yPos+9);
+  if(u.tel) doc.text("Tel: "+u.tel, 80, yPos+9);
 }
 
 async function generarPDF(){
@@ -8910,24 +8908,16 @@ async function generarPDF(){
   const pago=document.getElementById('pago-cliente').value;
   const dp=parseFloat(document.getElementById('descuento').value)||0;
   const vd=parseInt(document.getElementById('validez-dias').value);
-  const R=[229,31,31],B=[10,10,10],G=[100,100,100],LG=[245,245,245];
-  doc.setFillColor(...R);doc.rect(0,0,210,5,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...B);doc.text(emp.nombre,105,15,{align:'center'});
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
-  doc.text(emp.dir1,105,20,{align:'center'});doc.text(emp.dir2+" | "+emp.cuit,105,24,{align:'center'});
-  doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(14,28,196,28);
-  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("PRESUPUESTO N°",14,35);
-  doc.setTextColor(...R);doc.setFontSize(10);doc.text(nroPresupuesto,52,35);
   const hoy=new Date();
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Fecha: "+hoy.toLocaleDateString('es-AR'),150,35);
-  if(vd>0){const v=new Date(hoy);v.setDate(v.getDate()+vd);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
-  doc.setFillColor(...LG);doc.roundedRect(14,42,182,12,2,2,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("CLIENTE:",17,48);
-  doc.setTextColor(...B);doc.setFontSize(10);doc.text(cli.toUpperCase(),36,48);
-  if(pago){doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Cond. Pago: "+pago.toUpperCase(),17,52);}
+  const fecha=hoy.toLocaleDateString('es-AR');
+  const R=[229,31,31],B=[10,10,10],G=[100,100,100];
+
+  let startY=_pdfHeader(doc,emp,nroPresupuesto,fecha,cli,pago,null);
+  if(vd>0){const v=new Date(hoy);v.setDate(v.getDate()+vd);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
+
   let sub=0;
   const rows=carrito.map(it=>{const s=it.p*it.q;sub+=s;return[it.cod,it.desc,'$'+fmt(it.p),it.q,'$'+fmt(s)];});
-  doc.autoTable({startY:58,head:[['Código','Descripción','Precio U.','Cant.','Subtotal']],body:rows,
+  doc.autoTable({startY,head:[['Código','Descripción','Precio U.','Cant.','Subtotal']],body:rows,
     headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
     columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8},2:{halign:'right',cellWidth:23},3:{halign:'center',cellWidth:13},4:{halign:'right',cellWidth:25,fontStyle:'bold'}},
     theme:'striped',styles:{fontSize:8,cellPadding:2.5},alternateRowStyles:{fillColor:[248,248,248]}});
@@ -8942,6 +8932,10 @@ async function generarPDF(){
   doc.setFillColor(...R);doc.roundedRect(tx-2,y-3,196-tx+2,9,1.5,1.5,'F');
   doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(255,255,255);
   doc.text("TOTAL:",tx+2,y+2.5);doc.text("$"+fmt(total),192,y+2.5,{align:'right'});
+
+  // Datos vendedor
+  if(usuarioActivo) _pdfVendedor(doc, usuarioActivo, Math.min(y+14, 262));
+
   doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
   doc.text("Este presupuesto no constituye factura — BM GROUP",105,284,{align:'center'});
   doc.save(`Presupuesto_${nroPresupuesto}_${archivo}.pdf`);
@@ -8958,102 +8952,51 @@ async function generarPicking(){
   const doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const emp=DATOS_EMPRESAS[document.getElementById('select-empresa').value];
   const pago=document.getElementById('pago-cliente').value;
-  const R=[229,31,31],B=[10,10,10],G=[100,100,100],LG=[245,245,245];
+  const fecha=new Date().toLocaleDateString('es-AR');
+  const LG=[245,245,245],G=[100,100,100];
 
-  // Header bar
-  doc.setFillColor(...R);doc.rect(0,0,210,5,'F');
-
-  // Empresa
-  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...B);doc.text(emp.nombre,105,15,{align:'center'});
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
-  doc.text(emp.dir1,105,20,{align:'center'});doc.text(emp.dir2+" | "+emp.cuit,105,24,{align:'center'});
-
-  // Título HOJA DE PICKING destacado
-  doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(14,28,196,28);
-  doc.setFillColor(229,31,31);doc.roundedRect(75,31,60,10,2,2,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(255,255,255);
-  doc.text("HOJA DE PICKING",105,38,{align:'center'});
-
-  // Nro y fecha
-  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("N°:",14,37);
-  doc.setTextColor(...R);doc.setFontSize(10);doc.text(nroPresupuesto,22,37);
-  const hoy=new Date();
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
-  doc.text("Fecha: "+hoy.toLocaleDateString('es-AR'),150,35);
-
-  // Cliente box
-  doc.setFillColor(...LG);doc.roundedRect(14,44,182,12,2,2,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("CLIENTE:",17,50);
-  doc.setTextColor(...B);doc.setFontSize(10);doc.text(cli.toUpperCase(),36,50);
-  if(pago){doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Cond. Pago: "+pago.toUpperCase(),17,54);}
-
-  // Tabla SIN PRECIOS — con columna de tilde para picking
-  const rows=carrito.map(it=>[it.cod, it.desc, it.q, '']);
-  doc.autoTable({
-    startY:60,
-    head:[['Código','Descripción','Cant.','✓ Check']],
-    body:rows,
+  const startY=_pdfHeader(doc,emp,nroPresupuesto,fecha,cli,pago,"HOJA DE PICKING");
+  const rows=carrito.map(it=>[it.cod,it.desc,it.q,'']);
+  doc.autoTable({startY,head:[['Código','Descripción','Cant.','✓ Check']],body:rows,
     headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
-    columnStyles:{
-      0:{cellWidth:25,fontSize:7.5},
-      1:{fontSize:8.5},
-      2:{halign:'center',cellWidth:15,fontStyle:'bold'},
-      3:{halign:'center',cellWidth:20,textColor:[180,180,180]}
-    },
-    theme:'striped',
-    styles:{fontSize:8.5,cellPadding:3},
-    alternateRowStyles:{fillColor:[248,248,248]}
-  });
-
-  // Resumen abajo
-  const finalY=doc.lastAutoTable.finalY+8;
-  doc.setFillColor(...LG);doc.roundedRect(14,finalY,182,10,2,2,'F');
+    columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8.5},2:{halign:'center',cellWidth:15,fontStyle:'bold'},3:{halign:'center',cellWidth:20,textColor:[180,180,180]}},
+    theme:'striped',styles:{fontSize:8.5,cellPadding:3},alternateRowStyles:{fillColor:[248,248,248]}});
+  const fy=doc.lastAutoTable.finalY+8;
+  doc.setFillColor(...LG);doc.roundedRect(14,fy,182,10,2,2,'F');
   doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...G);
-  doc.text(`Total de artículos: ${carrito.reduce((s,it)=>s+it.q,0)} unidades en ${carrito.length} líneas`,105,finalY+6,{align:'center'});
+  doc.text(`Total: ${carrito.reduce((s,it)=>s+it.q,0)} unidades en ${carrito.length} líneas`,105,fy+6,{align:'center'});
 
-  // Firma depósito
-  const firmaY=finalY+22;
-  doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);
-  doc.line(20,firmaY,90,firmaY);doc.line(120,firmaY,190,firmaY);
+  // Datos vendedor
+  if(usuarioActivo) _pdfVendedor(doc, usuarioActivo, Math.min(fy+18, 255));
+
+  const firmaY=Math.min(fy+32, 265);
+  doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);doc.line(20,firmaY,90,firmaY);doc.line(120,firmaY,190,firmaY);
   doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);
-  doc.text("Preparado por",55,firmaY+4,{align:'center'});
-  doc.text("Recibido / Conforme",155,firmaY+4,{align:'center'});
-
+  doc.text("Preparado por",55,firmaY+4,{align:'center'});doc.text("Recibido / Conforme",155,firmaY+4,{align:'center'});
   doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
   doc.text("Documento interno — NO incluye precios — BM GROUP",105,284,{align:'center'});
-
   doc.save(`Picking_${nroPresupuesto}_${archivo}.pdf`);
+  guardarEnHistorial();
   showToast('✓ Hoja de Picking generada');
 }
 
-// ─── HISTORIAL ───────────────────────────────────────────────
-function cargarHistorial(){
-  try{return JSON.parse(localStorage.getItem('bm_historial_v1')||'[]');}catch(e){return [];}
-}
+// ─── HISTORIAL ────────────────────────────────────────────
+function cargarHistorial(){try{return JSON.parse(localStorage.getItem('bm_historial_v1')||'[]');}catch(e){return [];}}
+
 function guardarEnHistorial(){
-  if(carrito.length===0) return;
+  if(carrito.length===0)return;
   const cli=document.getElementById('cliente-nombre').value.trim();
   const pago=document.getElementById('pago-cliente').value.trim();
   const dp=parseFloat(document.getElementById('descuento').value)||0;
   const empresa=document.getElementById('select-empresa').value;
   const vd=parseInt(document.getElementById('validez-dias').value);
-  let sub=0; carrito.forEach(it=>sub+=it.p*it.q);
+  let sub=0;carrito.forEach(it=>sub+=it.p*it.q);
   const dm=sub*(dp/100),neto=sub-dm,iva=neto*0.21,total=neto+iva;
-  const entrada={
-    nro: nroPresupuesto,
-    fecha: new Date().toISOString(),
-    vendedor: usuarioActivo ? usuarioActivo.nombre : 'Desconocido',
-    cliente: cli,
-    pago, dp, empresa, vd,
-    items: carrito.map(it=>({...it})),
-    subtotal: sub, descMonto: dm, neto, iva, total
-  };
+  const entrada={nro:nroPresupuesto,fecha:new Date().toISOString(),vendedor:usuarioActivo?usuarioActivo.nombre:'',vendedorData:usuarioActivo?{...usuarioActivo}:null,cliente:cli,pago,dp,empresa,vd,items:carrito.map(it=>{return{...it}}),subtotal:sub,descMonto:dm,neto,iva,total};
   const hist=cargarHistorial();
-  // Evitar duplicados por número
   const idx=hist.findIndex(h=>h.nro===nroPresupuesto);
-  if(idx>=0) hist[idx]=entrada; else hist.unshift(entrada);
-  // Guardar máximo 100 cotizaciones
-  if(hist.length>100) hist.splice(100);
+  if(idx>=0)hist[idx]=entrada;else hist.unshift(entrada);
+  if(hist.length>100)hist.splice(100);
   try{localStorage.setItem('bm_historial_v1',JSON.stringify(hist));}catch(e){}
   actualizarHistBadge();
 }
@@ -9061,44 +9004,31 @@ function guardarEnHistorial(){
 function actualizarHistBadge(){
   const hist=cargarHistorial();
   const b=document.getElementById('hist-badge');
-  if(hist.length>0){b.style.display='';b.textContent=hist.length;}
-  else b.style.display='none';
+  if(hist.length>0){b.style.display='';b.textContent=hist.length;}else b.style.display='none';
   const cnt=document.getElementById('hist-count');
-  if(cnt) cnt.textContent=`${hist.length} cotización${hist.length!==1?'es':''} guardada${hist.length!==1?'s':''}`;
+  if(cnt)cnt.textContent=`${hist.length} cotización${hist.length!==1?'es':''} guardada${hist.length!==1?'s':''}`;
 }
 
 function renderHistorial(){
   actualizarHistBadge();
   const hist=cargarHistorial();
   const cont=document.getElementById('hist-lista');
-  if(hist.length===0){
-    cont.innerHTML='<div class="hist-empty">📋 Todavía no hay cotizaciones guardadas.<br><small>Se guardan automáticamente al generar un PDF.</small></div>';
-    return;
-  }
+  if(hist.length===0){cont.innerHTML='<div class="hist-empty">📋 Todavía no hay cotizaciones guardadas.<br><small>Se guardan automáticamente al generar un PDF.</small></div>';return;}
   cont.innerHTML=hist.map((h,i)=>{
     const fecha=new Date(h.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const emp=DATOS_EMPRESAS[h.empresa]||DATOS_EMPRESAS.mitre;
-    const itemsHTML=h.items.map(it=>`<tr>
-      <td style="font-family:monospace;font-size:11px;color:var(--muted)">${it.cod}</td>
-      <td style="font-size:12px">${it.desc}</td>
-      <td style="text-align:right;color:var(--muted);font-size:11px">$${fmt(it.p)}</td>
-      <td style="text-align:center;font-weight:600;font-size:12px">${it.q}</td>
-      <td style="text-align:right;font-weight:600;font-size:12px">$${fmt(it.p*it.q)}</td>
-    </tr>`).join('');
+    const itemsHTML=h.items.map(it=>`<tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">${it.cod}</td><td style="font-size:12px">${it.desc}</td><td style="text-align:right;color:var(--muted);font-size:11px">$${fmt(it.p)}</td><td style="text-align:center;font-weight:600;font-size:12px">${it.q}</td><td style="text-align:right;font-weight:600;font-size:12px">$${fmt(it.p*it.q)}</td></tr>`).join('');
     return `<div class="hist-card" id="hcard-${i}">
       <div class="hist-card-header" onclick="toggleHistCard(${i})">
         <div class="hist-meta">
           <div class="hist-nro">${h.nro} <span style="font-size:11px;font-weight:400;color:var(--muted);font-family:'Barlow',sans-serif">· ${emp.nombre.split('-')[0].trim()}</span></div>
-          <div class="hist-info">👤 ${h.cliente||'Sin nombre'} · ${h.vendedor ? '🧑‍💼 '+h.vendedor+' · ' : ''}📅 ${fecha} · ${h.items.length} artículo${h.items.length!==1?'s':''}</div>
+          <div class="hist-info">👤 ${h.cliente||'Sin nombre'}${h.vendedor?' · 🧑‍💼 '+h.vendedor:''} · 📅 ${fecha} · ${h.items.length} artículo${h.items.length!==1?'s':''}</div>
         </div>
         <div class="hist-total">$${fmt(h.total)}</div>
         <div class="hist-chevron">▼</div>
       </div>
       <div class="hist-body">
-        <table class="hist-items-table">
-          <thead><tr><th>Código</th><th>Descripción</th><th style="text-align:right">P.Unit</th><th style="text-align:center">Cant</th><th style="text-align:right">Subtotal</th></tr></thead>
-          <tbody>${itemsHTML}</tbody>
-        </table>
+        <table class="hist-items-table"><thead><tr><th>Código</th><th>Descripción</th><th style="text-align:right">P.Unit</th><th style="text-align:center">Cant</th><th style="text-align:right">Subtotal</th></tr></thead><tbody>${itemsHTML}</tbody></table>
         <div style="padding:8px 12px;font-size:11px;color:var(--muted);background:var(--dark);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap">
           <span>Subtotal: <b style="color:var(--text)">$${fmt(h.subtotal)}</b></span>
           ${h.dp>0?`<span style="color:var(--yellow)">Descuento ${h.dp}%: -$${fmt(h.descMonto)}</span>`:''}
@@ -9118,140 +9048,75 @@ function renderHistorial(){
   }).join('');
 }
 
-function toggleHistCard(i){
-  const card=document.getElementById('hcard-'+i);
-  card.classList.toggle('open');
-}
+function toggleHistCard(i){document.getElementById('hcard-'+i).classList.toggle('open');}
 
 function histCargar(i){
-  const hist=cargarHistorial();
-  const h=hist[i];
-  if(!confirm(`¿Cargar la cotización ${h.nro} de ${h.cliente} en el cotizador?\nSe reemplazará el presupuesto actual.`)) return;
-  // Restaurar estado
-  carrito=h.items.map(it=>({...it}));
-  nroPresupuesto=h.nro;
+  const h=cargarHistorial()[i];
+  if(!confirm(`¿Cargar la cotización ${h.nro} de ${h.cliente}?`))return;
+  carrito=h.items.map(it=>{return{...it}});nroPresupuesto=h.nro;
   document.getElementById('cliente-nombre').value=h.cliente||'';
   document.getElementById('pago-cliente').value=h.pago||'';
   document.getElementById('descuento').value=h.dp||0;
   document.getElementById('select-empresa').value=h.empresa||'mitre';
   document.getElementById('validez-dias').value=h.vd||15;
   document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
-  actualizarTabla();
-  actualizarInfoPantalla();
-  // Volver al cotizador
-  const tabs=document.querySelectorAll('.tab');
-  tabs.forEach(t=>t.classList.remove('active'));
-  tabs[0].classList.add('active');
+  actualizarTabla();actualizarInfoPantalla();
+  const tabs=document.querySelectorAll('.tab');tabs.forEach(t=>t.classList.remove('active'));tabs[0].classList.add('active');
   ['tab-cotizador','tab-manual','tab-historial'].forEach(id=>document.getElementById(id).style.display=id==='tab-cotizador'?'':'none');
   showToast(`✓ Cotización ${h.nro} cargada`);
 }
 
 function histBorrar(i){
-  const hist=cargarHistorial();
-  if(!confirm(`¿Eliminar la cotización ${hist[i].nro}?`)) return;
-  hist.splice(i,1);
-  try{localStorage.setItem('bm_historial_v1',JSON.stringify(hist));}catch(e){}
-  renderHistorial();
-  showToast('Cotización eliminada','#ef4444');
+  const hist=cargarHistorial();if(!confirm(`¿Eliminar la cotización ${hist[i].nro}?`))return;
+  hist.splice(i,1);try{localStorage.setItem('bm_historial_v1',JSON.stringify(hist));}catch(e){}
+  renderHistorial();showToast('Cotización eliminada','#ef4444');
 }
 
 function borrarHistorial(){
-  if(!confirm('¿Borrar TODO el historial de cotizaciones?')) return;
-  localStorage.removeItem('bm_historial_v1');
-  renderHistorial();
-  showToast('Historial borrado','#ef4444');
+  if(!confirm('¿Borrar TODO el historial?'))return;
+  localStorage.removeItem('bm_historial_v1');renderHistorial();showToast('Historial borrado','#ef4444');
 }
 
 function _buildPDFFromHist(h,conPrecios){
-  if(!window.jspdf) return null;
+  if(!window.jspdf)return null;
   const doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const emp=DATOS_EMPRESAS[h.empresa]||DATOS_EMPRESAS.mitre;
-  const R=[229,31,31],B=[10,10,10],G=[100,100,100],LG=[245,245,245];
   const fecha=new Date(h.fecha).toLocaleDateString('es-AR');
-  doc.setFillColor(...R);doc.rect(0,0,210,5,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...B);doc.text(emp.nombre,105,15,{align:'center'});
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);
-  doc.text(emp.dir1,105,20,{align:'center'});doc.text(emp.dir2+" | "+emp.cuit,105,24,{align:'center'});
-  doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(14,28,196,28);
-  if(!conPrecios){
-    doc.setFillColor(...R);doc.roundedRect(75,31,60,10,2,2,'F');
-    doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(255,255,255);
-    doc.text("HOJA DE PICKING",105,38,{align:'center'});
-    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("N°:",14,37);
-    doc.setTextColor(...R);doc.setFontSize(10);doc.text(h.nro,22,37);
-    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Fecha: "+fecha,150,35);
-  } else {
-    doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("PRESUPUESTO N°",14,35);
-    doc.setTextColor(...R);doc.setFontSize(10);doc.text(h.nro,52,35);
-    doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Fecha: "+fecha,150,35);
-    if(h.vd>0){const v=new Date(h.fecha);v.setDate(v.getDate()+h.vd);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
-  }
-  const boxY=conPrecios?42:44;
-  doc.setFillColor(...LG);doc.roundedRect(14,boxY,182,12,2,2,'F');
-  doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(...G);doc.text("CLIENTE:",17,boxY+6);
-  doc.setTextColor(...B);doc.setFontSize(10);doc.text((h.cliente||'').toUpperCase(),36,boxY+6);
-  if(h.pago){doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Cond. Pago: "+h.pago.toUpperCase(),17,boxY+10);}
-  const startY=boxY+16;
+  const LG=[245,245,245],G=[100,100,100],B=[10,10,10],R=[229,31,31];
+  const startY=_pdfHeader(doc,emp,h.nro,fecha,h.cliente,h.pago,conPrecios?null:"HOJA DE PICKING");
+  if(!conPrecios&&h.vd>0){}
   if(conPrecios){
-    let sub=0;
-    const rows=h.items.map(it=>{const s=it.p*it.q;sub+=s;return[it.cod,it.desc,'$'+fmt(it.p),it.q,'$'+fmt(s)];});
-    doc.autoTable({startY,head:[['Código','Descripción','Precio U.','Cant.','Subtotal']],body:rows,
-      headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
-      columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8},2:{halign:'right',cellWidth:23},3:{halign:'center',cellWidth:13},4:{halign:'right',cellWidth:25,fontStyle:'bold'}},
-      theme:'striped',styles:{fontSize:8,cellPadding:2.5},alternateRowStyles:{fillColor:[248,248,248]}});
-    let y=doc.lastAutoTable.finalY+6;
-    const tx=128;
+    if(h.vd>0){const v=new Date(h.fecha);v.setDate(v.getDate()+h.vd);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
+    let sub=0;const rows=h.items.map(it=>{const s=it.p*it.q;sub+=s;return[it.cod,it.desc,'$'+fmt(it.p),it.q,'$'+fmt(s)];});
+    doc.autoTable({startY,head:[['Código','Descripción','Precio U.','Cant.','Subtotal']],body:rows,headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8},2:{halign:'right',cellWidth:23},3:{halign:'center',cellWidth:13},4:{halign:'right',cellWidth:25,fontStyle:'bold'}},theme:'striped',styles:{fontSize:8,cellPadding:2.5},alternateRowStyles:{fillColor:[248,248,248]}});
+    let y=doc.lastAutoTable.finalY+6;const tx=128;
     doc.setFontSize(8);doc.setTextColor(...G);doc.text("Subtotal neto:",tx,y);doc.setTextColor(...B);doc.text("$"+fmt(h.subtotal),194,y,{align:'right'});
     if(h.dp>0){y+=4;doc.setTextColor(200,130,0);doc.text(`Descuento (${h.dp}%):`,tx,y);doc.text("-$"+fmt(h.descMonto),194,y,{align:'right'});}
     y+=4;doc.setTextColor(...G);doc.text("Neto a facturar:",tx,y);doc.setFont("helvetica","bold");doc.setTextColor(...B);doc.text("$"+fmt(h.neto),194,y,{align:'right'});
     y+=4;doc.setFont("helvetica","normal");doc.setTextColor(...G);doc.text("IVA (21%):",tx,y);doc.text("$"+fmt(h.iva),194,y,{align:'right'});
     y+=2;doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(tx,y+1,194,y+1);y+=5;
-    doc.setFillColor(...R);doc.roundedRect(tx-2,y-3,196-tx+2,9,1.5,1.5,'F');
-    doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(255,255,255);
+    doc.setFillColor(...R);doc.roundedRect(tx-2,y-3,196-tx+2,9,1.5,1.5,'F');doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(255,255,255);
     doc.text("TOTAL:",tx+2,y+2.5);doc.text("$"+fmt(h.total),192,y+2.5,{align:'right'});
-    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
-    doc.text("Este presupuesto no constituye factura — BM GROUP",105,284,{align:'center'});
+    if(h.vendedorData) _pdfVendedor(doc,h.vendedorData,Math.min(y+14,262));
+    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);doc.text("Este presupuesto no constituye factura — BM GROUP",105,284,{align:'center'});
   } else {
     const rows=h.items.map(it=>[it.cod,it.desc,it.q,'']);
-    doc.autoTable({startY,head:[['Código','Descripción','Cant.','✓ Check']],body:rows,
-      headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
-      columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8.5},2:{halign:'center',cellWidth:15,fontStyle:'bold'},3:{halign:'center',cellWidth:20,textColor:[180,180,180]}},
-      theme:'striped',styles:{fontSize:8.5,cellPadding:3},alternateRowStyles:{fillColor:[248,248,248]}});
+    doc.autoTable({startY,head:[['Código','Descripción','Cant.','✓ Check']],body:rows,headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8.5},2:{halign:'center',cellWidth:15,fontStyle:'bold'},3:{halign:'center',cellWidth:20,textColor:[180,180,180]}},theme:'striped',styles:{fontSize:8.5,cellPadding:3},alternateRowStyles:{fillColor:[248,248,248]}});
     const fy=doc.lastAutoTable.finalY+8;
-    doc.setFillColor(...LG);doc.roundedRect(14,fy,182,10,2,2,'F');
-    doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...G);
+    doc.setFillColor(...LG);doc.roundedRect(14,fy,182,10,2,2,'F');doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...G);
     doc.text(`Total: ${h.items.reduce((s,it)=>s+it.q,0)} unidades en ${h.items.length} líneas`,105,fy+6,{align:'center'});
-    const fy2=fy+22;
-    doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);doc.line(20,fy2,90,fy2);doc.line(120,fy2,190,fy2);
-    doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);
-    doc.text("Preparado por",55,fy2+4,{align:'center'});doc.text("Recibido / Conforme",155,fy2+4,{align:'center'});
-    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
-    doc.text("Documento interno — NO incluye precios — BM GROUP",105,284,{align:'center'});
+    if(h.vendedorData) _pdfVendedor(doc,h.vendedorData,Math.min(fy+18,255));
+    const fy2=Math.min(fy+32,265);doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);doc.line(20,fy2,90,fy2);doc.line(120,fy2,190,fy2);
+    doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...G);doc.text("Preparado por",55,fy2+4,{align:'center'});doc.text("Recibido / Conforme",155,fy2+4,{align:'center'});
+    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);doc.text("Documento interno — NO incluye precios — BM GROUP",105,284,{align:'center'});
   }
   return doc;
 }
 
-function histPDF(i){
-  const hist=cargarHistorial();
-  const h=hist[i];
-  const doc=_buildPDFFromHist(h,true);
-  if(!doc){showToast('Error: librería PDF','#ef4444');return;}
-  const archivo=(h.cliente||'CLIENTE').replace(/[^a-z0-9]/gi,'_').toUpperCase();
-  doc.save(`Presupuesto_${h.nro}_${archivo}.pdf`);
-  showToast('✓ PDF generado');
-}
+function histPDF(i){const h=cargarHistorial()[i];const doc=_buildPDFFromHist(h,true);if(!doc){showToast('Error PDF','#ef4444');return;}const a=(h.cliente||'CLIENTE').replace(/[^a-z0-9]/gi,'_').toUpperCase();doc.save(`Presupuesto_${h.nro}_${a}.pdf`);showToast('✓ PDF generado');}
+function histPicking(i){const h=cargarHistorial()[i];const doc=_buildPDFFromHist(h,false);if(!doc){showToast('Error PDF','#ef4444');return;}const a=(h.cliente||'CLIENTE').replace(/[^a-z0-9]/gi,'_').toUpperCase();doc.save(`Picking_${h.nro}_${a}.pdf`);showToast('✓ Hoja de Picking generada');}
 
-function histPicking(i){
-  const hist=cargarHistorial();
-  const h=hist[i];
-  const doc=_buildPDFFromHist(h,false);
-  if(!doc){showToast('Error: librería PDF','#ef4444');return;}
-  const archivo=(h.cliente||'CLIENTE').replace(/[^a-z0-9]/gi,'_').toUpperCase();
-  doc.save(`Picking_${h.nro}_${archivo}.pdf`);
-  showToast('✓ Hoja de Picking generada');
-}
-
-// Guardar en historial cuando se genera PDF
+// ─── INIT ─────────────────────────────────────────────────
 cargarPrecios();
 actualizarInfoPantalla();
 document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
