@@ -13790,18 +13790,35 @@ async function fetchDolarBNA(){
   const valEl=document.getElementById('dolar-val');
   const compraEl=document.getElementById('dolar-compra');
   const ventaEl=document.getElementById('dolar-venta');
-  try{
-    const r=await fetch('https://dolarapi.com/v1/dolares/oficial');
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    const compra=d.compra!=null?`$${Number(d.compra).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}`:'—';
-    const venta=d.venta!=null?`$${Number(d.venta).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}`:'—';
+  // Intentamos primero con el endpoint de divisa de Ámbito (dólar divisa BNA)
+  // y como fallback el endpoint /v1/dolares filtrando casa "divisa"
+  const endpoints=[
+    'https://dolarapi.com/v1/ambito/dolares/divisa',
+    'https://dolarapi.com/v1/dolares/mayorista'
+  ];
+  let data=null;
+  for(const url of endpoints){
+    try{
+      const r=await fetch(url);
+      if(!r.ok) continue;
+      data=await r.json();
+      // Si vino como array, buscar casa divisa o nacion
+      if(Array.isArray(data)){
+        data=data.find(x=>x.casa==='divisa'||x.casa==='nacion')||data[0];
+      }
+      if(data&&data.venta!=null) break;
+    }catch(e){continue;}
+  }
+  if(data&&data.venta!=null){
+    const fmt=v=>`$${Number(v).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    const compra=data.compra!=null?fmt(data.compra):'—';
+    const venta=fmt(data.venta);
     valEl.textContent=venta;
     compraEl.textContent=`Compra: ${compra}`;
     ventaEl.textContent=`Venta: ${venta}`;
     chip.classList.remove('loading');
     chip.title=`Dólar Divisa BNA — Actualizado ${new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}`;
-  }catch(e){
+  }else{
     valEl.textContent='Sin datos';
     compraEl.textContent='No disponible';
     ventaEl.textContent='';
