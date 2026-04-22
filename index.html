@@ -93,6 +93,8 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .items-table tr:last-child td{border-bottom:none;}
 .items-table tr:hover td{background:var(--card);}
 .qty-cell input{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:3px 5px;border-radius:4px;width:50px;font-family:inherit;font-size:11px;text-align:center;}
+.precio-carrito-input{background:var(--dark);border:1px solid var(--border);color:var(--yellow);padding:3px 6px;border-radius:4px;width:80px;font-family:inherit;font-size:11px;text-align:right;font-weight:600;transition:border-color .2s;}
+.precio-carrito-input:focus{outline:none;border-color:var(--yellow);background:rgba(245,158,11,.08);}
 .del-btn{background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;padding:2px 5px;border-radius:4px;transition:background .15s;}
 .del-btn:hover{background:rgba(239,68,68,.15);}
 .empty-cart{padding:24px;text-align:center;color:var(--muted);font-size:12px;}
@@ -13498,6 +13500,7 @@ function agregarManual(){
 }
 
 function cambiarQ(i,val){carrito[i].q=Math.max(1,parseInt(val)||1);actualizarTabla();}
+function cambiarPrecio(i,val){const p=parseFloat(val);if(p>=0){carrito[i].p=p;}actualizarTabla();}
 function borrar(i){carrito.splice(i,1);actualizarTabla();}
 function limpiarCarrito(){if(carrito.length&&!confirm('¿Limpiar el presupuesto?'))return;carrito=[];nroPresupuesto=generarNro();document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;actualizarTabla();}
 
@@ -13513,7 +13516,13 @@ function actualizarTabla(){
   let sub=0;
   const S=monedaSimbolo();
   body.innerHTML=carrito.map((it,i)=>{const s=it.p*it.q;sub+=s;
-    return `<tr><td style="font-size:11px;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td><td style="text-align:right;color:var(--muted);font-size:11px">${S}${fmt(it.p)}</td><td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td><td style="text-align:right;font-weight:600;font-size:12px">${S}${fmt(s)}</td><td style="text-align:center"><button class="del-btn" onclick="borrar(${i})">✕</button></td></tr>`;
+    return `<tr>
+      <td style="font-size:11px;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td>
+      <td style="text-align:right;font-size:11px"><input type="number" class="precio-carrito-input" value="${it.p}" min="0" step="0.01" onchange="cambiarPrecio(${i},this.value)" title="Editar precio"></td>
+      <td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td>
+      <td style="text-align:right;font-weight:600;font-size:12px" id="subtotal-${i}">${S}${fmt(s)}</td>
+      <td style="text-align:center"><button class="del-btn" onclick="borrar(${i})">✕</button></td>
+    </tr>`;
   }).join('');
   const dm=sub*(dp/100),neto=sub-dm,iva=neto*0.21,total=neto+iva;
   document.getElementById('total-neto').textContent=S+fmt(sub);
