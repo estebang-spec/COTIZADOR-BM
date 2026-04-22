@@ -102,6 +102,14 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .total-row.final{color:var(--red);font-family:"Barlow Condensed",sans-serif;font-weight:900;font-size:20px;padding-top:7px;margin-top:3px;border-top:1px solid var(--border);}
 .validez-row{display:flex;align-items:center;gap:5px;margin-top:8px;padding:7px 9px;background:var(--dark);border-radius:6px;border:1px solid var(--border);font-size:11px;color:var(--muted);}
 .validez-row select{background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;cursor:pointer;}
+.moneda-row{display:flex;align-items:center;gap:8px;margin-top:6px;padding:7px 9px;background:var(--dark);border-radius:6px;border:1px solid var(--border);font-size:11px;}
+.moneda-label{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px;white-space:nowrap;}
+.moneda-toggle{display:flex;gap:3px;background:var(--card);border-radius:5px;padding:2px;}
+.moneda-btn{background:transparent;border:none;color:var(--muted);padding:4px 10px;border-radius:4px;font-size:11px;font-family:"Barlow Condensed",sans-serif;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.moneda-btn.active.ars{background:var(--blue);color:#fff;}
+.moneda-btn.active.usd{background:#16a34a;color:#fff;}
+.moneda-btn.active{background:var(--blue);color:#fff;}
+.moneda-nota{font-size:10px;color:var(--muted);font-style:italic;}
 .action-btns{display:flex;gap:8px;margin-top:12px;}
 .btn-pdf{flex:1;background:var(--green);color:#000;border:none;padding:11px;border-radius:7px;font-family:"Barlow Condensed",sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;cursor:pointer;letter-spacing:.5px;transition:opacity .2s;}
 .btn-pdf:hover{opacity:.85;}
@@ -321,6 +329,14 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           Validez:
           <select id="validez-dias"><option value="7">7 días</option><option value="10">10 días</option><option value="15" selected>15 días</option><option value="30">30 días</option><option value="0">Sin vencimiento</option></select>
+        </div>
+        <div class="moneda-row" id="moneda-row">
+          <span class="moneda-label">Moneda:</span>
+          <div class="moneda-toggle">
+            <button class="moneda-btn active" id="btn-ars" onclick="setMoneda('ARS')">🇦🇷 ARS</button>
+            <button class="moneda-btn" id="btn-usd" onclick="setMoneda('USD')">🇺🇸 USD</button>
+          </div>
+          <span class="moneda-nota" id="moneda-nota">Pesos argentinos</span>
         </div>
       </div>
       <div class="action-btns">
@@ -13395,10 +13411,20 @@ const ARTICULOS=[{c:"1100FER",d:"GAMISOL — Guante G7 algodón moteado ferreter
 // Los precios del Excel son la fuente de verdad. Se cargan frescos cada vez.
 let precios={};
 let carrito=[], nroPresupuesto=generarNro();
+let monedaActual='ARS'; // 'ARS' o 'USD'
+
+function setMoneda(m){
+  monedaActual=m;
+  document.getElementById('btn-ars').className='moneda-btn'+(m==='ARS'?' active ars':'');
+  document.getElementById('btn-usd').className='moneda-btn'+(m==='USD'?' active usd':'');
+  document.getElementById('moneda-nota').textContent=m==='ARS'?'Pesos argentinos':'Dólares estadounidenses';
+  actualizarTabla();
+}
 
 function artKey(a){return a.c+"||"+a.d;}
 function generarNro(){const n=new Date();return `P${String(n.getFullYear()).slice(-2)}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}-${Math.floor(Math.random()*9000)+1000}`;}
 function fmt(n){return n.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function monedaSimbolo(){return monedaActual==='USD'?'USD ':'$';}
 function showToast(msg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=color||'var(--green)';t.style.color=color?'#fff':'#000';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 function cargarPrecios(){
@@ -13480,20 +13506,22 @@ function actualizarTabla(){
   const dp=parseFloat(document.getElementById('descuento').value)||0;
   if(carrito.length===0){
     body.innerHTML='<tr><td colspan="5" class="empty-cart">Sin ítems — buscá y hacé clic en Añadir</td></tr>';
-    ['total-neto','total-neto-final','total-iva','total-final'].forEach(id=>document.getElementById(id).textContent='$0,00');
+    const S=monedaSimbolo();
+    ['total-neto','total-neto-final','total-iva','total-final'].forEach(id=>document.getElementById(id).textContent=S+'0,00');
     document.getElementById('descuento-row').style.display='none';return;
   }
   let sub=0;
+  const S=monedaSimbolo();
   body.innerHTML=carrito.map((it,i)=>{const s=it.p*it.q;sub+=s;
-    return `<tr><td style="font-size:11px;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td><td style="text-align:right;color:var(--muted);font-size:11px">$${fmt(it.p)}</td><td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td><td style="text-align:right;font-weight:600;font-size:12px">$${fmt(s)}</td><td style="text-align:center"><button class="del-btn" onclick="borrar(${i})">✕</button></td></tr>`;
+    return `<tr><td style="font-size:11px;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td><td style="text-align:right;color:var(--muted);font-size:11px">${S}${fmt(it.p)}</td><td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td><td style="text-align:right;font-weight:600;font-size:12px">${S}${fmt(s)}</td><td style="text-align:center"><button class="del-btn" onclick="borrar(${i})">✕</button></td></tr>`;
   }).join('');
   const dm=sub*(dp/100),neto=sub-dm,iva=neto*0.21,total=neto+iva;
-  document.getElementById('total-neto').textContent='$'+fmt(sub);
-  if(dp>0){document.getElementById('descuento-row').style.display='';document.getElementById('descuento-label').textContent=`Descuento (${dp}%)`;document.getElementById('descuento-monto').textContent='-$'+fmt(dm);}
+  document.getElementById('total-neto').textContent=S+fmt(sub);
+  if(dp>0){document.getElementById('descuento-row').style.display='';document.getElementById('descuento-label').textContent=`Descuento (${dp}%)`;document.getElementById('descuento-monto').textContent='-'+S+fmt(dm);}
   else document.getElementById('descuento-row').style.display='none';
-  document.getElementById('total-neto-final').textContent='$'+fmt(neto);
-  document.getElementById('total-iva').textContent='$'+fmt(iva);
-  document.getElementById('total-final').textContent='$'+fmt(total);
+  document.getElementById('total-neto-final').textContent=S+fmt(neto);
+  document.getElementById('total-iva').textContent=S+fmt(iva);
+  document.getElementById('total-final').textContent=S+fmt(total);
 }
 
 // ─── ADMIN MODAL (solo para ver / ajuste temporal) ────────
@@ -13579,12 +13607,14 @@ async function generarPDF(){
   const hoy=new Date();
   const fecha=hoy.toLocaleDateString('es-AR');
   const R=[229,31,31],B=[10,10,10],G=[100,100,100];
+  const S=monedaSimbolo();
+  const monedaTexto=monedaActual==='USD'?'Dólares Estadounidenses (USD)':'Pesos Argentinos (ARS)';
 
   let startY=_pdfHeader(doc,emp,nroPresupuesto,fecha,cli,pago,null);
   if(vd>0){const v=new Date(hoy);v.setDate(v.getDate()+vd);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
 
   let sub=0;
-  const rows=carrito.map(it=>{const s=it.p*it.q;sub+=s;return[it.cod,it.desc,'$'+fmt(it.p),it.q,'$'+fmt(s)];});
+  const rows=carrito.map(it=>{const s=it.p*it.q;sub+=s;return[it.cod,it.desc,S+fmt(it.p),it.q,S+fmt(s)];});
   doc.autoTable({startY,head:[['Código','Descripción','Precio U.','Cant.','Subtotal']],body:rows,
     headStyles:{fillColor:[30,30,30],textColor:255,fontStyle:'bold',fontSize:8},
     columnStyles:{0:{cellWidth:25,fontSize:7.5},1:{fontSize:8},2:{halign:'right',cellWidth:23},3:{halign:'center',cellWidth:13},4:{halign:'right',cellWidth:25,fontStyle:'bold'}},
@@ -13592,20 +13622,34 @@ async function generarPDF(){
   let y=doc.lastAutoTable.finalY+6;
   const dm=sub*(dp/100),neto=sub-dm,iva=neto*0.21,total=neto+iva;
   const tx=128;
-  doc.setFontSize(8);doc.setTextColor(...G);doc.text("Subtotal neto:",tx,y);doc.setTextColor(...B);doc.text("$"+fmt(sub),194,y,{align:'right'});
-  if(dp>0){y+=4;doc.setTextColor(200,130,0);doc.text(`Descuento (${dp}%):`,tx,y);doc.text("-$"+fmt(dm),194,y,{align:'right'});}
-  y+=4;doc.setTextColor(...G);doc.text("Neto a facturar:",tx,y);doc.setFont("helvetica","bold");doc.setTextColor(...B);doc.text("$"+fmt(neto),194,y,{align:'right'});
-  y+=4;doc.setFont("helvetica","normal");doc.setTextColor(...G);doc.text("IVA (21%):",tx,y);doc.text("$"+fmt(iva),194,y,{align:'right'});
+
+  // Leyenda de moneda
+  doc.setFont("helvetica","normal");doc.setFontSize(7.5);
+  if(monedaActual==='USD'){
+    doc.setFillColor(22,163,74);doc.roundedRect(14,y-2,70,7,1.5,1.5,'F');
+    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
+    doc.text("💵 Cotización en: "+monedaTexto,18,y+2.5);
+  } else {
+    doc.setFillColor(37,99,235);doc.roundedRect(14,y-2,65,7,1.5,1.5,'F');
+    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
+    doc.text("🇦🇷 Cotización en: "+monedaTexto,18,y+2.5);
+  }
+  doc.setFont("helvetica","normal");
+
+  doc.setFontSize(8);doc.setTextColor(...G);doc.text("Subtotal neto:",tx,y);doc.setTextColor(...B);doc.text(S+fmt(sub),194,y,{align:'right'});
+  if(dp>0){y+=4;doc.setTextColor(200,130,0);doc.text(`Descuento (${dp}%):`,tx,y);doc.text("-"+S+fmt(dm),194,y,{align:'right'});}
+  y+=4;doc.setTextColor(...G);doc.text("Neto a facturar:",tx,y);doc.setFont("helvetica","bold");doc.setTextColor(...B);doc.text(S+fmt(neto),194,y,{align:'right'});
+  y+=4;doc.setFont("helvetica","normal");doc.setTextColor(...G);doc.text("IVA (21%):",tx,y);doc.text(S+fmt(iva),194,y,{align:'right'});
   y+=2;doc.setDrawColor(...R);doc.setLineWidth(0.4);doc.line(tx,y+1,194,y+1);y+=5;
   doc.setFillColor(...R);doc.roundedRect(tx-2,y-3,196-tx+2,9,1.5,1.5,'F');
   doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(255,255,255);
-  doc.text("TOTAL:",tx+2,y+2.5);doc.text("$"+fmt(total),192,y+2.5,{align:'right'});
+  doc.text("TOTAL:",tx+2,y+2.5);doc.text(S+fmt(total),192,y+2.5,{align:'right'});
 
   // Datos vendedor
   if(usuarioActivo) _pdfVendedor(doc, usuarioActivo, Math.min(y+14, 262));
 
   doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(160,160,160);
-  doc.text("Este presupuesto no constituye factura — BM GROUP",105,284,{align:'center'});
+  doc.text(`Este presupuesto no constituye factura — Cotizado en ${monedaTexto} — BM GROUP`,105,284,{align:'center'});
   doc.save(`Presupuesto_${nroPresupuesto}_${archivo}.pdf`);
   guardarEnHistorial();
   showToast('✓ PDF generado correctamente');
