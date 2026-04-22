@@ -13617,7 +13617,7 @@ async function generarPDF(){
   const fecha=hoy.toLocaleDateString('es-AR');
   const R=[229,31,31],B=[10,10,10],G=[100,100,100];
   const S=monedaSimbolo();
-  const monedaTexto=monedaActual==='USD'?'Dólares Estadounidenses (USD)':'Pesos Argentinos (ARS)';
+  const monedaTexto=monedaActual==='USD'?'Dolares Estadounidenses (USD)':'Pesos Argentinos (ARS)';
 
   let startY=_pdfHeader(doc,emp,nroPresupuesto,fecha,cli,pago,null);
   if(vd>0){const v=new Date(hoy);v.setDate(v.getDate()+vd);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...G);doc.text("Válido hasta: "+v.toLocaleDateString('es-AR'),150,40);}
@@ -13635,13 +13635,13 @@ async function generarPDF(){
   // Leyenda de moneda
   doc.setFont("helvetica","normal");doc.setFontSize(7.5);
   if(monedaActual==='USD'){
-    doc.setFillColor(22,163,74);doc.roundedRect(14,y-2,70,7,1.5,1.5,'F');
+    doc.setFillColor(22,163,74);doc.roundedRect(14,y-2,72,7,1.5,1.5,'F');
     doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
-    doc.text("💵 Cotización en: "+monedaTexto,18,y+2.5);
+    doc.text("USD | Cotizacion en: "+monedaTexto,18,y+2.5);
   } else {
-    doc.setFillColor(37,99,235);doc.roundedRect(14,y-2,65,7,1.5,1.5,'F');
+    doc.setFillColor(37,99,235);doc.roundedRect(14,y-2,68,7,1.5,1.5,'F');
     doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");
-    doc.text("🇦🇷 Cotización en: "+monedaTexto,18,y+2.5);
+    doc.text("ARS | Cotizacion en: "+monedaTexto,18,y+2.5);
   }
   doc.setFont("helvetica","normal");
 
