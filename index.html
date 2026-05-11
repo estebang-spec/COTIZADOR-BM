@@ -78,7 +78,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .manual-grid{display:grid;grid-template-columns:3fr 1fr 0.6fr auto;gap:8px;align-items:center;}
 .input-field{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:inherit;font-size:13px;}
 .input-field:focus{outline:none;border-color:var(--red);}
-.presup-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.presup-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;min-width:0;overflow:hidden;}
 .presup-title{font-family:"Barlow Condensed",sans-serif;font-weight:900;font-size:18px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
 .presup-num{font-size:11px;color:var(--muted);font-family:"Barlow",sans-serif;font-weight:400;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
@@ -87,13 +87,18 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .form-label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;}
 .form-input{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:inherit;font-size:13px;}
 .form-input:focus{outline:none;border-color:var(--red);}
-.items-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;}
+.items-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;table-layout:fixed;}
 .items-table th{background:var(--card);color:var(--muted);padding:6px 7px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
-.items-table td{padding:6px 7px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.items-table td{padding:6px 7px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;}
 .items-table tr:last-child td{border-bottom:none;}
 .items-table tr:hover td{background:var(--card);}
-.qty-cell input{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:3px 5px;border-radius:4px;width:50px;font-family:inherit;font-size:11px;text-align:center;}
-.precio-carrito-input{background:var(--dark);border:1px solid var(--border);color:var(--yellow);padding:3px 6px;border-radius:4px;width:80px;font-family:inherit;font-size:11px;text-align:right;font-weight:600;transition:border-color .2s;}
+.items-table col.col-desc{width:auto;}
+.items-table col.col-pu{width:88px;}
+.items-table col.col-cant{width:58px;}
+.items-table col.col-sub{width:90px;}
+.items-table col.col-del{width:30px;}
+.qty-cell input{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:3px 4px;border-radius:4px;width:44px;max-width:100%;font-family:inherit;font-size:11px;text-align:center;box-sizing:border-box;}
+.precio-carrito-input{background:var(--dark);border:1px solid var(--border);color:var(--yellow);padding:3px 5px;border-radius:4px;width:74px;max-width:100%;font-family:inherit;font-size:11px;text-align:right;font-weight:600;transition:border-color .2s;box-sizing:border-box;}
 .precio-carrito-input:focus{outline:none;border-color:var(--yellow);background:rgba(245,158,11,.08);}
 .del-btn{background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;padding:2px 5px;border-radius:4px;transition:background .15s;}
 .del-btn:hover{background:rgba(239,68,68,.15);}
@@ -216,6 +221,74 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .pago-chip{font-size:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:10px;cursor:pointer;transition:all .15s;font-family:inherit;}
 .pago-chip:hover{border-color:var(--red);color:var(--text);background:var(--panel);}
 .hist-action-dup{background:#a855f7 !important;color:#fff !important;}
+
+/* PEGAR LISTA DEL CLIENTE */
+.btn-paste-list{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-left:auto;box-shadow:0 2px 8px rgba(168,85,247,.3);transition:all .2s;}
+.btn-paste-list:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(168,85,247,.45);}
+.paste-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:998;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;backdrop-filter:blur(3px);}
+.paste-modal-overlay.open{display:flex;}
+.paste-modal{background:var(--panel);border-radius:14px;border:1px solid var(--border);max-width:1100px;width:100%;max-height:calc(100vh - 60px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.paste-modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.paste-modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:.5px;}
+.paste-modal-subtitle{font-size:11px;color:var(--muted);margin-top:2px;}
+.paste-modal-close{background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0 8px;}
+.paste-modal-close:hover{color:var(--red);}
+.paste-modal-body{padding:18px 20px;overflow-y:auto;flex:1;}
+.paste-step{display:none;}
+.paste-step.active{display:block;}
+.paste-textarea{width:100%;min-height:280px;background:var(--dark);border:1px solid var(--border);color:var(--text);padding:12px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;resize:vertical;box-sizing:border-box;}
+.paste-textarea:focus{outline:none;border-color:#a855f7;}
+.paste-tips{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--text);}
+.paste-tips b{color:#c4b5fd;}
+.paste-tips ul{margin:6px 0 0 18px;padding:0;color:var(--muted);font-size:11px;}
+.paste-actions{display:flex;gap:8px;padding:12px 20px;border-top:1px solid var(--border);justify-content:flex-end;flex-shrink:0;background:var(--dark);border-radius:0 0 14px 14px;}
+.paste-btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .2s;}
+.paste-btn-primary{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;}
+.paste-btn-primary:hover{transform:translateY(-1px);}
+.paste-btn-secondary{background:var(--card);color:var(--muted);border:1px solid var(--border);}
+.paste-btn-secondary:hover{color:var(--text);border-color:var(--border);}
+.paste-btn:disabled{opacity:.5;cursor:not-allowed;}
+.match-summary{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+.match-stat{flex:1;min-width:120px;background:var(--dark);padding:10px 14px;border-radius:8px;border:1px solid var(--border);}
+.match-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;line-height:1;}
+.match-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+.match-stat.exact{border-color:rgba(34,197,94,.4);}
+.match-stat.exact .match-stat-num{color:var(--green);}
+.match-stat.partial{border-color:rgba(245,158,11,.4);}
+.match-stat.partial .match-stat-num{color:var(--yellow);}
+.match-stat.none{border-color:rgba(239,68,68,.4);}
+.match-stat.none .match-stat-num{color:#fca5a5;}
+.match-line{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+.match-line-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
+.match-line-pedido{flex:1;font-size:13px;color:var(--text);}
+.match-line-pedido small{display:block;font-size:10px;color:var(--muted);margin-top:2px;}
+.match-cant{background:var(--card);border:1px solid var(--border);color:var(--text);width:50px;padding:4px 6px;border-radius:5px;font-family:inherit;font-size:12px;text-align:center;}
+.match-options{display:flex;flex-direction:column;gap:4px;}
+.match-option{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;}
+.match-option:hover{border-color:#a855f7;}
+.match-option.selected{border-color:#a855f7;background:rgba(168,85,247,.1);}
+.match-option-radio{flex-shrink:0;}
+.match-option-info{flex:1;min-width:0;font-size:11px;line-height:1.3;}
+.match-option-code{font-family:monospace;color:var(--muted);font-size:10px;}
+.match-option-desc{color:var(--text);}
+.match-option-meta{display:flex;gap:6px;font-size:10px;color:var(--muted);margin-top:2px;}
+.match-option-price{font-weight:700;color:var(--green);white-space:nowrap;font-size:12px;}
+.match-line.none-found{border-left:3px solid #ef4444;}
+.match-line.exact-match{border-left:3px solid var(--green);}
+.match-line.partial-match{border-left:3px solid var(--yellow);}
+.match-status{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.3px;}
+.match-status.exact{background:rgba(34,197,94,.15);color:var(--green);}
+.match-status.partial{background:rgba(245,158,11,.15);color:var(--yellow);}
+.match-status.none{background:rgba(239,68,68,.15);color:#fca5a5;}
+.match-status.manual{background:rgba(168,85,247,.15);color:#c4b5fd;}
+.match-manual-row{display:none;margin-top:6px;padding-top:8px;border-top:1px dashed var(--border);grid-template-columns:1fr 110px;gap:8px;align-items:center;}
+.match-line.use-manual .match-manual-row{display:grid;}
+.match-line.use-manual .match-options{opacity:.4;pointer-events:none;}
+.match-manual-input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:5px;font-family:inherit;font-size:12px;width:100%;box-sizing:border-box;}
+.match-manual-input:focus{outline:none;border-color:#a855f7;}
+.match-toggle-manual{font-size:10px;color:#a855f7;background:none;border:none;cursor:pointer;padding:2px 6px;text-decoration:underline;font-family:inherit;}
+.paste-progress{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.paste-progress b{color:var(--text);}
 </style>
 </head>
 <body>
@@ -308,6 +381,10 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 <option value="LOCTITE">LOCTITE</option>
         </select>
         <span class="results-count" id="results-count"></span>
+        <button class="btn-paste-list" onclick="abrirPegarLista()" title="Pegar listado del cliente y armar la cotización automáticamente">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          Pegar lista del cliente
+        </button>
       </div>
       <div class="lista-card">
         <div class="lista-header"><div>Código <button class="sort-btn" onclick="setSort('c')" id="sort-c" title="Ordenar por código">⇅</button></div><div>Descripción <button class="sort-btn" onclick="setSort('d')" id="sort-d" title="Ordenar por descripción">⇅</button></div><div>Precio Unit. <button class="sort-btn" onclick="setSort('p')" id="sort-p" title="Ordenar por precio">⇅</button></div><div>Cant.</div><div>Acción</div></div>
@@ -361,6 +438,13 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         <div class="form-group"><label class="form-label">Descuento (%)</label><input type="number" class="form-input" id="descuento" placeholder="0" min="0" max="100" value="0" oninput="actualizarTabla()"></div>
       </div>
       <table class="items-table">
+        <colgroup>
+          <col class="col-desc">
+          <col class="col-pu">
+          <col class="col-cant">
+          <col class="col-sub">
+          <col class="col-del">
+        </colgroup>
         <thead><tr><th>Descripción</th><th style="text-align:right">P.Unit</th><th style="text-align:center">Cant</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
         <tbody id="body-items"><tr><td colspan="5" class="empty-cart">Sin ítems — buscá y hacé clic en Añadir</td></tr></tbody>
       </table>
@@ -395,6 +479,45 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         <button class="btn-picking" onclick="generarPicking()">📋 Hoja de Picking</button>
         <button class="btn-clear" onclick="limpiarCarrito()">Limpiar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PEGAR LISTA DEL CLIENTE -->
+<div class="paste-modal-overlay" id="paste-modal">
+  <div class="paste-modal">
+    <div class="paste-modal-header">
+      <div>
+        <div class="paste-modal-title">📋 Pegar lista del cliente</div>
+        <div class="paste-modal-subtitle" id="paste-subtitle">Pegá el listado del cliente y armamos la cotización en segundos</div>
+      </div>
+      <button class="paste-modal-close" onclick="cerrarPegarLista()">✕</button>
+    </div>
+    <div class="paste-modal-body">
+      <!-- PASO 1: Pegar texto -->
+      <div class="paste-step active" id="paste-step-1">
+        <div class="paste-tips">
+          <b>💡 Pegá el listado del cliente, una línea por ítem:</b>
+          <ul>
+            <li>Acepta cantidades al inicio o final (ej: <i>"5x alicate universal"</i> o <i>"alicate universal x5"</i>)</li>
+            <li>Acepta numeración (<i>"1. Disco corte 115"</i>, <i>"- Maza 2kg"</i>)</li>
+            <li>Por cada línea busca los 3 mejores matches y te dejo elegir</li>
+          </ul>
+        </div>
+        <textarea class="paste-textarea" id="paste-textarea" placeholder="Ejemplo:&#10;&#10;1. Disco corte 115x1&#10;3 alicate universal&#10;Llave ajustable 18&quot;&#10;- 2x Maza 2kg&#10;Macho M10..."></textarea>
+      </div>
+      <!-- PASO 2: Revisar matches -->
+      <div class="paste-step" id="paste-step-2">
+        <div class="match-summary" id="match-summary"></div>
+        <div class="paste-progress" id="paste-progress"></div>
+        <div id="match-list"></div>
+      </div>
+    </div>
+    <div class="paste-actions">
+      <button class="paste-btn paste-btn-secondary" id="paste-btn-back" onclick="pasteVolver()" style="display:none">← Volver a editar</button>
+      <button class="paste-btn paste-btn-secondary" onclick="cerrarPegarLista()">Cancelar</button>
+      <button class="paste-btn paste-btn-primary" id="paste-btn-procesar" onclick="procesarPegado()">Buscar coincidencias →</button>
+      <button class="paste-btn paste-btn-primary" id="paste-btn-agregar" onclick="agregarSeleccion()" style="display:none">Agregar al presupuesto →</button>
     </div>
   </div>
 </div>
@@ -13632,7 +13755,7 @@ function actualizarTabla(){
   const S=monedaSimbolo();
   body.innerHTML=carrito.map((it,i)=>{const s=it.p*it.q;sub+=s;
     return `<tr>
-      <td style="font-size:11px;max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td>
+      <td style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td>
       <td style="text-align:right;font-size:11px"><input type="number" class="precio-carrito-input" value="${it.p}" min="0" step="0.01" onchange="cambiarPrecio(${i},this.value)" title="Editar precio"></td>
       <td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td>
       <td style="text-align:right;font-weight:600;font-size:12px" id="subtotal-${i}">${S}${fmt(s)}</td>
@@ -14066,6 +14189,284 @@ async function fetchDolarBNA(){
 }
 fetchDolarBNA();
 setInterval(fetchDolarBNA,5*60*1000); // refresca cada 5 min
+
+// ─── PEGAR LISTA DEL CLIENTE ──────────────────────────────
+let pasteMatches=[]; // [{linea, cant, query, opciones:[{art, score}], elegidoIdx, manual}]
+
+function abrirPegarLista(){
+  document.getElementById('paste-modal').classList.add('open');
+  document.getElementById('paste-textarea').focus();
+  // Reset
+  document.getElementById('paste-step-1').classList.add('active');
+  document.getElementById('paste-step-2').classList.remove('active');
+  document.getElementById('paste-btn-procesar').style.display='';
+  document.getElementById('paste-btn-agregar').style.display='none';
+  document.getElementById('paste-btn-back').style.display='none';
+}
+
+function cerrarPegarLista(){
+  document.getElementById('paste-modal').classList.remove('open');
+}
+
+function pasteVolver(){
+  document.getElementById('paste-step-1').classList.add('active');
+  document.getElementById('paste-step-2').classList.remove('active');
+  document.getElementById('paste-btn-procesar').style.display='';
+  document.getElementById('paste-btn-agregar').style.display='none';
+  document.getElementById('paste-btn-back').style.display='none';
+}
+
+// Parsea una línea para extraer cantidad y descripción
+function parsearLineaPedido(linea){
+  let texto=linea.trim();
+  if(!texto)return null;
+  let cant=1;
+  // 1. Quitar bullets sin números: "- ", "• ", "* "
+  texto=texto.replace(/^[\s•\-\*]+\s*/,'').trim();
+  // 2. Patrones explícitos de cantidad (PRIMERO, antes de quitar numeración)
+  // "5x alicate" / "5 x alicate"
+  let m=texto.match(/^(\d+)\s*x\s+(.+)$/i);
+  if(m){cant=parseInt(m[1]);texto=m[2];}
+  else{
+    // "alicate x5" / "alicate (x5)"
+    m=texto.match(/^(.+?)\s+\(?x\s*(\d+)\)?\s*$/i);
+    if(m){cant=parseInt(m[2]);texto=m[1];}
+    else{
+      // "alicate 5un" / "alicate 5 unidades"
+      m=texto.match(/^(.+?)\s+(\d+)\s*(un|unid|unidades|u|pzas?|piezas?)\.?\s*$/i);
+      if(m){cant=parseInt(m[2]);texto=m[1];}
+      else{
+        // "1. descripción", "1) descripción", "1- descripción" → quitar numeración
+        m=texto.match(/^(\d+)\s*[\.\)\-:]\s*(.+)$/);
+        if(m){texto=m[2];} // numeración del listado, no cantidad
+      }
+    }
+  }
+  texto=texto.trim().replace(/[.,;:]+$/,'').trim();
+  return {linea, cant, query:texto};
+}
+
+// Normaliza texto para matching (sin tildes, mayúsculas)
+function normalizar(s){
+  return s.toUpperCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[""'']/g,'')
+    .replace(/[\(\)\[\]]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+
+// Sinónimos del rubro: amplía búsqueda
+const SINONIMOS={
+  'MEDIA LUNA':['DOBLE ANILLO','BOCA ANILLO'],
+  'PINZA':['ALICATE'],
+  'ALICATE':['PINZA'],
+  'PERCUTOR':['PERCUSION','TALADRO PERCUTOR'],
+  'PICO LORO':['PICO DE LORO','BOMBA AGUA','BOMBA DE AGUA'],
+  'BOMBA AGUA':['PICO DE LORO','PICO LORO'],
+  'STILLSON':['LLAVE PARA TUBOS','LLAVE CADENA'],
+  'TUBOS':['CAÑOS'],
+  'AJUSTABLE':['FRANCESA','INGLESA'],
+  'COMBINADA':['ESTRELLA','BOCA'],
+};
+
+function expandirTokens(texto){
+  const tokens=normalizar(texto).split(/\s+/).filter(t=>t.length>=2);
+  // Reconocer medidas comunes: "1/2", "1.1/2", "115X1.6", "M10", "3/4"
+  return tokens;
+}
+
+// Score: cuántos tokens del query están en el producto
+function scoreMatch(query, art){
+  const qNorm=normalizar(query);
+  const aNorm=normalizar(art.c+' '+art.d+' '+art.h);
+  const tokens=qNorm.split(/\s+/).filter(t=>t.length>=2);
+  if(tokens.length===0)return 0;
+  let score=0;
+  let mustMatch=true;
+  tokens.forEach(t=>{
+    if(aNorm.includes(t)){score+=2;}
+    else{
+      // Probar sinónimos
+      const sins=SINONIMOS[t]||[];
+      let foundSin=false;
+      for(const s of sins){if(aNorm.includes(s)){score+=1.5;foundSin=true;break;}}
+      // Tokens críticos (medidas) deben matchear
+      if(/^\d/.test(t)||/^M\d/.test(t)){
+        if(!aNorm.includes(t)&&!foundSin)mustMatch=false;
+      }
+    }
+  });
+  if(!mustMatch)score*=0.3; // penalizar fuerte si falta medida
+  // Bonus por código exacto
+  if(aNorm.includes(qNorm))score+=10;
+  return score;
+}
+
+function buscarMejoresMatches(query, max=3){
+  const results=ARTICULOS.map(a=>({art:a,score:scoreMatch(query,a)}))
+    .filter(r=>r.score>=2)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,max);
+  return results;
+}
+
+function procesarPegado(){
+  const texto=document.getElementById('paste-textarea').value;
+  const lineas=texto.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  if(lineas.length===0){showToast('Pegá el listado del cliente primero','#ef4444');return;}
+  pasteMatches=[];
+  for(const linea of lineas){
+    const parsed=parsearLineaPedido(linea);
+    if(!parsed)continue;
+    const opciones=buscarMejoresMatches(parsed.query,3);
+    pasteMatches.push({
+      ...parsed,
+      opciones,
+      elegidoIdx:opciones.length>0?0:-1,
+      manual:false,
+      manualDesc:parsed.query,
+      manualPrecio:0,
+      categoria: opciones.length===0?'none' : (opciones[0].score>=8?'exact':'partial')
+    });
+  }
+  renderMatches();
+  document.getElementById('paste-step-1').classList.remove('active');
+  document.getElementById('paste-step-2').classList.add('active');
+  document.getElementById('paste-btn-procesar').style.display='none';
+  document.getElementById('paste-btn-agregar').style.display='';
+  document.getElementById('paste-btn-back').style.display='';
+  document.getElementById('paste-subtitle').textContent=`${pasteMatches.length} líneas procesadas — revisá los matches y confirmá`;
+}
+
+function renderMatches(){
+  const cont=document.getElementById('match-list');
+  const summary=document.getElementById('match-summary');
+  const exactos=pasteMatches.filter(m=>m.categoria==='exact').length;
+  const parciales=pasteMatches.filter(m=>m.categoria==='partial').length;
+  const ninguno=pasteMatches.filter(m=>m.categoria==='none').length;
+  summary.innerHTML=`
+    <div class="match-stat exact"><div class="match-stat-num">${exactos}</div><div class="match-stat-lbl">Match exacto</div></div>
+    <div class="match-stat partial"><div class="match-stat-num">${parciales}</div><div class="match-stat-lbl">Parcial — revisar</div></div>
+    <div class="match-stat none"><div class="match-stat-num">${ninguno}</div><div class="match-stat-lbl">Sin match — manual</div></div>
+    <div class="match-stat"><div class="match-stat-num">${pasteMatches.length}</div><div class="match-stat-lbl">Total líneas</div></div>
+  `;
+  cont.innerHTML=pasteMatches.map((m,i)=>{
+    const statusClass=m.manual?'manual':m.categoria;
+    const statusLabel=m.manual?'MANUAL':(m.categoria==='exact'?'EXACTO':(m.categoria==='partial'?'PARCIAL':'SIN MATCH'));
+    const opcionesHTML=m.opciones.map((o,oi)=>{
+      const a=o.art;
+      const disc=esDescontinuado(a)?'<span class="discontinued-badge">DISC</span>':'';
+      return `<div class="match-option ${m.elegidoIdx===oi?'selected':''}" onclick="elegirMatch(${i},${oi})">
+        <input type="radio" class="match-option-radio" ${m.elegidoIdx===oi?'checked':''} onchange="elegirMatch(${i},${oi})">
+        <div class="match-option-info">
+          <div class="match-option-desc">${a.d}</div>
+          <div class="match-option-meta"><span class="match-option-code">${a.c}</span> · <span>${a.h}</span> ${disc}</div>
+        </div>
+        <div class="match-option-price">$${fmt(a.p)}</div>
+      </div>`;
+    }).join('');
+    const sinOpciones=m.opciones.length===0;
+    const lineClass=m.manual?'use-manual':(m.categoria==='exact'?'exact-match':(m.categoria==='partial'?'partial-match':'none-found'));
+    return `<div class="match-line ${lineClass}" id="match-${i}">
+      <div class="match-line-header">
+        <div class="match-line-pedido">
+          <b>${i+1}.</b> ${m.query}
+          <small>${m.linea}</small>
+        </div>
+        <span class="match-status ${statusClass}">${statusLabel}</span>
+        <input type="number" class="match-cant" value="${m.cant}" min="1" onchange="cambiarCantMatch(${i},this.value)" title="Cantidad">
+      </div>
+      <div class="match-options">
+        ${sinOpciones?'<div style="font-size:11px;color:var(--muted);padding:8px 4px">No se encontraron coincidencias en el catálogo. Cargá manualmente abajo o quitá esta línea.</div>':opcionesHTML}
+      </div>
+      <div style="text-align:right;margin-top:6px">
+        <button class="match-toggle-manual" onclick="toggleManual(${i})">${m.manual?'← Usar match del catálogo':'✏ Cargar como manual'}</button>
+        <button class="match-toggle-manual" style="color:#ef4444" onclick="quitarMatch(${i})">🗑 Quitar línea</button>
+      </div>
+      <div class="match-manual-row">
+        <input type="text" class="match-manual-input" placeholder="Descripción" value="${m.manualDesc}" onchange="cambiarManualDesc(${i},this.value)">
+        <input type="number" class="match-manual-input" placeholder="Precio" value="${m.manualPrecio||''}" min="0" step="0.01" onchange="cambiarManualPrecio(${i},this.value)">
+      </div>
+    </div>`;
+  }).join('');
+  actualizarProgress();
+}
+
+function actualizarProgress(){
+  const total=pasteMatches.length;
+  const listos=pasteMatches.filter(m=>{
+    if(m.manual)return m.manualDesc&&m.manualPrecio>0;
+    return m.elegidoIdx>=0&&m.opciones[m.elegidoIdx];
+  }).length;
+  const sinListo=total-listos;
+  document.getElementById('paste-progress').innerHTML=
+    `<b>${listos} de ${total}</b> ítems listos para agregar` +
+    (sinListo>0?` · <span style="color:var(--yellow)">${sinListo} requieren atención</span>`:'');
+}
+
+function elegirMatch(i, oi){
+  pasteMatches[i].elegidoIdx=oi;
+  pasteMatches[i].manual=false;
+  renderMatches();
+}
+
+function cambiarCantMatch(i, val){
+  const v=Math.max(1,parseInt(val)||1);
+  pasteMatches[i].cant=v;
+  actualizarProgress();
+}
+
+function toggleManual(i){
+  pasteMatches[i].manual=!pasteMatches[i].manual;
+  renderMatches();
+}
+
+function cambiarManualDesc(i,v){pasteMatches[i].manualDesc=v;actualizarProgress();}
+function cambiarManualPrecio(i,v){pasteMatches[i].manualPrecio=parseFloat(v)||0;actualizarProgress();}
+
+function quitarMatch(i){
+  pasteMatches.splice(i,1);
+  renderMatches();
+}
+
+function agregarSeleccion(){
+  let agregados=0;
+  let omitidos=0;
+  for(const m of pasteMatches){
+    if(m.manual){
+      if(m.manualDesc&&m.manualPrecio>0){
+        carrito.push({cod:'(MANUAL)',desc:m.manualDesc,p:m.manualPrecio,q:m.cant});
+        agregados++;
+      }else{omitidos++;}
+    }else if(m.elegidoIdx>=0 && m.opciones[m.elegidoIdx]){
+      const a=m.opciones[m.elegidoIdx].art;
+      const key=artKey(a);
+      const p=precios[key]||a.p||0;
+      if(p>0){
+        carrito.push({cod:a.c,desc:a.d,p:p,q:m.cant});
+        agregados++;
+      }else{omitidos++;}
+    }else{omitidos++;}
+  }
+  actualizarTabla();
+  cerrarPegarLista();
+  if(omitidos>0){
+    showToast(`✓ ${agregados} ítems agregados · ${omitidos} omitidos (sin precio o sin selección)`,'#a855f7');
+  }else{
+    showToast(`✓ ${agregados} ítems agregados al presupuesto`,'#22c55e');
+  }
+}
+
+// Cerrar con Esc
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const modal=document.getElementById('paste-modal');
+    if(modal&&modal.classList.contains('open')){
+      e.preventDefault();
+      cerrarPegarLista();
+    }
+  }
+});
 
 // ─── ATAJOS DE TECLADO ────────────────────────────────────
 document.addEventListener('keydown',function(e){
