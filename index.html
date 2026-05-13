@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{--red:#e51f1f;--red-dark:#b31414;--black:#0a0a0a;--dark:#111318;--panel:#1a1d24;--card:#21252e;--border:#2e3340;--text:#e8eaf0;--muted:#8892a4;--green:#22c55e;--yellow:#f59e0b;--blue:#3b82f6;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -78,7 +79,12 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .manual-grid{display:grid;grid-template-columns:3fr 1fr 0.6fr auto;gap:8px;align-items:center;}
 .input-field{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:inherit;font-size:13px;}
 .input-field:focus{outline:none;border-color:var(--red);}
-.presup-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;min-width:0;overflow:hidden;}
+.presup-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;min-width:0;position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;}
+.presup-card .form-grid{flex-shrink:0;}
+.presup-card .items-table-wrap{flex:1;overflow-y:auto;min-height:120px;margin:6px -4px 0;padding:0 4px;}
+.presup-card .totales-box{flex-shrink:0;}
+.presup-card .cart-stats{flex-shrink:0;}
+.presup-card .action-btns{flex-shrink:0;}
 .presup-title{font-family:"Barlow Condensed",sans-serif;font-weight:900;font-size:18px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
 .presup-num{font-size:11px;color:var(--muted);font-family:"Barlow",sans-serif;font-weight:400;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
@@ -87,8 +93,8 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .form-label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;}
 .form-input{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:6px;font-family:inherit;font-size:13px;}
 .form-input:focus{outline:none;border-color:var(--red);}
-.items-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px;table-layout:fixed;}
-.items-table th{background:var(--card);color:var(--muted);padding:6px 7px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+.items-table{width:100%;border-collapse:collapse;margin-top:0;font-size:12px;table-layout:fixed;}
+.items-table th{background:var(--card);color:var(--muted);padding:6px 7px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2;}
 .items-table td{padding:6px 7px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;}
 .items-table tr:last-child td{border-bottom:none;}
 .items-table tr:hover td{background:var(--card);}
@@ -194,6 +200,156 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .toast.show{transform:translateY(0);opacity:1;}
 @media(max-width:1100px){.main{grid-template-columns:1fr;}}
 @media(max-width:600px){.lista-header,.fila{grid-template-columns:85px 1fr 90px 50px 65px;}.form-grid{grid-template-columns:1fr;}.manual-grid{grid-template-columns:1fr 1fr;}}
+
+/* D — MOBILE/RESPONSIVE COMPLETO */
+.mobile-only{display:none;}
+.mobile-fab{display:none;}
+.mobile-overlay{display:none;}
+
+@media(max-width:900px){
+  /* Header colapsado */
+  body{padding-bottom:80px;}
+  header{padding:8px 12px;flex-wrap:wrap;gap:8px;}
+  .logo{font-size:18px;}
+  .logo small{display:none;}
+  .header-right{gap:5px;flex-wrap:wrap;}
+  .dolar-chip{padding:5px 9px;font-size:10px;}
+  .dolar-chip .dolar-divider,.dolar-chip > div:last-child{display:none;}
+  .dolar-label{font-size:9px;}
+  .dolar-val{font-size:13px;}
+  .empresa-select{font-size:11px;padding:4px 7px;max-width:130px;}
+  .empresa-info{display:none;}
+  .user-chip{font-size:10px;padding:4px 7px;}
+  .user-chip svg{width:11px;height:11px;}
+  .btn-admin{padding:4px 8px;font-size:11px;}
+  .btn-admin span:not(.badge-precios){display:none;}
+  
+  /* Tabs más grandes para tocar */
+  .tabs{padding:0 8px;}
+  .tab{padding:11px 12px;font-size:11px;flex:1;text-align:center;}
+  
+  /* Filters bar - reorganizar */
+  .filters-bar{flex-wrap:wrap;gap:6px;padding:8px;}
+  .search-wrap{flex:1 1 100%;}
+  .search-wrap .kbd-shortcut{display:none;}
+  .hoja-select{flex:1;font-size:11px;}
+  .btn-paste-list{flex:1;justify-content:center;font-size:11px;padding:7px 10px;}
+  .btn-paste-list span,.btn-paste-list svg+*{}
+  
+  /* Lista — tarjetas en mobile */
+  .lista-card{padding:6px;}
+  .lista-header{display:none;}
+  .fila{display:block;padding:10px 12px;border-bottom:1px solid var(--border);grid-template-columns:none;}
+  .fila > div{display:block;margin-bottom:5px;}
+  .fila > div:last-child{margin-bottom:0;}
+  .fila .desc-text{font-size:13px;color:var(--text);font-weight:500;margin-bottom:4px;}
+  .fila .code-tag{font-size:9px;}
+  .fila .hoja-badge{font-size:9px;}
+  .fila > div:nth-child(3){display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .fila > div:nth-child(3)::before{content:"Precio:";font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .precio-input{flex:1;max-width:130px;}
+  .fila > div:nth-child(4){display:inline-flex;align-items:center;gap:6px;width:auto;margin-right:8px;}
+  .fila > div:nth-child(4)::before{content:"Cant:";font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .cant-input{width:60px !important;font-size:14px;padding:6px;}
+  .fila > div:nth-child(5){display:inline-block;}
+  .fila .btn-add{padding:10px 16px;font-size:13px;width:auto;}
+  .precio-usd-equiv{font-size:10px;}
+  
+  /* Carrito flotante (FAB + drawer) */
+  .main{grid-template-columns:1fr;gap:0;padding:0;}
+  .main > div:last-child{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--border);max-height:0;overflow:hidden;transition:max-height .3s ease;z-index:50;border-radius:14px 14px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.4);}
+  .main > div:last-child.cart-open{max-height:80vh;overflow-y:auto;}
+  .presup-card{border:none;border-radius:0;padding:14px;}
+  .presup-card .form-grid{grid-template-columns:1fr;}
+  
+  /* FAB para abrir carrito */
+  .mobile-fab{display:flex;position:fixed;bottom:14px;right:14px;background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff;width:auto;height:54px;padding:0 18px;border-radius:30px;border:none;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer;box-shadow:0 6px 20px rgba(229,31,31,.5);z-index:60;transition:transform .2s;}
+  .mobile-fab:hover{transform:scale(1.05);}
+  .mobile-fab .fab-icon{font-size:22px;}
+  .mobile-fab .fab-count{background:#fff;color:var(--red);font-size:11px;padding:1px 7px;border-radius:10px;font-weight:800;}
+  .mobile-fab .fab-total{font-size:13px;opacity:.95;}
+  .mobile-fab.empty{display:none;}
+  
+  /* Overlay oscuro cuando carrito abierto */
+  .mobile-overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .mobile-overlay.show{opacity:1;pointer-events:auto;}
+  
+  /* Handle visual del carrito */
+  .cart-handle{display:flex;justify-content:center;align-items:center;padding:8px 0 4px;cursor:pointer;}
+  .cart-handle::before{content:"";width:48px;height:5px;background:var(--border);border-radius:3px;}
+  
+  /* Tabla del carrito más legible */
+  .items-table{font-size:11px;}
+  .items-table th{padding:5px 4px;font-size:9px;}
+  .items-table td{padding:5px 4px;}
+  .precio-carrito-input{width:62px;font-size:10px;}
+  .qty-cell input{width:38px;font-size:11px;}
+  
+  /* Botones de acción más grandes */
+  .action-btns{flex-direction:column;gap:6px;}
+  .btn-pdf,.btn-picking{padding:14px;font-size:14px;width:100%;}
+  .btn-clear{padding:10px;width:100%;}
+  
+  /* Modales fullscreen en mobile */
+  .paste-modal-overlay,.cli-modal-overlay,.xls-modal-overlay,.modal-overlay{padding:0 !important;align-items:stretch !important;}
+  .paste-modal,.cli-modal,.xls-modal,.modal{max-height:100vh !important;border-radius:0 !important;width:100% !important;max-width:100% !important;}
+  .paste-modal-header,.cli-modal-header,.xls-modal-header,.modal-header{padding:12px 14px;}
+  .paste-modal-title,.cli-modal-title,.xls-modal-title,.modal-title{font-size:18px;}
+  .paste-modal-body,.cli-modal-body,.xls-modal-body{padding:12px 14px;}
+  .cli-form-grid{grid-template-columns:1fr;}
+  
+  /* Match list (paste) */
+  .match-summary{gap:6px;}
+  .match-stat{min-width:0;flex:1;padding:7px 10px;}
+  .match-stat-num{font-size:18px;}
+  .match-stat-lbl{font-size:9px;}
+  
+  /* Clientes mobile */
+  .clientes-toolbar{gap:6px;}
+  .clientes-search{flex:1 1 100%;font-size:13px;}
+  .cli-filter-select,.btn-import-cli,.btn-nuevo-cliente{flex:1;}
+  .cli-card{grid-template-columns:1fr;gap:8px;padding:12px;}
+  .cli-totales{text-align:left;border-top:1px solid var(--border);padding-top:6px;}
+  .cli-actions{justify-content:flex-end;}
+  .cli-btn{padding:8px 12px;font-size:12px;}
+  
+  /* Historial mobile */
+  .hist-card-header{flex-wrap:wrap;}
+  .hist-actions{flex-direction:column;}
+  .btn-hist-act{width:100%;justify-content:center;}
+  
+  /* Dropzone más amigable */
+  .xls-dropzone{padding:30px 15px;}
+  .xls-dropzone-icon{font-size:42px;}
+  .xls-summary-cards{grid-template-columns:1fr 1fr;}
+  .xls-tabs{flex-direction:column;}
+  .xls-tab{font-size:11px;}
+  
+  /* Mostrar elementos mobile-only */
+  .mobile-only{display:block;}
+  
+  /* Ocultar elementos desktop-only */
+  .desktop-only{display:none;}
+  
+  /* Login optimizado */
+  .login-box{max-width:340px;padding:24px;}
+  
+  /* Sugerencias de pago en chips - 2 por fila */
+  .pago-suggestions{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+  .pago-chip{font-size:11px;padding:7px;}
+}
+
+@media(max-width:480px){
+  /* iPhone SE y similares */
+  .logo{font-size:16px;}
+  .tab{font-size:10px;padding:10px 6px;}
+  .filters-bar{padding:6px;}
+  .hoja-select{min-width:0;}
+  .results-count{font-size:10px;}
+  .precio-input{font-size:13px;padding:8px;}
+  .empresa-select{max-width:100px;font-size:10px;}
+  .xls-summary-cards{grid-template-columns:1fr;}
+}
 /* MEJORAS UI */
 .discontinued-badge{display:inline-block;font-size:9px;background:rgba(239,68,68,.12);color:#fca5a5;padding:1px 5px;border-radius:3px;border:1px solid rgba(239,68,68,.3);margin-left:4px;font-weight:600;letter-spacing:.3px;}
 .precio-usd-equiv{font-size:9px;color:var(--muted);margin-top:1px;text-align:right;line-height:1;}
@@ -345,20 +501,92 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 
 /* AUTOCOMPLETAR CLIENTE EN COTIZADOR */
 .cliente-input-wrap{position:relative;}
-.cliente-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--panel);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:280px;overflow-y:auto;z-index:50;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.cliente-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--panel);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:240px;overflow-y:auto;z-index:50;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4);}
 .cliente-suggestions.open{display:block;}
-.cliente-sug-item{padding:8px 11px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;transition:background .1s;}
+.cliente-sug-item{padding:6px 10px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;transition:background .1s;}
 .cliente-sug-item:last-child{border-bottom:none;}
 .cliente-sug-item:hover,.cliente-sug-item.active{background:var(--card);}
-.cliente-sug-razon{font-weight:600;color:var(--text);}
-.cliente-sug-meta{font-size:10px;color:var(--muted);margin-top:2px;display:flex;gap:8px;}
+.cliente-sug-razon{font-weight:600;color:var(--text);font-size:12px;line-height:1.2;}
+.cliente-sug-meta{font-size:10px;color:var(--muted);margin-top:1px;}
 .cliente-sug-nuevo{padding:8px 11px;color:#93c5fd;font-size:12px;cursor:pointer;border-top:1px dashed var(--border);background:rgba(59,130,246,.05);}
 .cliente-sug-nuevo:hover{background:rgba(59,130,246,.12);}
-.cliente-loaded-info{display:none;font-size:10px;color:var(--green);background:rgba(34,197,94,.08);padding:4px 8px;border-radius:5px;margin-top:4px;border:1px solid rgba(34,197,94,.2);}
+.cliente-loaded-info{display:none;font-size:10px;color:var(--green);background:rgba(34,197,94,.08);padding:5px 9px;border-radius:5px;margin-top:4px;border:1px solid rgba(34,197,94,.2);line-height:1.4;}
 .cliente-loaded-info.show{display:block;}
 .cliente-loaded-info b{color:var(--text);}
+.cliente-loaded-info .compact{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;}
+.cliente-loaded-info .clear-btn{margin-left:auto;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:0 4px;}
+.cliente-loaded-info .clear-btn:hover{color:var(--red);}
 .btn-quick-add-cli{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;}
 .btn-quick-add-cli:hover{background:rgba(59,130,246,.25);}
+
+/* G - CARGA EXCEL */
+.btn-cargar-excel{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 8px rgba(34,197,94,.3);transition:all .2s;}
+.btn-cargar-excel:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,197,94,.45);}
+.xls-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;backdrop-filter:blur(4px);}
+.xls-modal-overlay.open{display:flex;}
+.xls-modal{background:var(--panel);border-radius:14px;border:1px solid var(--border);max-width:1100px;width:100%;display:flex;flex-direction:column;max-height:calc(100vh - 60px);box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.xls-modal-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.xls-modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:.5px;}
+.xls-modal-body{padding:18px 22px;overflow-y:auto;flex:1;}
+.xls-step{display:none;}
+.xls-step.active{display:block;}
+.xls-dropzone{border:2px dashed var(--border);border-radius:14px;padding:50px 20px;text-align:center;background:var(--dark);cursor:pointer;transition:all .2s;}
+.xls-dropzone:hover,.xls-dropzone.dragover{border-color:var(--green);background:rgba(34,197,94,.05);}
+.xls-dropzone-icon{font-size:54px;margin-bottom:14px;display:block;}
+.xls-dropzone-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:var(--text);margin-bottom:6px;}
+.xls-dropzone-sub{font-size:12px;color:var(--muted);}
+.xls-file-input{display:none;}
+.xls-loading{text-align:center;padding:50px;}
+.xls-loading-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:xlsSpin 1s linear infinite;margin:0 auto 14px;}
+@keyframes xlsSpin{to{transform:rotate(360deg);}}
+.xls-summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;}
+.xls-sum-card{background:var(--dark);border:1px solid var(--border);border-radius:9px;padding:11px 14px;}
+.xls-sum-card.green{border-color:rgba(34,197,94,.4);}
+.xls-sum-card.green .xls-sum-num{color:var(--green);}
+.xls-sum-card.yellow{border-color:rgba(245,158,11,.4);}
+.xls-sum-card.yellow .xls-sum-num{color:var(--yellow);}
+.xls-sum-card.red{border-color:rgba(239,68,68,.4);}
+.xls-sum-card.red .xls-sum-num{color:#fca5a5;}
+.xls-sum-card.blue{border-color:rgba(59,130,246,.4);}
+.xls-sum-card.blue .xls-sum-num{color:#93c5fd;}
+.xls-sum-num{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;line-height:1;color:var(--text);}
+.xls-sum-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+.xls-sum-detail{font-size:10px;color:var(--muted);margin-top:5px;}
+.xls-section-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.5px;margin:18px 0 8px;color:var(--text);display:flex;align-items:center;gap:6px;}
+.xls-section-title .badge{background:var(--card);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;color:var(--muted);}
+.xls-changes-table{width:100%;border-collapse:collapse;font-size:11px;background:var(--dark);border-radius:8px;overflow:hidden;}
+.xls-changes-table th{background:var(--card);text-align:left;padding:7px 9px;font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;}
+.xls-changes-table td{padding:6px 9px;border-bottom:1px solid var(--border);}
+.xls-changes-table tr:last-child td{border-bottom:none;}
+.xls-changes-table tr.subio td{background:rgba(239,68,68,.04);}
+.xls-changes-table tr.bajo td{background:rgba(34,197,94,.04);}
+.xls-pct{display:inline-block;padding:1px 6px;border-radius:9px;font-size:10px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
+.xls-pct.subio{background:rgba(239,68,68,.15);color:#fca5a5;}
+.xls-pct.bajo{background:rgba(34,197,94,.15);color:var(--green);}
+.xls-pct.warn{background:rgba(245,158,11,.15);color:var(--yellow);}
+.xls-warn-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);color:var(--yellow);padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:12px;}
+.xls-warn-box b{color:#fef08a;}
+.xls-modal-actions{padding:13px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--dark);border-radius:0 0 14px 14px;flex-shrink:0;}
+.xls-actions-right{display:flex;gap:8px;}
+.xls-btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .2s;}
+.xls-btn-primary{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;}
+.xls-btn-primary:hover{transform:translateY(-1px);}
+.xls-btn-secondary{background:var(--card);color:var(--muted);border:1px solid var(--border);}
+.xls-btn-secondary:hover{color:var(--text);}
+.xls-btn-back{background:var(--card);color:var(--muted);border:1px solid var(--border);}
+.xls-btn-back:hover{color:var(--text);}
+.xls-file-info{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;display:flex;justify-content:space-between;align-items:center;}
+.xls-file-info b{color:var(--text);}
+.xls-history{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:14px;}
+.xls-hist-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600;}
+.xls-hist-item{font-size:11px;color:var(--text);padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+.xls-hist-item:last-child{border-bottom:none;}
+.xls-hist-item .meta{color:var(--muted);font-size:10px;}
+.xls-tabs{display:flex;gap:2px;background:var(--dark);padding:3px;border-radius:8px;margin-bottom:12px;}
+.xls-tab{flex:1;padding:7px 10px;text-align:center;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);transition:all .15s;text-transform:uppercase;letter-spacing:.4px;}
+.xls-tab.active{background:var(--card);color:var(--text);}
+.xls-tab-content{display:none;}
+.xls-tab-content.active{display:block;}
 </style>
 </head>
 <body>
@@ -423,6 +651,14 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
   <div class="tab" onclick="switchTab(this,'tab-clientes')">👥 Clientes <span id="cli-badge" style="display:none;background:#3b82f6;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
   <div class="tab" onclick="switchTab(this,'tab-historial')">🕘 Historial <span id="hist-badge" style="display:none;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
 </div>
+
+<!-- Mobile: FAB y overlay para carrito flotante -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileCart(false)"></div>
+<button class="mobile-fab empty" id="mobile-fab" onclick="toggleMobileCart()">
+  <span class="fab-icon">🛒</span>
+  <span class="fab-count" id="fab-count">0</span>
+  <span class="fab-total" id="fab-total">$0</span>
+</button>
 
 <div class="main">
   <div>
@@ -516,6 +752,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 
   <div>
     <div class="presup-card">
+      <div class="cart-handle mobile-only" onclick="toggleMobileCart(false)"></div>
       <div class="presup-title">Presupuesto <span class="presup-num" id="nro-presupuesto"></span></div>
       <div class="form-grid">
         <div class="form-group full">
@@ -537,6 +774,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         </div>
         <div class="form-group"><label class="form-label">Descuento (%)</label><input type="number" class="form-input" id="descuento" placeholder="0" min="0" max="100" value="0" oninput="actualizarTabla()"></div>
       </div>
+      <div class="items-table-wrap">
       <table class="items-table">
         <colgroup>
           <col class="col-desc">
@@ -548,6 +786,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         <thead><tr><th>Descripción</th><th style="text-align:right">P.Unit</th><th style="text-align:center">Cant</th><th style="text-align:right">Subtotal</th><th></th></tr></thead>
         <tbody id="body-items"><tr><td colspan="5" class="empty-cart">Sin ítems — buscá y hacé clic en Añadir</td></tr></tbody>
       </table>
+      </div>
       <div class="cart-stats" id="cart-stats" style="display:none">
         <div class="stat"><span>Ítems</span><b id="stat-items">0</b></div>
         <div class="stat"><span>Unidades</span><b id="stat-unidades">0</b></div>
@@ -578,6 +817,72 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         <button class="btn-pdf" onclick="generarPDF()">⬇ Presupuesto</button>
         <button class="btn-picking" onclick="generarPicking()">📋 Hoja de Picking</button>
         <button class="btn-clear" onclick="limpiarCarrito()">Limpiar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CARGAR EXCEL DE PRECIOS -->
+<div class="xls-modal-overlay" id="xls-modal">
+  <div class="xls-modal">
+    <div class="xls-modal-header">
+      <div>
+        <div class="xls-modal-title">📁 Actualizar lista de precios</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Subí el Excel del proveedor y el sistema detecta los cambios automáticamente</div>
+      </div>
+      <button class="paste-modal-close" onclick="cerrarXlsModal()">✕</button>
+    </div>
+    <div class="xls-modal-body">
+      <!-- PASO 1: DROPZONE -->
+      <div class="xls-step active" id="xls-step-1">
+        <div class="xls-warn-box" style="background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3);color:#93c5fd">
+          <b>💡 Cómo funciona:</b> Arrastrá el archivo Excel del proveedor (formato <code>LISTA_BM_XXX.xlsx</code>). El sistema lee todas las hojas, compara los precios con los actuales y te muestra: qué cambió, qué subió/bajó, productos nuevos y descontinuados. Vos confirmás antes de aplicar.
+        </div>
+        <div class="xls-dropzone" id="xls-dropzone" onclick="document.getElementById('xls-file').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="onXlsDrop(event)">
+          <span class="xls-dropzone-icon">📊</span>
+          <div class="xls-dropzone-title">Arrastrá el Excel acá</div>
+          <div class="xls-dropzone-sub">o hacé click para buscarlo · admite .xlsx y .xls</div>
+        </div>
+        <input type="file" class="xls-file-input" id="xls-file" accept=".xlsx,.xls" onchange="procesarXls(this.files[0])">
+        <div class="xls-history" id="xls-history-cont"></div>
+      </div>
+      <!-- PASO 2: LOADING -->
+      <div class="xls-step" id="xls-step-2">
+        <div class="xls-loading">
+          <div class="xls-loading-spinner"></div>
+          <div style="font-size:14px;color:var(--text)">Procesando archivo Excel...</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:5px" id="xls-loading-msg">Leyendo hojas...</div>
+        </div>
+      </div>
+      <!-- PASO 3: REVIEW -->
+      <div class="xls-step" id="xls-step-3">
+        <div class="xls-file-info" id="xls-file-info"></div>
+        <div class="xls-summary-cards" id="xls-summary-cards"></div>
+        <div class="xls-tabs">
+          <div class="xls-tab active" onclick="xlsSetTab('cambios')">💱 Cambios de precio</div>
+          <div class="xls-tab" onclick="xlsSetTab('alertas')">⚠ Alertas</div>
+          <div class="xls-tab" onclick="xlsSetTab('nuevos')">➕ Productos nuevos</div>
+          <div class="xls-tab" onclick="xlsSetTab('desc')">🚫 Descontinuados</div>
+        </div>
+        <div class="xls-tab-content active" id="xls-tab-cambios">
+          <div id="xls-cambios-cont"></div>
+        </div>
+        <div class="xls-tab-content" id="xls-tab-alertas">
+          <div id="xls-alertas-cont"></div>
+        </div>
+        <div class="xls-tab-content" id="xls-tab-nuevos">
+          <div id="xls-nuevos-cont"></div>
+        </div>
+        <div class="xls-tab-content" id="xls-tab-desc">
+          <div id="xls-desc-cont"></div>
+        </div>
+      </div>
+    </div>
+    <div class="xls-modal-actions">
+      <button class="xls-btn xls-btn-back" id="xls-btn-back" onclick="xlsVolver()" style="display:none">← Cargar otro archivo</button>
+      <div class="xls-actions-right">
+        <button class="xls-btn xls-btn-secondary" onclick="cerrarXlsModal()">Cancelar</button>
+        <button class="xls-btn xls-btn-primary" id="xls-btn-aplicar" onclick="aplicarCambiosXls()" style="display:none">✓ Aplicar todos los cambios</button>
       </div>
     </div>
   </div>
@@ -769,7 +1074,13 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
   <div class="modal">
     <div class="modal-header">
       <div><div class="modal-title">⚡ Administrar Precios</div><div class="modal-subtitle">12960 artículos de 15 hojas · Guardados en este navegador</div></div>
-      <button class="modal-close" onclick="cerrarAdmin()">✕</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-cargar-excel" onclick="abrirXlsModal()" title="Subir Excel del proveedor para actualizar precios masivamente">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Cargar Excel
+        </button>
+        <button class="modal-close" onclick="cerrarAdmin()">✕</button>
+      </div>
     </div>
     <div class="modal-filters">
       <div class="modal-search-wrap">
@@ -13982,6 +14293,7 @@ function actualizarTabla(){
     ['total-neto','total-neto-final','total-iva','total-final'].forEach(id=>document.getElementById(id).textContent=S+'0,00');
     document.getElementById('descuento-row').style.display='none';
     if(stats)stats.style.display='none';
+    if(typeof actualizarMobileFab==='function')actualizarMobileFab();
     return;
   }
   let sub=0;
@@ -14014,6 +14326,7 @@ function actualizarTabla(){
     document.getElementById('stat-max').textContent=max.d.length>22?max.d.substring(0,22)+'…':max.d;
     document.getElementById('stat-max').title=`${max.d} — ${S}${fmt(max.v)}`;
   }
+  if(typeof actualizarMobileFab==='function')actualizarMobileFab();
 }
 
 // ─── ADMIN MODAL (solo para ver / ajuste temporal) ────────
@@ -14941,15 +15254,23 @@ function aplicarClienteACotizador(cli){
   if(cli.descuento>0){document.getElementById('descuento').value=cli.descuento;actualizarTabla();}
   if(cli.empresa)document.getElementById('select-empresa').value=cli.empresa;
   if(typeof actualizarInfoPantalla==='function')actualizarInfoPantalla();
-  // Mostrar info verde abajo del input
+  // Cartel compacto: solo lo esencial
   const info=document.getElementById('cliente-loaded-info');
   const partes=[];
-  if(cli.cuit)partes.push(`CUIT ${cli.cuit}`);
-  if(cli.contactoNombre)partes.push(`👤 ${cli.contactoNombre}`);
-  if(cli.contactoMail)partes.push(`📧 ${cli.contactoMail}`);
-  if(cli.descuento>0)partes.push(`💰 ${cli.descuento}% dto aplicado`);
-  info.innerHTML=`<b>✓ Cliente cargado</b> · ${partes.join(' · ')}`;
+  if(cli.cuit)partes.push(`<span>📋 ${cli.cuit}</span>`);
+  if(cli.descuento>0)partes.push(`<span style="color:var(--yellow)">💰 ${cli.descuento}% dto</span>`);
+  if(cli.sector)partes.push(`<span style="color:var(--muted)">${cli.sector}</span>`);
+  info.innerHTML=`<div class="compact"><b>✓ ${cli.razon.length>35?cli.razon.substring(0,33)+'…':cli.razon}</b> ${partes.join(' · ')}<button class="clear-btn" onclick="quitarClienteSeleccionado()" title="Quitar cliente">✕</button></div>`;
   info.classList.add('show');
+}
+
+function quitarClienteSeleccionado(){
+  clienteSeleccionado=null;
+  document.getElementById('cliente-nombre').value='';
+  document.getElementById('cliente-loaded-info').classList.remove('show');
+  document.getElementById('pago-cliente').value='';
+  document.getElementById('descuento').value=0;
+  actualizarTabla();
 }
 
 // AUTOCOMPLETE EN COTIZADOR
@@ -15080,6 +15401,696 @@ function importarClientes(){
   input.click();
 }
 
+// ─── D — MOBILE: CARRITO FLOTANTE ──────────────────────
+function toggleMobileCart(forceState){
+  const cart=document.querySelector('.main > div:last-child');
+  const overlay=document.getElementById('mobile-overlay');
+  const isOpen=cart.classList.contains('cart-open');
+  const newState=forceState===undefined?!isOpen:forceState;
+  if(newState){
+    cart.classList.add('cart-open');
+    overlay.classList.add('show');
+  }else{
+    cart.classList.remove('cart-open');
+    overlay.classList.remove('show');
+  }
+}
+
+function actualizarMobileFab(){
+  const fab=document.getElementById('mobile-fab');
+  const count=document.getElementById('fab-count');
+  const total=document.getElementById('fab-total');
+  if(!fab||!count||!total)return;
+  if(carrito.length===0){
+    fab.classList.add('empty');
+    return;
+  }
+  fab.classList.remove('empty');
+  const sub=carrito.reduce((s,it)=>s+it.p*it.q,0);
+  const dp=parseFloat(document.getElementById('descuento').value)||0;
+  const neto=sub*(1-dp/100);
+  const finalTotal=neto*1.21;
+  count.textContent=carrito.length;
+  total.textContent=monedaSimbolo()+fmt(finalTotal);
+}
+
+// ─── G — CARGA DE EXCEL DE PRECIOS ────────────────────────
+let xlsAnalisis=null; // resultado del análisis tras leer el archivo
+
+function abrirXlsModal(){
+  document.getElementById('xls-modal').classList.add('open');
+  xlsVolver();
+  renderXlsHistory();
+}
+function cerrarXlsModal(){document.getElementById('xls-modal').classList.remove('open');}
+function xlsVolver(){
+  document.getElementById('xls-step-1').classList.add('active');
+  document.getElementById('xls-step-2').classList.remove('active');
+  document.getElementById('xls-step-3').classList.remove('active');
+  document.getElementById('xls-btn-back').style.display='none';
+  document.getElementById('xls-btn-aplicar').style.display='none';
+  document.getElementById('xls-file').value='';
+  xlsAnalisis=null;
+}
+function xlsSetTab(t){
+  document.querySelectorAll('.xls-tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.xls-tab-content').forEach(el=>el.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('xls-tab-'+t).classList.add('active');
+}
+
+function onXlsDrop(e){
+  e.preventDefault();
+  document.getElementById('xls-dropzone').classList.remove('dragover');
+  const f=e.dataTransfer.files[0];
+  if(f)procesarXls(f);
+}
+
+function setXlsLoading(msg){document.getElementById('xls-loading-msg').textContent=msg;}
+
+async function procesarXls(file){
+  if(!file)return;
+  if(!file.name.match(/\.xlsx?$/i)){showToast('Solo .xlsx o .xls','#ef4444');return;}
+  if(!window.XLSX){showToast('Cargando librería XLSX, intentá de nuevo en 2s','#f59e0b');return;}
+  // UI: pasar a paso 2 (loading)
+  document.getElementById('xls-step-1').classList.remove('active');
+  document.getElementById('xls-step-2').classList.add('active');
+  setXlsLoading('Leyendo archivo...');
+
+  try{
+    const buf=await file.arrayBuffer();
+    setXlsLoading('Parseando hojas...');
+    await new Promise(r=>setTimeout(r,50)); // dejar pintar
+    const wb=XLSX.read(buf,{type:'array'});
+    
+    setXlsLoading('Extrayendo precios...');
+    await new Promise(r=>setTimeout(r,50));
+    const nuevosPrecios=extraerPreciosDeWB(wb);
+    
+    setXlsLoading('Comparando con precios actuales...');
+    await new Promise(r=>setTimeout(r,50));
+    xlsAnalisis=compararPrecios(nuevosPrecios, file.name);
+    
+    setXlsLoading('Mostrando resultados...');
+    await new Promise(r=>setTimeout(r,50));
+    
+    renderAnalisisXls(file);
+    document.getElementById('xls-step-2').classList.remove('active');
+    document.getElementById('xls-step-3').classList.add('active');
+    document.getElementById('xls-btn-back').style.display='';
+    document.getElementById('xls-btn-aplicar').style.display='';
+  }catch(err){
+    console.error(err);
+    showToast('Error al procesar Excel: '+err.message,'#ef4444');
+    xlsVolver();
+  }
+}
+
+// Extrae precios de cada hoja del workbook usando la lógica de cada parser
+function extraerPreciosDeWB(wb){
+  const result={}; // {sheet: {code: {p, d, src}}}
+  const sheetParsers={
+    'BAHCO':parsearBahco,
+    'BOSCH':parsearBosch,
+    'TRUPER':parsearTruper,
+    'LUSQTOFF':parsearLusqtoff,
+    'BREMEN':parsearBremen,
+    'BULON BREMEN':parsearBulonBremen,
+    'TEK BOND':parsearTekBond,
+    'FUNCIONAL':parsearFuncional,
+    'SEGOD':parsearSegod,
+    'DP':parsearDP,
+    'ELECTRODOS':parsearElectrodos,
+    'LIBUS':parsearLibus,
+    'AIR':parsearAir,
+    'ALTURA-ESLINGA':parsearAltura,
+    'LOCTITE':parsearLoctite,
+    'LISTA GRAL.':parsearListaGral,
+  };
+  for(const [name,parser] of Object.entries(sheetParsers)){
+    const sh=wb.Sheets[name];
+    if(!sh)continue;
+    const rows=XLSX.utils.sheet_to_json(sh,{header:1,defval:null,raw:true});
+    try{result[name]=parser(rows);}catch(e){console.error('Error parseando '+name,e);result[name]={};}
+  }
+  return result;
+}
+
+// === PARSERS (replican la lógica de Python) ===
+function _toFloat(v){if(v===null||v===undefined||v==='')return null;const n=parseFloat(v);return isFinite(n)?n:null;}
+function _toStr(v){return v===null||v===undefined?'':String(v).trim();}
+function _valsNoNull(row){return row.filter(v=>v!==null&&v!==undefined&&v!=='');}
+
+function parsearBahco(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=5 && _toStr(vals[0])==='BAHCO'){
+      const cod=_toStr(vals[2]);
+      const p=_toFloat(vals[4]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[3])};
+    }
+  }
+  return o;
+}
+function parsearBosch(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=7){
+      const cod=_toStr(vals[0]);
+      if(cod.startsWith('0')){
+        const p=_toFloat(vals[6]);
+        if(p!==null)o[cod]={p,d:_toStr(vals[1])||_toStr(vals[2])};
+      }
+    }
+  }
+  return o;
+}
+function parsearTruper(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=4 && ['LUSQTOFF','TRUPER'].includes(_toStr(vals[0]))){
+      const cod=_toStr(vals[1]);
+      const p=_toFloat(vals[3]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[2])};
+    }
+  }
+  return o;
+}
+function parsearLusqtoff(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=5 && ['BLACK SERIES','LUSQTOFF','IRON VOLT','TRUPER'].includes(_toStr(vals[0]))){
+      const cod=_toStr(vals[2]);
+      const p=_toFloat(vals[4]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[3])};
+    }
+  }
+  return o;
+}
+function parsearBremen(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=6){
+      const cod=_toStr(vals[0]);
+      if(/^\d+$/.test(cod)){
+        const p=_toFloat(vals[5]);
+        if(p!==null)o[cod]={p,d:_toStr(vals[1])};
+      }
+    }
+  }
+  return o;
+}
+function parsearBulonBremen(rows){
+  const o={};
+  const SKIP=new Set(['CÓDIGO','BULONERIA PRECIOS SIN IVA INCLUIDO','ARANDELAS PLANAS','LOS PRECIOS SIN DTOS Y SIN IVA INCLUIDO']);
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=3){
+      const cod=_toStr(vals[0]);
+      if(cod&&!SKIP.has(cod)){
+        const p=_toFloat(vals[2]);
+        if(p!==null)o[cod]={p,d:_toStr(vals[1])};
+      }
+    }
+  }
+  return o;
+}
+function parsearTekBond(rows){
+  const o={};let cat='';
+  for(const row of rows){
+    const vals=row.map(v=>_toStr(v)).filter(v=>v!=='');
+    if(vals.length<5)continue;
+    if(vals[0]==='Cod'){cat=vals[1];continue;}
+    const cod=vals[0];
+    const p=_toFloat(vals[4]);
+    if(cod&&p!==null){
+      o[cod]={p,d:`${cat} — ${vals[1]} (${vals[2]})`};
+    }
+  }
+  return o;
+}
+function parsearFuncional(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=4){
+      const modelo=_toStr(vals[0]).toUpperCase();
+      const p=_toFloat(vals[3]);
+      if(modelo&&p!==null)o['__model__'+modelo]={p,d:`FUNCIONAL ${modelo}`,modelo};
+    }
+  }
+  return o;
+}
+function parsearSegod(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=3){
+      const cod=_toStr(vals[0]);
+      const p=_toFloat(vals[2]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[1])};
+    }
+  }
+  return o;
+}
+function parsearDP(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=3){
+      const cod=_toStr(vals[0]);
+      const p=_toFloat(vals[2]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[1])};
+    }
+  }
+  return o;
+}
+function parsearElectrodos(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=8){
+      const cod=_toStr(vals[0]);
+      if(/^\d+$/.test(cod)){
+        const p=_toFloat(vals[7]);
+        if(p!==null)o[cod]={p,d:_toStr(vals[1])};
+      }
+    }
+  }
+  return o;
+}
+function parsearLibus(rows){
+  const o={}; // dos formatos
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length<2)continue;
+    if(_toStr(vals[0])==='DESCRIPCION'||_toStr(vals[0])==='RESPIRACION BLS')continue;
+    if(vals.length===2){
+      const desc=_toStr(vals[0]).toUpperCase();
+      const p=_toFloat(vals[1]);
+      if(desc&&p!==null)o['__desc__'+desc]={p,d:_toStr(vals[0])};
+    }else if(vals.length>=3){
+      const cod=_toStr(vals[0]);
+      const p=_toFloat(vals[vals.length-1]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[1])};
+    }
+  }
+  return o;
+}
+function parsearAir(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length<3)continue;
+    if(_toStr(vals[0])==='CÓDIGO')continue;
+    if(['el par','EL PAR'].includes(_toStr(vals[0]))){
+      if(vals.length>=4){
+        const cod=_toStr(vals[1]);
+        const p=_toFloat(vals[3]);
+        if(cod&&p!==null)o[cod]={p,d:_toStr(vals[2])};
+      }
+    }else{
+      const cod=_toStr(vals[0]);
+      const p=_toFloat(vals[2]);
+      if(cod&&p!==null)o[cod]={p,d:_toStr(vals[1])};
+    }
+  }
+  return o;
+}
+function parsearAltura(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length<3)continue;
+    const cod=_toStr(vals[0]);
+    if(cod&&cod!=='CÓDIGO'&&cod!=='PRECIO'){
+      const p=_toFloat(vals[2]);
+      if(p!==null)o[cod]={p,d:_toStr(vals[1])};
+    }
+  }
+  return o;
+}
+function parsearLoctite(rows){
+  const o={};
+  for(const row of rows){
+    const vals=_valsNoNull(row);
+    if(vals.length>=6){
+      const idh=_toStr(vals[4]);
+      const p=_toFloat(vals[5]);
+      if(idh&&idh!=='CÓDIGO/ IDH'&&p!==null)o[idh]={p,d:_toStr(vals[0])};
+    }
+  }
+  return o;
+}
+function parsearListaGral(rows){
+  // Esta hoja no tiene códigos limpios; uso descripción como key
+  const o={};
+  for(const row of rows){
+    const vals=row.map(v=>_toStr(v)).filter(v=>v!==''&&v!=='10+10'&&v!=='OFERTA'&&v!=='DISTRIBUIDOR'&&v!=='DETALLE'&&v!=='PRECIO'&&v!=='DESCUENTOS'&&v!=='NaT'&&v!=='Discontinua');
+    if(vals.length<2)continue;
+    let price=null,descParts=[];
+    for(const v of vals){
+      const f=_toFloat(v);
+      if(f!==null&&f>0.1)price=f;
+      else descParts.push(v);
+    }
+    if(price&&descParts.length){
+      const key=descParts.join(' ').toUpperCase().trim();
+      o['__lg__'+key]={p:price,d:descParts.join(' ')};
+    }
+  }
+  return o;
+}
+
+// === COMPARADOR ===
+function compararPrecios(nuevos, fileName){
+  // Construye lista de cambios por cada hoja
+  const cambios=[]; // {h, c, d, p_old, p_new, pct}
+  const nuevosProd=[]; // {h, c, d, p_new}
+  const descontinuados=[]; // {h, c, d, p_old}
+  const alertas=[]; // cambios anormales (>50% o <-50%)
+  let sinCambios=0;
+
+  for(const [h, mapping] of Object.entries(nuevos)){
+    // Construir set de keys existentes en ARTICULOS para esta hoja
+    const articulosHoja=ARTICULOS.filter(a=>a.h===h);
+    const articulosMap=new Map();
+    
+    // Para FUNCIONAL: matching por modelo
+    if(h==='FUNCIONAL'){
+      articulosHoja.forEach(a=>{
+        const m=a.d.match(/FUNCIONAL\s+([A-Z0-9 ]+?)\s+(ZAPATO|BOTIN|BOTA|BORCEGUI)/i);
+        if(m){
+          const modelo=m[1].trim().toUpperCase();
+          if(!articulosMap.has('__model__'+modelo))articulosMap.set('__model__'+modelo,[]);
+          articulosMap.get('__model__'+modelo).push(a);
+        }
+      });
+      // Cada key del nuevo aplica a TODOS los productos con ese modelo
+      for(const [k, nv] of Object.entries(mapping)){
+        const lista=articulosMap.get(k)||[];
+        if(lista.length===0){
+          nuevosProd.push({h, c:nv.modelo||'(modelo nuevo)', d:nv.d, p_new:nv.p});
+        }else{
+          lista.forEach(a=>{
+            const old=a.p;
+            if(Math.abs(nv.p-old)<0.001){sinCambios++;return;}
+            const pct=old>0?((nv.p-old)/old)*100:0;
+            const reg={h, c:a.c, d:a.d, p_old:old, p_new:nv.p, pct, ref:a};
+            cambios.push(reg);
+            if(Math.abs(pct)>=50||pct<=-30)alertas.push(reg);
+          });
+        }
+      }
+      // Buscar descontinuados FUNCIONAL
+      articulosMap.forEach((lista,k)=>{
+        if(!mapping[k])lista.forEach(a=>descontinuados.push({h, c:a.c, d:a.d, p_old:a.p, ref:a}));
+      });
+      continue;
+    }
+    
+    // Para LIBUS: matching mixto código + descripción
+    if(h==='LIBUS'){
+      articulosHoja.forEach(a=>{
+        if(a.c==='LIBUS'){
+          // matching por descripción
+          articulosMap.set('__desc__'+a.d.toUpperCase(), [a]);
+        }else{
+          articulosMap.set(a.c, [a]);
+        }
+      });
+      for(const [k, nv] of Object.entries(mapping)){
+        const lista=articulosMap.get(k);
+        if(!lista){
+          // producto nuevo
+          const c=k.startsWith('__desc__')?'LIBUS':k;
+          nuevosProd.push({h, c, d:nv.d, p_new:nv.p});
+        }else{
+          lista.forEach(a=>{
+            if(Math.abs(nv.p-a.p)<0.001){sinCambios++;return;}
+            const pct=a.p>0?((nv.p-a.p)/a.p)*100:0;
+            const reg={h, c:a.c, d:a.d, p_old:a.p, p_new:nv.p, pct, ref:a};
+            cambios.push(reg);
+            if(Math.abs(pct)>=50||pct<=-30)alertas.push(reg);
+          });
+        }
+      }
+      articulosMap.forEach((lista,k)=>{
+        if(!mapping[k])lista.forEach(a=>descontinuados.push({h, c:a.c, d:a.d, p_old:a.p, ref:a}));
+      });
+      continue;
+    }
+    
+    // Para LISTA GRAL.: matching por descripción
+    if(h==='LISTA GRAL.'){
+      articulosHoja.forEach(a=>{
+        // Construir key a partir de la descripción
+        const desc=a.d.replace(/—/g,' ').replace(/\s+/g,' ').toUpperCase().trim();
+        articulosMap.set('__lg__'+desc, [a]);
+      });
+      for(const [k, nv] of Object.entries(mapping)){
+        // Buscar por palabras coincidentes
+        const nvWords=k.replace('__lg__','').split(/\s+/).filter(w=>w.length>=2);
+        let bestMatch=null, bestScore=0;
+        articulosMap.forEach((lista,akey)=>{
+          const aWords=akey.replace('__lg__','').split(/\s+/);
+          const common=nvWords.filter(w=>aWords.includes(w)).length;
+          if(common>bestScore && common>=3){bestScore=common;bestMatch=lista[0];}
+        });
+        if(!bestMatch){
+          nuevosProd.push({h, c:'(LISTA GRAL.)', d:nv.d, p_new:nv.p});
+        }else{
+          if(Math.abs(nv.p-bestMatch.p)<0.001){sinCambios++;continue;}
+          const pct=bestMatch.p>0?((nv.p-bestMatch.p)/bestMatch.p)*100:0;
+          const reg={h, c:bestMatch.c, d:bestMatch.d, p_old:bestMatch.p, p_new:nv.p, pct, ref:bestMatch};
+          cambios.push(reg);
+          if(Math.abs(pct)>=50||pct<=-30)alertas.push(reg);
+        }
+      }
+      continue;
+    }
+    
+    // Para hojas con código directo
+    articulosHoja.forEach(a=>articulosMap.set(a.c, a));
+    for(const [cod, nv] of Object.entries(mapping)){
+      const art=articulosMap.get(cod);
+      if(!art){
+        nuevosProd.push({h, c:cod, d:nv.d, p_new:nv.p});
+      }else{
+        if(Math.abs(nv.p-art.p)<0.001){sinCambios++;continue;}
+        const pct=art.p>0?((nv.p-art.p)/art.p)*100:0;
+        const reg={h, c:cod, d:art.d, p_old:art.p, p_new:nv.p, pct, ref:art};
+        cambios.push(reg);
+        if(Math.abs(pct)>=50||pct<=-30)alertas.push(reg);
+      }
+    }
+    // Descontinuados: artículos en el cotizador no en el nuevo
+    articulosHoja.forEach(a=>{
+      if(!mapping[a.c])descontinuados.push({h, c:a.c, d:a.d, p_old:a.p, ref:a});
+    });
+  }
+  
+  // Ordenar
+  cambios.sort((a,b)=>Math.abs(b.pct)-Math.abs(a.pct));
+  alertas.sort((a,b)=>Math.abs(b.pct)-Math.abs(a.pct));
+  
+  return {cambios, nuevosProd, descontinuados, alertas, sinCambios, fileName, fecha:new Date().toISOString()};
+}
+
+function renderAnalisisXls(file){
+  const a=xlsAnalisis;
+  // File info
+  const sizeKB=(file.size/1024).toFixed(0);
+  document.getElementById('xls-file-info').innerHTML=`
+    <div>📄 <b>${file.name}</b> · ${sizeKB} KB · procesado hace un momento</div>
+    <div style="color:var(--muted);font-size:11px">Click "Aplicar" para guardar los cambios</div>
+  `;
+  // Stats cards
+  document.getElementById('xls-summary-cards').innerHTML=`
+    <div class="xls-sum-card green"><div class="xls-sum-num">${a.cambios.length}</div><div class="xls-sum-lbl">Precios cambiaron</div></div>
+    <div class="xls-sum-card yellow"><div class="xls-sum-num">${a.alertas.length}</div><div class="xls-sum-lbl">Alertas</div><div class="xls-sum-detail">cambios ≥50%</div></div>
+    <div class="xls-sum-card blue"><div class="xls-sum-num">${a.nuevosProd.length}</div><div class="xls-sum-lbl">Productos nuevos</div></div>
+    <div class="xls-sum-card red"><div class="xls-sum-num">${a.descontinuados.length}</div><div class="xls-sum-lbl">Sin lista nueva</div><div class="xls-sum-detail">se marcarán DISC</div></div>
+    <div class="xls-sum-card"><div class="xls-sum-num">${a.sinCambios.toLocaleString()}</div><div class="xls-sum-lbl">Sin cambio</div></div>
+  `;
+  // Tabs
+  renderCambiosTab();
+  renderAlertasTab();
+  renderNuevosTab();
+  renderDescTab();
+}
+
+function _renderTablaCambios(items, contId, emptyMsg){
+  if(items.length===0){document.getElementById(contId).innerHTML=`<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">${emptyMsg}</div>`;return;}
+  const rows=items.slice(0,500).map(r=>{
+    const sub=r.pct>0?'subio':'bajo';
+    const sign=r.pct>0?'+':'';
+    const pctStr=Number.isFinite(r.pct)?sign+r.pct.toFixed(1)+'%':'—';
+    return `<tr class="${sub}">
+      <td><span style="font-family:monospace;font-size:10px;color:var(--muted)">${r.c||''}</span></td>
+      <td>${(r.d||'').substring(0,90)}</td>
+      <td><span style="color:var(--muted);font-size:10px">${r.h}</span></td>
+      <td style="text-align:right;font-size:11px;color:var(--muted)">${r.p_old!=null?'$'+fmt(r.p_old):'—'}</td>
+      <td style="text-align:right;font-size:11px;font-weight:700">${r.p_new!=null?'$'+fmt(r.p_new):'—'}</td>
+      <td style="text-align:right"><span class="xls-pct ${sub}">${pctStr}</span></td>
+    </tr>`;
+  }).join('');
+  const extra=items.length>500?`<div style="font-size:11px;color:var(--muted);padding:8px;text-align:center">Mostrando los primeros 500 de ${items.length} cambios. Todos se aplicarán al confirmar.</div>`:'';
+  document.getElementById(contId).innerHTML=`
+    <table class="xls-changes-table">
+      <thead><tr><th>Código</th><th>Descripción</th><th>Hoja</th><th style="text-align:right">Precio actual</th><th style="text-align:right">Precio nuevo</th><th style="text-align:right">Variación</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>${extra}
+  `;
+}
+
+function renderCambiosTab(){_renderTablaCambios(xlsAnalisis.cambios, 'xls-cambios-cont', '✓ Ningún precio cambió respecto del actual.');}
+function renderAlertasTab(){_renderTablaCambios(xlsAnalisis.alertas, 'xls-alertas-cont', '✓ No hay cambios sospechosos (>50%).');}
+
+function renderNuevosTab(){
+  const items=xlsAnalisis.nuevosProd;
+  if(items.length===0){document.getElementById('xls-nuevos-cont').innerHTML='<div style="padding:30px;text-align:center;color:var(--muted)">No hay productos nuevos en este Excel.</div>';return;}
+  const rows=items.slice(0,500).map(r=>`<tr>
+    <td><span style="font-family:monospace;font-size:10px;color:var(--muted)">${r.c}</span></td>
+    <td>${(r.d||'').substring(0,90)}</td>
+    <td><span style="color:var(--muted);font-size:10px">${r.h}</span></td>
+    <td style="text-align:right;font-weight:700;color:var(--green)">$${fmt(r.p_new)}</td>
+  </tr>`).join('');
+  document.getElementById('xls-nuevos-cont').innerHTML=`
+    <div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.3);padding:9px 13px;border-radius:7px;font-size:12px;color:#93c5fd;margin-bottom:10px">
+      💡 Estos productos aparecen en el Excel nuevo pero NO están en el cotizador. Al aplicar, se agregarán automáticamente al catálogo.
+    </div>
+    <table class="xls-changes-table">
+      <thead><tr><th>Código</th><th>Descripción</th><th>Hoja</th><th style="text-align:right">Precio</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function renderDescTab(){
+  const items=xlsAnalisis.descontinuados;
+  if(items.length===0){document.getElementById('xls-desc-cont').innerHTML='<div style="padding:30px;text-align:center;color:var(--muted)">✓ Todos los productos del cotizador siguen vigentes.</div>';return;}
+  const rows=items.slice(0,500).map(r=>`<tr>
+    <td><span style="font-family:monospace;font-size:10px;color:var(--muted)">${r.c}</span></td>
+    <td>${(r.d||'').substring(0,90)}</td>
+    <td><span style="color:var(--muted);font-size:10px">${r.h}</span></td>
+    <td style="text-align:right;font-size:11px;color:var(--muted)">$${fmt(r.p_old)}</td>
+  </tr>`).join('');
+  document.getElementById('xls-desc-cont').innerHTML=`
+    <div class="xls-warn-box">
+      <b>⚠ Productos no incluidos en el Excel nuevo:</b> al aplicar se marcarán con el badge "DISC" para que sepas que el distribuidor ya no los lista, pero <b>NO se eliminan</b> del cotizador. Mantienen su precio actual por si volvés a usarlos.
+    </div>
+    <table class="xls-changes-table">
+      <thead><tr><th>Código</th><th>Descripción</th><th>Hoja</th><th style="text-align:right">Precio actual</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function aplicarCambiosXls(){
+  if(!xlsAnalisis)return;
+  const a=xlsAnalisis;
+  if(!confirm(`Vas a aplicar ${a.cambios.length} cambios de precio, agregar ${a.nuevosProd.length} productos nuevos y marcar ${a.descontinuados.length} como descontinuados. ¿Confirmás?`))return;
+  
+  // 1. Aplicar cambios en ARTICULOS (memoria)
+  a.cambios.forEach(c=>{if(c.ref)c.ref.p=c.p_new;});
+  
+  // 2. Agregar productos nuevos
+  let agregados=0;
+  a.nuevosProd.forEach(n=>{
+    ARTICULOS.push({c:n.c, d:n.d, p:n.p_new, h:n.h});
+    agregados++;
+  });
+  
+  // 3. Actualizar DISCONTINUADOS
+  a.descontinuados.forEach(d=>{
+    if(d.ref)DISCONTINUADOS.add(d.ref.c+'|'+d.ref.h);
+  });
+  // Sacar de descontinuados los que ahora sí están
+  a.cambios.forEach(c=>{
+    if(c.ref)DISCONTINUADOS.delete(c.ref.c+'|'+c.ref.h);
+  });
+  a.nuevosProd.forEach(n=>{
+    DISCONTINUADOS.delete(n.c+'|'+n.h);
+  });
+  
+  // 4. Guardar overlay de cambios en localStorage para persistencia
+  guardarOverlayPrecios();
+  guardarHistorialCargaXls(a.fileName, a.cambios.length, a.nuevosProd.length, a.descontinuados.length);
+  
+  cerrarXlsModal();
+  filtrar();
+  showToast(`✓ Aplicado: ${a.cambios.length} cambios, ${agregados} nuevos, ${a.descontinuados.length} desc.`,'#22c55e');
+}
+
+// Overlay: guardamos en localStorage los cambios respecto al ARTICULOS hardcodeado
+function guardarOverlayPrecios(){
+  const overlay={
+    precios:{}, // key -> precio
+    nuevos:[], // [{c,d,p,h}]
+    desc:[], // ["c|h"]
+  };
+  // Detectar diferencias respecto a los precios "default" — pero como ya modificamos ARTICULOS, lo guardamos completo
+  // Para simplificar: guardamos snapshot completo de ARTICULOS y DISCONTINUADOS
+  try{
+    localStorage.setItem('bm_articulos_override', JSON.stringify(ARTICULOS));
+    localStorage.setItem('bm_disc_override', JSON.stringify([...DISCONTINUADOS]));
+  }catch(e){
+    // El localStorage tiene límite de ~5-10 MB. Si falla, comprimimos o lo manejamos
+    console.error('Error guardando overlay',e);
+    showToast('⚠ Cambios aplicados pero no se pudieron persistir (storage lleno)','#f59e0b');
+  }
+}
+
+function cargarOverlayPrecios(){
+  try{
+    const a=localStorage.getItem('bm_articulos_override');
+    if(a){
+      const parsed=JSON.parse(a);
+      if(Array.isArray(parsed)&&parsed.length>0){
+        ARTICULOS.length=0;
+        parsed.forEach(p=>ARTICULOS.push(p));
+      }
+    }
+    const d=localStorage.getItem('bm_disc_override');
+    if(d){
+      const parsed=JSON.parse(d);
+      if(Array.isArray(parsed)){
+        DISCONTINUADOS.clear();
+        parsed.forEach(k=>DISCONTINUADOS.add(k));
+      }
+    }
+  }catch(e){console.error('Error cargando overlay',e);}
+}
+
+function guardarHistorialCargaXls(name, cambios, nuevos, desc){
+  let hist=[];
+  try{hist=JSON.parse(localStorage.getItem('bm_xls_history')||'[]');}catch(e){}
+  hist.unshift({name, cambios, nuevos, desc, fecha:new Date().toISOString(), user:usuarioActivo?usuarioActivo.nombre:'-'});
+  hist=hist.slice(0,20);
+  localStorage.setItem('bm_xls_history',JSON.stringify(hist));
+}
+
+function renderXlsHistory(){
+  let hist=[];
+  try{hist=JSON.parse(localStorage.getItem('bm_xls_history')||'[]');}catch(e){}
+  const cont=document.getElementById('xls-history-cont');
+  if(hist.length===0){cont.innerHTML='';return;}
+  cont.innerHTML=`<div class="xls-hist-title">📅 Cargas anteriores</div>`+
+    hist.slice(0,8).map(h=>{
+      const f=new Date(h.fecha).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+      return `<div class="xls-hist-item">
+        <div><b>${h.name}</b> · ${h.cambios} cambios · ${h.nuevos} nuevos · ${h.desc} desc.</div>
+        <div class="meta">${h.user} · ${f}</div>
+      </div>`;
+    }).join('');
+}
+
 // ─── ATAJOS DE TECLADO ────────────────────────────────────
 document.addEventListener('keydown',function(e){
   // Ctrl/Cmd + K: foco al buscador
@@ -15123,6 +16134,7 @@ document.addEventListener('keydown',function(e){
 
 // ─── INIT ─────────────────────────────────────────────────
 cargarPrecios();
+cargarOverlayPrecios();
 actualizarInfoPantalla();
 document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
 render(ARTICULOS);
