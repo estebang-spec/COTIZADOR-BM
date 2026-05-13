@@ -198,7 +198,31 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .dolar-chip:hover{border-color:var(--yellow);}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#000;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
-@media(max-width:1100px){.main{grid-template-columns:1fr;}}
+@media(max-width:1100px){
+  .main{grid-template-columns:1fr;}
+  /* Pantalla partida (1100-900px): carrito compacto, no ocupa todo el ancho */
+  .main > div:last-child{max-width:520px;margin:0 auto;width:100%;}
+  .presup-card{padding:12px;}
+  .presup-title{font-size:18px;margin-bottom:8px;}
+  .form-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .form-input{padding:7px 10px;font-size:12px;}
+  .totales-box{margin-top:10px;padding-top:8px;}
+  .total-row{font-size:11px;padding:2px 0;}
+  .total-row.final{font-size:18px;padding-top:6px;}
+  .action-btns{gap:6px;margin-top:10px;}
+  .btn-pdf,.btn-picking{padding:9px;font-size:13px;}
+  .btn-clear{padding:9px 12px;font-size:11px;}
+  .validez-row,.moneda-row{padding:5px 8px;font-size:10px;margin-top:6px;}
+  .moneda-btn{padding:3px 8px;font-size:10px;}
+  .pago-suggestions{gap:3px;margin-top:3px;}
+  .pago-chip{font-size:10px;padding:2px 6px;}
+  .items-table{font-size:11px;}
+  .items-table th{padding:5px 6px;font-size:9px;}
+  .items-table td{padding:5px 6px;}
+  .cart-stats{padding:6px 8px;gap:10px;}
+  .cart-stats .stat{font-size:10px;}
+  .cart-stats .stat b{font-size:12px;}
+}
 @media(max-width:600px){.lista-header,.fila{grid-template-columns:85px 1fr 90px 50px 65px;}.form-grid{grid-template-columns:1fr;}.manual-grid{grid-template-columns:1fr 1fr;}}
 
 /* D — MOBILE/RESPONSIVE COMPLETO */
@@ -206,7 +230,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .mobile-fab{display:none;}
 .mobile-overlay{display:none;}
 
-@media(max-width:900px){
+@media(max-width:768px){
   /* Header colapsado */
   body{padding-bottom:80px;}
   header{padding:8px 12px;flex-wrap:wrap;gap:8px;}
