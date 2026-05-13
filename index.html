@@ -289,6 +289,76 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .match-toggle-manual{font-size:10px;color:#a855f7;background:none;border:none;cursor:pointer;padding:2px 6px;text-decoration:underline;font-family:inherit;}
 .paste-progress{font-size:11px;color:var(--muted);margin-bottom:10px;}
 .paste-progress b{color:var(--text);}
+
+/* MÓDULO CLIENTES */
+.clientes-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.clientes-search{flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-family:inherit;font-size:13px;}
+.clientes-search:focus{outline:none;border-color:#3b82f6;}
+.cli-filter-select{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:7px;font-family:inherit;font-size:12px;cursor:pointer;}
+.btn-nuevo-cliente{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-nuevo-cliente:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,.4);}
+.btn-import-cli{background:var(--card);color:var(--muted);border:1px solid var(--border);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;display:inline-flex;align-items:center;gap:6px;}
+.btn-import-cli:hover{color:var(--text);border-color:#3b82f6;}
+.clientes-stats{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.cli-stat{background:var(--panel);border:1px solid var(--border);padding:9px 13px;border-radius:8px;min-width:100px;}
+.cli-stat-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;line-height:1;color:var(--text);}
+.cli-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+.cli-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;transition:border-color .15s;}
+.cli-card:hover{border-color:#3b82f6;}
+.cli-card-main{min-width:0;}
+.cli-razon{font-weight:600;font-size:14px;color:var(--text);}
+.cli-razon-fantasia{font-size:11px;color:var(--muted);margin-left:6px;}
+.cli-meta{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+.cli-tag{font-size:9px;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:10px;letter-spacing:.3px;font-weight:600;text-transform:uppercase;}
+.cli-tag.vip{background:rgba(34,197,94,.15);color:var(--green);border-color:rgba(34,197,94,.3);}
+.cli-tag.riesgo{background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3);}
+.cli-tag.sector{background:rgba(59,130,246,.15);color:#93c5fd;border-color:rgba(59,130,246,.3);}
+.cli-totales{text-align:right;font-size:11px;color:var(--muted);}
+.cli-totales b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:18px;color:var(--text);font-weight:700;}
+.cli-actions{display:flex;gap:4px;}
+.cli-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:5px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .15s;}
+.cli-btn:hover{color:var(--text);}
+.cli-btn.edit:hover{border-color:var(--yellow);color:var(--yellow);}
+.cli-btn.use:hover{border-color:var(--green);color:var(--green);}
+.cli-btn.del:hover{border-color:var(--red);color:var(--red);}
+.cli-empty{padding:40px 20px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--border);border-radius:10px;}
+
+/* MODAL CLIENTE EDIT */
+.cli-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:998;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;backdrop-filter:blur(3px);}
+.cli-modal-overlay.open{display:flex;}
+.cli-modal{background:var(--panel);border-radius:14px;border:1px solid var(--border);max-width:780px;width:100%;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.cli-modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.cli-modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;}
+.cli-modal-body{padding:18px 20px;}
+.cli-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cli-form-group{display:flex;flex-direction:column;}
+.cli-form-group.full{grid-column:1/-1;}
+.cli-form-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:600;}
+.cli-form-input,.cli-form-select,.cli-form-textarea{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;font-family:inherit;font-size:13px;width:100%;box-sizing:border-box;}
+.cli-form-input:focus,.cli-form-select:focus,.cli-form-textarea:focus{outline:none;border-color:#3b82f6;}
+.cli-form-textarea{resize:vertical;min-height:60px;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.cli-form-section{font-size:11px;color:#93c5fd;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin:14px 0 6px;grid-column:1/-1;border-bottom:1px solid var(--border);padding-bottom:5px;}
+.cli-modal-actions{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--dark);border-radius:0 0 14px 14px;}
+.cli-btn-primary{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;padding:9px 18px;border-radius:7px;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px;}
+.cli-btn-primary:hover{transform:translateY(-1px);}
+.cli-btn-secondary{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:9px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;}
+
+/* AUTOCOMPLETAR CLIENTE EN COTIZADOR */
+.cliente-input-wrap{position:relative;}
+.cliente-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--panel);border:1px solid var(--border);border-radius:0 0 8px 8px;max-height:280px;overflow-y:auto;z-index:50;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.cliente-suggestions.open{display:block;}
+.cliente-sug-item{padding:8px 11px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;transition:background .1s;}
+.cliente-sug-item:last-child{border-bottom:none;}
+.cliente-sug-item:hover,.cliente-sug-item.active{background:var(--card);}
+.cliente-sug-razon{font-weight:600;color:var(--text);}
+.cliente-sug-meta{font-size:10px;color:var(--muted);margin-top:2px;display:flex;gap:8px;}
+.cliente-sug-nuevo{padding:8px 11px;color:#93c5fd;font-size:12px;cursor:pointer;border-top:1px dashed var(--border);background:rgba(59,130,246,.05);}
+.cliente-sug-nuevo:hover{background:rgba(59,130,246,.12);}
+.cliente-loaded-info{display:none;font-size:10px;color:var(--green);background:rgba(34,197,94,.08);padding:4px 8px;border-radius:5px;margin-top:4px;border:1px solid rgba(34,197,94,.2);}
+.cliente-loaded-info.show{display:block;}
+.cliente-loaded-info b{color:var(--text);}
+.btn-quick-add-cli{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;font-family:inherit;}
+.btn-quick-add-cli:hover{background:rgba(59,130,246,.25);}
 </style>
 </head>
 <body>
@@ -350,6 +420,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 <div class="tabs">
   <div class="tab active" onclick="switchTab(this,'tab-cotizador')">Cotizador</div>
   <div class="tab" onclick="switchTab(this,'tab-manual')">Ítem Manual</div>
+  <div class="tab" onclick="switchTab(this,'tab-clientes')">👥 Clientes <span id="cli-badge" style="display:none;background:#3b82f6;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
   <div class="tab" onclick="switchTab(this,'tab-historial')">🕘 Historial <span id="hist-badge" style="display:none;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
 </div>
 
@@ -406,7 +477,28 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         </div>
       </div>
     </div>
-    <div id="tab-historial" style="display:none">
+    <div id="tab-clientes" style="display:none">
+      <div class="clientes-toolbar">
+        <input type="text" class="clientes-search" id="cli-search" placeholder="🔎 Buscar por razón social, CUIT, fantasía o contacto..." oninput="renderClientes()">
+        <select class="cli-filter-select" id="cli-filter-sector" onchange="renderClientes()">
+          <option value="">Todos los sectores</option>
+          <option value="Minería">Minería</option>
+          <option value="Construcción">Construcción</option>
+          <option value="Petrolera">Petrolera</option>
+          <option value="Industria pesada">Industria pesada</option>
+          <option value="Taller">Taller</option>
+          <option value="Otros">Otros</option>
+        </select>
+        <select class="cli-filter-select" id="cli-filter-vendedor" onchange="renderClientes()">
+          <option value="">Todos los vendedores</option>
+        </select>
+        <button class="btn-import-cli" onclick="importarClientes()" title="Importar lista (JSON/CSV)">📁 Importar</button>
+        <button class="btn-import-cli" onclick="exportarClientes()" title="Exportar como JSON">⬇ Exportar</button>
+        <button class="btn-nuevo-cliente" onclick="nuevoCliente()">+ Nuevo Cliente</button>
+      </div>
+      <div class="clientes-stats" id="cli-stats"></div>
+      <div id="cli-lista"></div>
+    </div>
       <div class="hist-search-bar">
         <input type="text" class="hist-search-input" id="hist-buscador" placeholder="🔎 Buscar por cliente, N° presupuesto o vendedor..." oninput="renderHistorial()">
         <button class="hist-export-btn" onclick="exportarHistorialCSV()" title="Descargar todo el historial en formato Excel/CSV">
@@ -426,7 +518,14 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
     <div class="presup-card">
       <div class="presup-title">Presupuesto <span class="presup-num" id="nro-presupuesto"></span></div>
       <div class="form-grid">
-        <div class="form-group full"><label class="form-label">Cliente</label><input type="text" class="form-input" id="cliente-nombre" placeholder="Nombre del cliente"></div>
+        <div class="form-group full">
+          <label class="form-label">Cliente</label>
+          <div class="cliente-input-wrap">
+            <input type="text" class="form-input" id="cliente-nombre" placeholder="Tipeá para buscar o crear cliente..." autocomplete="off" oninput="onClienteInput()" onfocus="onClienteInput()" onblur="setTimeout(cerrarSugerencias,200)">
+            <div class="cliente-suggestions" id="cliente-suggestions"></div>
+          </div>
+          <div class="cliente-loaded-info" id="cliente-loaded-info"></div>
+        </div>
         <div class="form-group"><label class="form-label">Condición de Pago</label><input type="text" class="form-input" id="pago-cliente" placeholder="Contado, 30 días...">
           <div class="pago-suggestions">
             <button class="pago-chip" type="button" onclick="setPago('Contado')">Contado</button>
@@ -480,6 +579,148 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
         <button class="btn-picking" onclick="generarPicking()">📋 Hoja de Picking</button>
         <button class="btn-clear" onclick="limpiarCarrito()">Limpiar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLIENTE (ALTA/EDICIÓN) -->
+<div class="cli-modal-overlay" id="cli-modal">
+  <div class="cli-modal">
+    <div class="cli-modal-header">
+      <div>
+        <div class="cli-modal-title" id="cli-modal-title">Nuevo Cliente</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Industrial / B2B — datos para presupuestos y facturación</div>
+      </div>
+      <button class="paste-modal-close" onclick="cerrarClienteModal()">✕</button>
+    </div>
+    <div class="cli-modal-body">
+      <input type="hidden" id="cli-edit-id">
+      <div class="cli-form-grid">
+        <div class="cli-form-section">📋 Datos fiscales</div>
+        <div class="cli-form-group full">
+          <label class="cli-form-label">Razón Social *</label>
+          <input type="text" class="cli-form-input" id="cli-razon" placeholder="Ej: Minera Aguilar S.A.">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Nombre de Fantasía</label>
+          <input type="text" class="cli-form-input" id="cli-fantasia" placeholder="Ej: Aguilar">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">CUIT</label>
+          <input type="text" class="cli-form-input" id="cli-cuit" placeholder="30-12345678-9">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Condición frente al IVA</label>
+          <select class="cli-form-select" id="cli-iva">
+            <option value="RI">Responsable Inscripto</option>
+            <option value="MON">Monotributo</option>
+            <option value="EXE">Exento</option>
+            <option value="CF">Consumidor Final</option>
+          </select>
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Sector / Rubro</label>
+          <select class="cli-form-select" id="cli-sector">
+            <option value="Minería">Minería</option>
+            <option value="Construcción">Construcción</option>
+            <option value="Petrolera">Petrolera</option>
+            <option value="Industria pesada">Industria pesada</option>
+            <option value="Taller">Taller</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+
+        <div class="cli-form-section">📍 Dirección</div>
+        <div class="cli-form-group full">
+          <label class="cli-form-label">Calle y altura</label>
+          <input type="text" class="cli-form-input" id="cli-calle" placeholder="Av. Mitre 123">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Localidad</label>
+          <input type="text" class="cli-form-input" id="cli-localidad" placeholder="San Salvador de Jujuy">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Provincia</label>
+          <input type="text" class="cli-form-input" id="cli-provincia" placeholder="Jujuy">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Código Postal</label>
+          <input type="text" class="cli-form-input" id="cli-cp" placeholder="4600">
+        </div>
+
+        <div class="cli-form-section">👤 Contacto principal</div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Nombre y apellido</label>
+          <input type="text" class="cli-form-input" id="cli-contacto-nombre" placeholder="Juan Pérez">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Cargo</label>
+          <input type="text" class="cli-form-input" id="cli-contacto-cargo" placeholder="Jefe de Compras">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Email</label>
+          <input type="email" class="cli-form-input" id="cli-contacto-mail" placeholder="compras@cliente.com">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">WhatsApp / Teléfono</label>
+          <input type="text" class="cli-form-input" id="cli-contacto-tel" placeholder="3815551234">
+        </div>
+
+        <div class="cli-form-section">👤 Contacto secundario (técnico/depósito)</div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Nombre</label>
+          <input type="text" class="cli-form-input" id="cli-contacto2-nombre" placeholder="Pedro Gómez">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Cargo / rol</label>
+          <input type="text" class="cli-form-input" id="cli-contacto2-cargo" placeholder="Jefe de Planta">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Email</label>
+          <input type="email" class="cli-form-input" id="cli-contacto2-mail" placeholder="">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">WhatsApp / Teléfono</label>
+          <input type="text" class="cli-form-input" id="cli-contacto2-tel" placeholder="">
+        </div>
+
+        <div class="cli-form-section">💼 Condiciones comerciales</div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Vendedor asignado</label>
+          <select class="cli-form-select" id="cli-vendedor"></select>
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Condición de pago habitual</label>
+          <input type="text" class="cli-form-input" id="cli-pago" placeholder="Cta. Cte. 30 días">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Descuento habitual (%)</label>
+          <input type="number" class="cli-form-input" id="cli-descuento" placeholder="0" min="0" max="100" step="0.5">
+        </div>
+        <div class="cli-form-group">
+          <label class="cli-form-label">Empresa BM emisora preferida</label>
+          <select class="cli-form-select" id="cli-empresa">
+            <option value="">(elegir al cotizar)</option>
+            <option value="mitre">BULONERIA MITRE SRL</option>
+            <option value="mineria">BM MINERIA SALTA S.A.S.</option>
+            <option value="roble">EL ROBLE DE TUCUMAN S.A.S.</option>
+          </select>
+        </div>
+
+        <div class="cli-form-section">🏷️ Etiquetas y notas</div>
+        <div class="cli-form-group full">
+          <label class="cli-form-label">Etiquetas (separadas por coma)</label>
+          <input type="text" class="cli-form-input" id="cli-tags" placeholder="VIP, Pago al día, Cliente histórico">
+        </div>
+        <div class="cli-form-group full">
+          <label class="cli-form-label">Notas internas (no aparecen en presupuesto)</label>
+          <textarea class="cli-form-textarea" id="cli-notas" placeholder="Ej: Siempre pide entrega en planta. Pagos viernes."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="cli-modal-actions">
+      <button class="cli-btn-secondary" onclick="cerrarClienteModal()">Cancelar</button>
+      <button class="cli-btn-primary" onclick="guardarCliente()">💾 Guardar cliente</button>
     </div>
   </div>
 </div>
@@ -13802,8 +14043,11 @@ function borrarTodosPrecios(){if(!confirm('¿Resetear todos los precios al valor
 function switchTab(el,targetId){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  ['tab-cotizador','tab-manual','tab-historial'].forEach(id=>document.getElementById(id).style.display=id===targetId?'':'none');
+  ['tab-cotizador','tab-manual','tab-clientes','tab-historial'].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.style.display=id===targetId?'':'none';
+  });
   if(targetId==='tab-historial') renderHistorial();
+  if(targetId==='tab-clientes') renderClientes();
 }
 
 // ─── PDF helpers ──────────────────────────────────────────
@@ -14039,7 +14283,7 @@ function histDuplicar(i){
   document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
   actualizarTabla();actualizarInfoPantalla();
   const tabs=document.querySelectorAll('.tab');tabs.forEach(t=>t.classList.remove('active'));tabs[0].classList.add('active');
-  ['tab-cotizador','tab-manual','tab-historial'].forEach(id=>document.getElementById(id).style.display=id==='tab-cotizador'?'':'none');
+  ['tab-cotizador','tab-manual','tab-clientes','tab-historial'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=id==='tab-cotizador'?'':'none';});
   document.getElementById('cliente-nombre').focus();
   showToast('✓ Duplicado — ingresá el nuevo cliente');
 }
@@ -14082,7 +14326,7 @@ function histCargar(i){
   document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
   actualizarTabla();actualizarInfoPantalla();
   const tabs=document.querySelectorAll('.tab');tabs.forEach(t=>t.classList.remove('active'));tabs[0].classList.add('active');
-  ['tab-cotizador','tab-manual','tab-historial'].forEach(id=>document.getElementById(id).style.display=id==='tab-cotizador'?'':'none');
+  ['tab-cotizador','tab-manual','tab-clientes','tab-historial'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display=id==='tab-cotizador'?'':'none';});
   showToast(`✓ Cotización ${h.nro} cargada`);
 }
 
@@ -14460,6 +14704,382 @@ document.addEventListener('keydown',function(e){
   }
 });
 
+// ─── MÓDULO CLIENTES ─────────────────────────────────────
+let clienteSeleccionado=null; // {id, ...} cuando se elige un cliente del autocomplete
+let sugerenciaActiva=-1;
+
+function cargarClientes(){
+  try{const j=localStorage.getItem('bm_clientes');return j?JSON.parse(j):[];}
+  catch(e){return [];}
+}
+function guardarClientes(arr){
+  localStorage.setItem('bm_clientes',JSON.stringify(arr));
+  actualizarBadgeClientes();
+}
+function actualizarBadgeClientes(){
+  const c=cargarClientes();
+  const b=document.getElementById('cli-badge');
+  if(c.length>0){b.textContent=c.length;b.style.display='';}else{b.style.display='none';}
+}
+
+function nuevoCliente(){
+  document.getElementById('cli-edit-id').value='';
+  document.getElementById('cli-modal-title').textContent='Nuevo Cliente';
+  // Limpiar todos los campos
+  ['razon','fantasia','cuit','calle','localidad','provincia','cp',
+   'contacto-nombre','contacto-cargo','contacto-mail','contacto-tel',
+   'contacto2-nombre','contacto2-cargo','contacto2-mail','contacto2-tel',
+   'pago','descuento','tags','notas'
+  ].forEach(k=>document.getElementById('cli-'+k).value='');
+  document.getElementById('cli-iva').value='RI';
+  document.getElementById('cli-sector').value='Minería';
+  document.getElementById('cli-empresa').value='';
+  poblarVendedoresCliente();
+  document.getElementById('cli-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('cli-razon').focus(),50);
+}
+
+function poblarVendedoresCliente(){
+  const sel=document.getElementById('cli-vendedor');
+  sel.innerHTML='<option value="">(sin asignar)</option>'+
+    USUARIOS.map(u=>`<option value="${u.user}">${u.nombre}</option>`).join('');
+  // También poblar el filtro
+  const fil=document.getElementById('cli-filter-vendedor');
+  if(fil&&fil.options.length<=1){
+    fil.innerHTML='<option value="">Todos los vendedores</option>'+
+      USUARIOS.map(u=>`<option value="${u.user}">${u.nombre}</option>`).join('');
+  }
+}
+
+function editarCliente(id){
+  const cli=cargarClientes().find(c=>c.id===id);
+  if(!cli)return;
+  document.getElementById('cli-edit-id').value=id;
+  document.getElementById('cli-modal-title').textContent='Editar Cliente';
+  document.getElementById('cli-razon').value=cli.razon||'';
+  document.getElementById('cli-fantasia').value=cli.fantasia||'';
+  document.getElementById('cli-cuit').value=cli.cuit||'';
+  document.getElementById('cli-iva').value=cli.iva||'RI';
+  document.getElementById('cli-sector').value=cli.sector||'Minería';
+  document.getElementById('cli-calle').value=cli.calle||'';
+  document.getElementById('cli-localidad').value=cli.localidad||'';
+  document.getElementById('cli-provincia').value=cli.provincia||'';
+  document.getElementById('cli-cp').value=cli.cp||'';
+  document.getElementById('cli-contacto-nombre').value=cli.contactoNombre||'';
+  document.getElementById('cli-contacto-cargo').value=cli.contactoCargo||'';
+  document.getElementById('cli-contacto-mail').value=cli.contactoMail||'';
+  document.getElementById('cli-contacto-tel').value=cli.contactoTel||'';
+  document.getElementById('cli-contacto2-nombre').value=cli.contacto2Nombre||'';
+  document.getElementById('cli-contacto2-cargo').value=cli.contacto2Cargo||'';
+  document.getElementById('cli-contacto2-mail').value=cli.contacto2Mail||'';
+  document.getElementById('cli-contacto2-tel').value=cli.contacto2Tel||'';
+  document.getElementById('cli-pago').value=cli.pago||'';
+  document.getElementById('cli-descuento').value=cli.descuento||'';
+  document.getElementById('cli-empresa').value=cli.empresa||'';
+  document.getElementById('cli-tags').value=(cli.tags||[]).join(', ');
+  document.getElementById('cli-notas').value=cli.notas||'';
+  poblarVendedoresCliente();
+  document.getElementById('cli-vendedor').value=cli.vendedor||'';
+  document.getElementById('cli-modal').classList.add('open');
+}
+
+function cerrarClienteModal(){
+  document.getElementById('cli-modal').classList.remove('open');
+}
+
+function guardarCliente(){
+  const razon=document.getElementById('cli-razon').value.trim();
+  if(!razon){showToast('Razón social obligatoria','#ef4444');return;}
+  const id=document.getElementById('cli-edit-id').value;
+  const data={
+    id:id||('cli_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)),
+    razon,
+    fantasia:document.getElementById('cli-fantasia').value.trim(),
+    cuit:document.getElementById('cli-cuit').value.trim(),
+    iva:document.getElementById('cli-iva').value,
+    sector:document.getElementById('cli-sector').value,
+    calle:document.getElementById('cli-calle').value.trim(),
+    localidad:document.getElementById('cli-localidad').value.trim(),
+    provincia:document.getElementById('cli-provincia').value.trim(),
+    cp:document.getElementById('cli-cp').value.trim(),
+    contactoNombre:document.getElementById('cli-contacto-nombre').value.trim(),
+    contactoCargo:document.getElementById('cli-contacto-cargo').value.trim(),
+    contactoMail:document.getElementById('cli-contacto-mail').value.trim(),
+    contactoTel:document.getElementById('cli-contacto-tel').value.trim(),
+    contacto2Nombre:document.getElementById('cli-contacto2-nombre').value.trim(),
+    contacto2Cargo:document.getElementById('cli-contacto2-cargo').value.trim(),
+    contacto2Mail:document.getElementById('cli-contacto2-mail').value.trim(),
+    contacto2Tel:document.getElementById('cli-contacto2-tel').value.trim(),
+    vendedor:document.getElementById('cli-vendedor').value,
+    pago:document.getElementById('cli-pago').value.trim(),
+    descuento:parseFloat(document.getElementById('cli-descuento').value)||0,
+    empresa:document.getElementById('cli-empresa').value,
+    tags:document.getElementById('cli-tags').value.split(',').map(t=>t.trim()).filter(t=>t),
+    notas:document.getElementById('cli-notas').value.trim(),
+    creado:id?undefined:new Date().toISOString(),
+    actualizado:new Date().toISOString()
+  };
+  let arr=cargarClientes();
+  const idx=arr.findIndex(c=>c.id===data.id);
+  if(idx>=0){data.creado=arr[idx].creado;arr[idx]=data;}else{arr.push(data);}
+  guardarClientes(arr);
+  cerrarClienteModal();
+  renderClientes();
+  showToast(idx>=0?'✓ Cliente actualizado':'✓ Cliente creado','#3b82f6');
+}
+
+function borrarCliente(id){
+  const cli=cargarClientes().find(c=>c.id===id);
+  if(!cli)return;
+  if(!confirm(`¿Eliminar "${cli.razon}"? Esta acción no se puede deshacer.`))return;
+  const arr=cargarClientes().filter(c=>c.id!==id);
+  guardarClientes(arr);renderClientes();
+  showToast('🗑 Cliente eliminado','#ef4444');
+}
+
+// Calcula totales del cliente a partir del historial
+function totalesCliente(razon){
+  const hist=cargarHistorial();
+  let total=0,cant=0,ultima=null;
+  hist.forEach(h=>{
+    if(h.cliente&&h.cliente.toLowerCase()===razon.toLowerCase()){
+      total+=h.total||0;cant++;
+      if(!ultima||new Date(h.fecha)>new Date(ultima))ultima=h.fecha;
+    }
+  });
+  return {total,cant,ultima};
+}
+
+function renderClientes(){
+  poblarVendedoresCliente();
+  actualizarBadgeClientes();
+  const arr=cargarClientes();
+  const cont=document.getElementById('cli-lista');
+  const stats=document.getElementById('cli-stats');
+  const q=(document.getElementById('cli-search')?.value||'').toLowerCase().trim();
+  const fSec=document.getElementById('cli-filter-sector')?.value||'';
+  const fVen=document.getElementById('cli-filter-vendedor')?.value||'';
+  
+  let lista=arr.slice();
+  if(q){
+    const toks=q.split(/\s+/).filter(x=>x);
+    lista=lista.filter(c=>{
+      const blob=((c.razon||'')+' '+(c.fantasia||'')+' '+(c.cuit||'')+' '+(c.contactoNombre||'')+' '+(c.contactoMail||'')+' '+(c.localidad||'')).toLowerCase();
+      return toks.every(t=>blob.includes(t));
+    });
+  }
+  if(fSec)lista=lista.filter(c=>c.sector===fSec);
+  if(fVen)lista=lista.filter(c=>c.vendedor===fVen);
+  lista.sort((a,b)=>a.razon.localeCompare(b.razon));
+  
+  // Stats
+  const sectores={};arr.forEach(c=>{sectores[c.sector||'Otros']=(sectores[c.sector||'Otros']||0)+1;});
+  const topSector=Object.entries(sectores).sort((a,b)=>b[1]-a[1])[0];
+  stats.innerHTML=`
+    <div class="cli-stat"><div class="cli-stat-num">${arr.length}</div><div class="cli-stat-lbl">Clientes total</div></div>
+    <div class="cli-stat"><div class="cli-stat-num">${lista.length}</div><div class="cli-stat-lbl">Filtrados</div></div>
+    <div class="cli-stat"><div class="cli-stat-num">${topSector?topSector[1]:0}</div><div class="cli-stat-lbl">${topSector?topSector[0]:'Sector top'}</div></div>
+  `;
+  
+  if(arr.length===0){
+    cont.innerHTML='<div class="cli-empty">👥 No tenés clientes cargados aún.<br><br><button class="btn-nuevo-cliente" onclick="nuevoCliente()">+ Cargar primer cliente</button><br><br><small>O importá una lista con el botón 📁 Importar</small></div>';
+    return;
+  }
+  if(lista.length===0){
+    cont.innerHTML='<div class="cli-empty">🔎 Ningún cliente coincide con la búsqueda.</div>';
+    return;
+  }
+  cont.innerHTML=lista.map(c=>{
+    const tots=totalesCliente(c.razon);
+    const sectorTag=c.sector?`<span class="cli-tag sector">${c.sector}</span>`:'';
+    const tagsHTML=(c.tags||[]).map(t=>{
+      const cl=t.toUpperCase().includes('VIP')?'vip':(t.toUpperCase().includes('RIESGO')||t.toUpperCase().includes('MOROSO')?'riesgo':'');
+      return `<span class="cli-tag ${cl}">${t}</span>`;
+    }).join('');
+    const vendNombre=c.vendedor?(USUARIOS.find(u=>u.user===c.vendedor)?.nombre||c.vendedor):'';
+    const ultimaTxt=tots.ultima?new Date(tots.ultima).toLocaleDateString('es-AR'):'—';
+    return `<div class="cli-card">
+      <div class="cli-card-main">
+        <div class="cli-razon">${c.razon}${c.fantasia?`<span class="cli-razon-fantasia">· ${c.fantasia}</span>`:''}</div>
+        <div class="cli-meta">
+          ${c.cuit?`<span>📋 CUIT ${c.cuit}</span>`:''}
+          ${c.localidad?`<span>📍 ${c.localidad}${c.provincia?', '+c.provincia:''}</span>`:''}
+          ${c.contactoNombre?`<span>👤 ${c.contactoNombre}</span>`:''}
+          ${c.contactoTel?`<span>📱 ${c.contactoTel}</span>`:''}
+          ${vendNombre?`<span>🧑‍💼 ${vendNombre}</span>`:''}
+          ${c.descuento>0?`<span style="color:var(--yellow)">💰 ${c.descuento}% dto</span>`:''}
+        </div>
+        <div style="margin-top:5px">${sectorTag}${tagsHTML}</div>
+      </div>
+      <div class="cli-totales">
+        <b>$${fmt(tots.total)}</b>
+        <span>${tots.cant} presup. · últ: ${ultimaTxt}</span>
+      </div>
+      <div class="cli-actions">
+        <button class="cli-btn use" onclick="usarClienteEnCotizador('${c.id}')" title="Usar en presupuesto nuevo">→ Cotizar</button>
+        <button class="cli-btn edit" onclick="editarCliente('${c.id}')" title="Editar">✏</button>
+        <button class="cli-btn del" onclick="borrarCliente('${c.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function usarClienteEnCotizador(id){
+  const cli=cargarClientes().find(c=>c.id===id);
+  if(!cli)return;
+  aplicarClienteACotizador(cli);
+  // Cambiar a tab cotizador
+  const tabs=document.querySelectorAll('.tab');tabs.forEach(t=>t.classList.remove('active'));tabs[0].classList.add('active');
+  ['tab-cotizador','tab-manual','tab-clientes','tab-historial'].forEach(id=>document.getElementById(id).style.display=id==='tab-cotizador'?'':'none');
+  showToast(`✓ Cliente "${cli.razon.split(' ').slice(0,3).join(' ')}" cargado`,'#3b82f6');
+}
+
+function aplicarClienteACotizador(cli){
+  clienteSeleccionado=cli;
+  document.getElementById('cliente-nombre').value=cli.razon;
+  if(cli.pago)document.getElementById('pago-cliente').value=cli.pago;
+  if(cli.descuento>0){document.getElementById('descuento').value=cli.descuento;actualizarTabla();}
+  if(cli.empresa)document.getElementById('select-empresa').value=cli.empresa;
+  if(typeof actualizarInfoPantalla==='function')actualizarInfoPantalla();
+  // Mostrar info verde abajo del input
+  const info=document.getElementById('cliente-loaded-info');
+  const partes=[];
+  if(cli.cuit)partes.push(`CUIT ${cli.cuit}`);
+  if(cli.contactoNombre)partes.push(`👤 ${cli.contactoNombre}`);
+  if(cli.contactoMail)partes.push(`📧 ${cli.contactoMail}`);
+  if(cli.descuento>0)partes.push(`💰 ${cli.descuento}% dto aplicado`);
+  info.innerHTML=`<b>✓ Cliente cargado</b> · ${partes.join(' · ')}`;
+  info.classList.add('show');
+}
+
+// AUTOCOMPLETE EN COTIZADOR
+function onClienteInput(){
+  const q=document.getElementById('cliente-nombre').value.toLowerCase().trim();
+  const sug=document.getElementById('cliente-suggestions');
+  const info=document.getElementById('cliente-loaded-info');
+  if(clienteSeleccionado && q!==clienteSeleccionado.razon.toLowerCase()){
+    clienteSeleccionado=null;
+    info.classList.remove('show');
+  }
+  if(!q){sug.classList.remove('open');return;}
+  const arr=cargarClientes();
+  const toks=q.split(/\s+/).filter(x=>x);
+  let matches=arr.filter(c=>{
+    const blob=((c.razon||'')+' '+(c.fantasia||'')+' '+(c.cuit||'')+' '+(c.localidad||'')).toLowerCase();
+    return toks.every(t=>blob.includes(t));
+  }).slice(0,8);
+  if(matches.length===0&&arr.length===0){
+    sug.innerHTML=`<div class="cliente-sug-nuevo" onclick="abrirNuevoConNombre('${q.replace(/'/g,"\\'")}')">+ Crear cliente "${document.getElementById('cliente-nombre').value}"</div>`;
+  }else if(matches.length===0){
+    sug.innerHTML=`<div class="cliente-sug-item" style="color:var(--muted);cursor:default">Sin coincidencias</div><div class="cliente-sug-nuevo" onclick="abrirNuevoConNombre('${q.replace(/'/g,"\\'")}')">+ Crear "${document.getElementById('cliente-nombre').value}" como nuevo cliente</div>`;
+  }else{
+    sug.innerHTML=matches.map((c,i)=>{
+      const tots=totalesCliente(c.razon);
+      const meta=[];
+      if(c.fantasia)meta.push(c.fantasia);
+      if(c.cuit)meta.push('CUIT '+c.cuit);
+      if(c.localidad)meta.push(c.localidad);
+      if(tots.cant>0)meta.push(tots.cant+' presup. previos');
+      return `<div class="cliente-sug-item" onclick="seleccionarCliente('${c.id}')">
+        <div class="cliente-sug-razon">${c.razon}</div>
+        <div class="cliente-sug-meta">${meta.join(' · ')}</div>
+      </div>`;
+    }).join('')+`<div class="cliente-sug-nuevo" onclick="abrirNuevoConNombre('${q.replace(/'/g,"\\'")}')">+ Crear "${document.getElementById('cliente-nombre').value}" como cliente nuevo</div>`;
+  }
+  sug.classList.add('open');
+}
+function cerrarSugerencias(){document.getElementById('cliente-suggestions').classList.remove('open');}
+function seleccionarCliente(id){
+  const cli=cargarClientes().find(c=>c.id===id);
+  if(cli)aplicarClienteACotizador(cli);
+  cerrarSugerencias();
+}
+function abrirNuevoConNombre(nombre){
+  cerrarSugerencias();
+  nuevoCliente();
+  document.getElementById('cli-razon').value=document.getElementById('cliente-nombre').value;
+}
+
+// EXPORTAR / IMPORTAR
+function exportarClientes(){
+  const arr=cargarClientes();
+  if(arr.length===0){showToast('No hay clientes para exportar','#f59e0b');return;}
+  const blob=new Blob([JSON.stringify(arr,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='Clientes_BM_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`✓ ${arr.length} clientes exportados`);
+}
+
+function importarClientes(){
+  const input=document.createElement('input');
+  input.type='file';
+  input.accept='.json,.csv,.txt';
+  input.onchange=async(e)=>{
+    const f=e.target.files[0];if(!f)return;
+    const text=await f.text();
+    let nuevos=[];
+    try{
+      const parsed=JSON.parse(text);
+      if(!Array.isArray(parsed)){showToast('El archivo JSON debe ser un array de clientes','#ef4444');return;}
+      nuevos=parsed;
+    }catch(err){
+      // Try CSV
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length<2){showToast('Formato no reconocido (esperado JSON o CSV)','#ef4444');return;}
+      const sep=lines[0].includes(';')?';':',';
+      const headers=lines[0].split(sep).map(h=>h.trim().toLowerCase().replace(/[^a-z0-9]/g,''));
+      const mapKey={
+        razonsocial:'razon',razon:'razon',nombre:'razon',cliente:'razon',
+        fantasia:'fantasia',nombredefantasia:'fantasia',
+        cuit:'cuit',
+        direccion:'calle',calle:'calle',
+        localidad:'localidad',ciudad:'localidad',
+        provincia:'provincia',
+        cp:'cp',codigopostal:'cp',
+        email:'contactoMail',mail:'contactoMail',correo:'contactoMail',
+        telefono:'contactoTel',tel:'contactoTel',whatsapp:'contactoTel',celular:'contactoTel',
+        contacto:'contactoNombre',contactonombre:'contactoNombre',
+        sector:'sector',rubro:'sector',
+        descuento:'descuento',
+        pago:'pago',condiciondepago:'pago',condicion:'pago',
+        notas:'notas',observaciones:'notas',
+      };
+      lines.slice(1).forEach(l=>{
+        const vals=l.split(sep).map(v=>v.trim().replace(/^"|"$/g,''));
+        const obj={id:'cli_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),creado:new Date().toISOString(),actualizado:new Date().toISOString(),iva:'RI',sector:'Otros'};
+        headers.forEach((h,i)=>{
+          const k=mapKey[h];if(k){obj[k]=vals[i]||'';}
+        });
+        if(obj.descuento)obj.descuento=parseFloat(obj.descuento)||0;
+        if(obj.razon)nuevos.push(obj);
+      });
+    }
+    if(nuevos.length===0){showToast('No se encontraron clientes válidos','#ef4444');return;}
+    if(!confirm(`Se van a importar ${nuevos.length} clientes. ¿Continuar?\n\n(Los existentes con la misma razón social se omiten)`))return;
+    const existentes=cargarClientes();
+    const razSet=new Set(existentes.map(c=>(c.razon||'').toLowerCase()));
+    let agregados=0,omitidos=0;
+    nuevos.forEach(n=>{
+      if(!n.razon)return;
+      if(razSet.has(n.razon.toLowerCase())){omitidos++;return;}
+      // Asegurar campos mínimos
+      n.id=n.id||('cli_'+Date.now()+'_'+Math.random().toString(36).slice(2,6));
+      n.creado=n.creado||new Date().toISOString();
+      n.actualizado=new Date().toISOString();
+      n.tags=Array.isArray(n.tags)?n.tags:(typeof n.tags==='string'?n.tags.split(',').map(t=>t.trim()).filter(t=>t):[]);
+      existentes.push(n);agregados++;
+      razSet.add(n.razon.toLowerCase());
+    });
+    guardarClientes(existentes);
+    renderClientes();
+    showToast(`✓ ${agregados} importados${omitidos>0?', '+omitidos+' omitidos (duplicados)':''}`,'#3b82f6');
+  };
+  input.click();
+}
+
 // ─── ATAJOS DE TECLADO ────────────────────────────────────
 document.addEventListener('keydown',function(e){
   // Ctrl/Cmd + K: foco al buscador
@@ -14508,6 +15128,7 @@ document.getElementById('nro-presupuesto').textContent='#'+nroPresupuesto;
 render(ARTICULOS);
 document.getElementById('results-count').textContent=`${ARTICULOS.length.toLocaleString()} artículos`;
 actualizarHistBadge();
+actualizarBadgeClientes();
 checkSession();
 </script>
 </body>
