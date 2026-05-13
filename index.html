@@ -198,46 +198,55 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .dolar-chip:hover{border-color:var(--yellow);}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#000;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
-@media(max-width:900px){
+@media(max-width:750px){
   .main{grid-template-columns:1fr;}
 }
-@media(min-width:901px) and (max-width:1300px){
+@media(min-width:751px) and (max-width:1300px){
   /* Pantalla partida en laptop: mantener 2 columnas pero más compactas */
-  .main{grid-template-columns:1fr 320px;gap:12px;}
-  .presup-card{padding:11px;}
-  .presup-title{font-size:17px;margin-bottom:7px;}
-  .form-grid{grid-template-columns:1fr;gap:7px;}
-  .form-input{padding:6px 9px;font-size:12px;}
+  .main{grid-template-columns:1fr 300px;gap:10px;}
+  .presup-card{padding:10px;}
+  .presup-title{font-size:16px;margin-bottom:6px;}
+  .form-grid{grid-template-columns:1fr;gap:6px;}
+  .form-input{padding:6px 8px;font-size:11px;}
   .form-label{font-size:9px;}
-  .totales-box{margin-top:9px;padding-top:7px;}
-  .total-row{font-size:11px;padding:2px 0;}
-  .total-row.final{font-size:17px;padding-top:5px;}
-  .action-btns{gap:5px;margin-top:9px;flex-direction:column;}
-  .btn-pdf,.btn-picking{padding:8px;font-size:12px;}
-  .btn-clear{padding:8px;font-size:11px;width:100%;}
-  .validez-row,.moneda-row{padding:5px 7px;font-size:10px;margin-top:5px;flex-wrap:wrap;}
-  .moneda-btn{padding:3px 7px;font-size:10px;}
+  .totales-box{margin-top:8px;padding-top:6px;}
+  .total-row{font-size:10px;padding:2px 0;}
+  .total-row.final{font-size:16px;padding-top:5px;}
+  .action-btns{gap:5px;margin-top:8px;flex-direction:column;}
+  .btn-pdf,.btn-picking{padding:7px;font-size:12px;}
+  .btn-clear{padding:7px;font-size:10px;width:100%;}
+  .validez-row,.moneda-row{padding:4px 7px;font-size:10px;margin-top:5px;flex-wrap:wrap;}
+  .moneda-btn{padding:3px 6px;font-size:10px;}
   .moneda-nota{display:none;}
   .pago-suggestions{gap:3px;margin-top:3px;}
   .pago-chip{font-size:9px;padding:2px 5px;}
   .items-table{font-size:10px;}
-  .items-table th{padding:4px 5px;font-size:8px;}
-  .items-table td{padding:4px 5px;}
-  .precio-carrito-input{width:60px;font-size:10px;padding:2px 4px;}
-  .qty-cell input{width:36px;font-size:10px;padding:2px;}
-  .cart-stats{padding:5px 7px;gap:8px;font-size:9px;}
+  .items-table th{padding:4px 4px;font-size:8px;}
+  .items-table td{padding:4px 4px;}
+  .precio-carrito-input{width:54px;font-size:10px;padding:2px 4px;}
+  .qty-cell input{width:32px;font-size:10px;padding:2px;}
+  .cart-stats{padding:5px 6px;gap:6px;font-size:9px;flex-wrap:wrap;}
   .cart-stats .stat{font-size:9px;}
-  .cart-stats .stat b{font-size:11px;}
+  .cart-stats .stat b{font-size:10px;}
   .items-table col.col-desc{width:auto;}
-  .items-table col.col-pu{width:70px;}
-  .items-table col.col-cant{width:46px;}
-  .items-table col.col-sub{width:72px;}
-  .items-table col.col-del{width:24px;}
+  .items-table col.col-pu{width:62px;}
+  .items-table col.col-cant{width:40px;}
+  .items-table col.col-sub{width:64px;}
+  .items-table col.col-del{width:22px;}
   /* Header también más compacto */
-  header{padding:9px 14px;}
+  header{padding:8px 12px;}
   .logo small{font-size:10px;}
-  .dolar-chip{padding:5px 10px;}
+  .dolar-chip{padding:5px 9px;}
   .dolar-val{font-size:13px;}
+  /* Lista de productos también más compacta */
+  .lista-header,.fila{grid-template-columns:80px 1fr 90px 48px 60px;font-size:11px;}
+  .fila .precio-input{font-size:11px;padding:5px 7px;}
+  .fila .cant-input{font-size:11px;}
+  .fila .btn-add{padding:5px 10px;font-size:11px;}
+  .filters-bar{gap:5px;padding:6px;}
+  .results-count{font-size:10px;}
+  .btn-paste-list{font-size:10px;padding:5px 9px;}
+  .hoja-select{font-size:11px;padding:5px 8px;}
 }
 @media(max-width:600px){.lista-header,.fila{grid-template-columns:85px 1fr 90px 50px 65px;}.form-grid{grid-template-columns:1fr;}.manual-grid{grid-template-columns:1fr 1fr;}}
 
@@ -246,7 +255,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .mobile-fab{display:none;}
 .mobile-overlay{display:none;}
 
-@media(max-width:768px){
+@media(max-width:750px){
   /* Header colapsado */
   body{padding-bottom:80px;}
   header{padding:8px 12px;flex-wrap:wrap;gap:8px;}
