@@ -335,6 +335,7 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
       <select id="select-empresa" class="empresa-select" onchange="actualizarInfoPantalla()">
         <option value="mitre">BULONERIA MITRE SRL</option>
         <option value="mineria">BM MINERIA SALTA S.A.S.</option>
+        <option value="roble">EL ROBLE DE TUCUMAN S.A.S.</option>
       </select>
       <div id="info-pantalla" class="empresa-info" style="margin-top:2px"></div>
     </div>
@@ -618,7 +619,8 @@ function checkSession(){
 // ─── DATOS ────────────────────────────────────────────────
 const DATOS_EMPRESAS={
   mitre:{nombre:"BM GROUP - BULONERIA MITRE SRL",dir1:"Parque Industrial Av.Circunvalacion Ruta 9 - KM 1294",dir2:"Mz B - Fracción A y B | Tel: 3816797611",cuit:"CUIT: 30-69179970-7"},
-  mineria:{nombre:"BM MINERIA SALTA S.A.S.",dir1:"RIVADAVIA 491 - SALTA",dir2:"4400 - SALTA",cuit:"CUIT: 30-71882856-9"}
+  mineria:{nombre:"BM MINERIA SALTA S.A.S.",dir1:"RIVADAVIA 491 - SALTA",dir2:"4400 - SALTA",cuit:"CUIT: 30-71882856-9"},
+  roble:{nombre:"EL ROBLE DE TUCUMAN S.A.S.",dir1:"SILVANO BORES 342",dir2:"SAN MIGUEL DE TUCUMAN",cuit:"CUIT: 30-71651329-3"}
 };
 
 const ARTICULOS=[{c:"1100FER",d:"GAMISOL — Guante G7 algodón moteado ferretero",p:0.58,h:"LISTA GRAL."},
