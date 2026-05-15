@@ -201,6 +201,10 @@ header{background:var(--black);border-bottom:3px solid var(--red);padding:0 20px
 .dolar-chip:hover{border-color:var(--yellow);}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#000;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
+
+/* Cuando NO estás en la tab Cotizador, el carrito se oculta y la columna izquierda usa todo el ancho */
+body.hide-cart .main{grid-template-columns:1fr !important;}
+body.hide-cart .main > div:last-child{display:none !important;}
 @media(max-width:600px){
   .main{grid-template-columns:1fr;}
 }
@@ -14476,6 +14480,8 @@ function switchTab(el,targetId){
   ['tab-cotizador','tab-manual','tab-clientes','tab-historial'].forEach(id=>{
     const e=document.getElementById(id);if(e)e.style.display=id===targetId?'':'none';
   });
+  // Mostrar carrito SOLO en pestaña Cotizador
+  document.body.classList.toggle('hide-cart', targetId!=='tab-cotizador');
   if(targetId==='tab-historial') renderHistorial();
   if(targetId==='tab-clientes') renderClientes();
 }
