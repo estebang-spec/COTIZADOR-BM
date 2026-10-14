@@ -633,6 +633,11 @@ mark.hl{background:rgba(245,158,11,.30);color:inherit;border-radius:2px;padding:
 .mon-tag.USD{color:#86efac;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);}
 .mon-tag.ARS{color:#93c5fd;background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35);}
 .precio-usd-equiv.warn,.ci-conv.warn{color:var(--yellow);}
+.mon-sw{display:inline-flex;flex-shrink:0;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:var(--dark);}
+.mon-sw button{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:9px;font-weight:700;padding:4px 5px;cursor:pointer;line-height:1;}
+.mon-sw button.on.ars{background:var(--blue);color:#fff;}
+.mon-sw button.on.usd{background:#16a34a;color:#fff;}
+.precio-usd-equiv.lista{cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
 .btn-fav{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:7px 10px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px;white-space:nowrap;}
 .btn-fav:hover{color:var(--text);}
 .btn-fav.active{color:#fcd34d;border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1);}
@@ -768,7 +773,7 @@ mark.hl{background:rgba(245,158,11,.30);color:inherit;border-radius:2px;padding:
   /* Evita el zoom automático del iPhone al tocar un campo */
   .form-input,#buscador,.precio-input,.cant-input,.ci-bot input,.ci-nota,.hoja-select,.empresa-select,.input-field,textarea{font-size:16px !important;}
   .precio-line{max-width:190px;}
-  .mon-tag{font-size:11px;padding:5px 7px;}
+  .mon-sw button{font-size:12px;padding:7px 9px;}
   .ci{padding:10px 2px;}
   .ci-desc{font-size:13px;}
   .ci-q{width:58px;}
@@ -14461,6 +14466,7 @@ function setPago(txt){
 
 function setMoneda(m){
   monedaActual=m;
+  _verMoneda={};
   document.getElementById('btn-ars').className='moneda-btn'+(m==='ARS'?' active ars':'');
   document.getElementById('btn-usd').className='moneda-btn'+(m==='USD'?' active usd':'');
   document.getElementById('moneda-nota').textContent=m==='ARS'?'Pesos argentinos':'Dólares estadounidenses';
@@ -14487,7 +14493,7 @@ function actualizarInfoPantalla(){const k=document.getElementById('select-empres
 
 // ─── v3: MONEDA POR ARTÍCULO, TIPO DE CAMBIO Y UTILIDADES ──
 const MONEDA_HOJA={'TRUPER':'USD','LUSQTOFF':'USD','ELECTRODOS':'USD','ELECTRODOS COMMODITY':'USD','TEK BOND':'USD','SEGOD':'USD','DP':'USD','LIBUS':'USD','AIR':'USD','ALTURA-ESLINGA':'USD'};
-let _monOverride={};try{_monOverride=JSON.parse(localStorage.getItem('bm_moneda_override')||'{}')||{};}catch(e){_monOverride={};}
+let _monOverride={};try{_monOverride=JSON.parse(localStorage.getItem('bm_moneda_override_v2')||'{}')||{};}catch(e){_monOverride={};}
 let _artPorKey=null;
 function artPorKey(k){if(!_artPorKey){_artPorKey={};ARTICULOS.forEach(a=>{_artPorKey[artKey(a)]=a;});}return _artPorKey[k]||null;}
 function monedaArticulo(a){
@@ -14498,12 +14504,25 @@ function monedaArticulo(a){
   if(a.h==='LISTA GRAL.')return (a.p>0&&a.p<1000)?'USD':'ARS';
   return 'ARS';
 }
-function toggleMonedaArticulo(btn){
-  const k=btn.closest('.fila').dataset.key;const a=artPorKey(k);if(!a)return;
-  const nueva=monedaArticulo(a)==='USD'?'ARS':'USD';
+// Cada fila se muestra en la moneda del presupuesto; con $ / USD se puede ver en la otra
+var _verMoneda={};
+function verMonedaFila(btn,m){
+  const fila=btn.closest('.fila');const k=fila.dataset.key;const a=artPorKey(k);if(!a)return;
+  if(m!==monedaArticulo(a)&&!tcActual()){showToast('⚠ Falta el tipo de cambio. Tocá el dólar de arriba para cargarlo.','#f59e0b');return;}
+  _verMoneda[k]=m;
+  const cant=fila.querySelector('.cant-input').value;
+  const tmp=document.createElement('div');tmp.innerHTML=filaHTML(a,frecuenciaCotizados());
+  const nueva=tmp.firstElementChild;nueva.querySelector('.cant-input').value=cant;
+  fila.replaceWith(nueva);
+}
+function reclasificarArticulo(el){
+  const k=el.closest('.fila').dataset.key;const a=artPorKey(k);if(!a)return;
+  const act=monedaArticulo(a);const nueva=act==='USD'?'ARS':'USD';
+  if(!confirm(`El precio de lista de "${a.c}" figura en ${act==='USD'?'dólares':'pesos'}.\n¿Está mal y en realidad es en ${nueva==='USD'?'dólares':'pesos'}?`))return;
   _monOverride[k]=nueva;
-  try{localStorage.setItem('bm_moneda_override',JSON.stringify(_monOverride));}catch(e){}
-  showToast(`Precio de "${a.c}" marcado en ${nueva==='USD'?'dólares':'pesos'}`,'#3b82f6');
+  try{localStorage.setItem('bm_moneda_override_v2',JSON.stringify(_monOverride));}catch(e){}
+  delete _verMoneda[k];
+  showToast(`Lista de "${a.c}" marcada en ${nueva==='USD'?'dólares':'pesos'}`,'#3b82f6');
   filtrar();
 }
 
@@ -14573,32 +14592,36 @@ function _resaltar(texto){
   try{return html.replace(new RegExp('('+toks.join('|')+')','gi'),'<mark class="hl">$1</mark>');}catch(e){return html;}
 }
 
+function filaHTML(art,freq){
+  const key=artKey(art);const p=precios[key]||'';const hasP=p>0;
+  const disc=esDescontinuado(art);
+  const mon=monedaArticulo(art);
+  let ver=_verMoneda[key]||monedaActual;
+  let pVer=hasP?convertir(p,mon,ver):null;
+  let sinTC=false;
+  if(hasP&&pVer==null){ver=mon;pVer=p;sinTC=true;}
+  const discBadge=disc?'<span class="discontinued-badge" title="No figura en la lista de precios actual del distribuidor">DISC</span>':'';
+  const n=freq[key]||0;
+  const favBadge=n>0?`<span class="fav-badge" title="Cotizado ${n} ${n===1?'vez':'veces'}">★ ${n}</span>`:'';
+  let info='';
+  if(hasP&&ver!==mon)info=`<div class="precio-usd-equiv lista" onclick="reclasificarArticulo(this)" title="Precio de la lista del proveedor. Clic si la moneda de la lista está mal.">lista ${_simb(mon)}${fmt(p)}</div>`;
+  else if(sinTC)info='<div class="precio-usd-equiv warn">sin tipo de cambio</div>';
+  const sw=`<span class="mon-sw" title="Ver el precio en pesos o en dólares"><button type="button" class="${ver==='ARS'?'on ars':''}" onclick="verMonedaFila(this,'ARS')">$</button><button type="button" class="${ver==='USD'?'on usd':''}" onclick="verMonedaFila(this,'USD')">USD</button></span>`;
+  return `<div class="fila${disc?' discontinued':''}" data-key="${escHtml(key)}">
+      <div class="fila-meta"><span class="code-tag" title="${escHtml(art.c)}">${_resaltar(art.c)}</span><span class="hoja-badge">${escHtml(art.h)}</span>${discBadge}${favBadge}</div>
+      <div class="desc-text">${_resaltar(art.d)}</div>
+      <div class="precio-cell"><div class="precio-line"><input type="number" class="precio-input${hasP?' tiene-precio':''}" data-ver="${ver}" value="${hasP?_precioVista(pVer):''}" placeholder="precio" step="any" oninput="onPrecioChange(this)" onkeydown="if(event.key==='Enter')this.closest('.fila').querySelector('.btn-add').click()">${sw}</div>${info}</div>
+      <div><input type="number" class="cant-input" value="1" min="1" onkeydown="if(event.key==='Enter')this.closest('.fila').querySelector('.btn-add').click()"></div>
+      <div><button class="btn-add" onclick="agregarDesdeFila(this)">Añadir</button></div>
+    </div>`;
+}
 function render(lista){
   const cont=document.getElementById('contenedor-items');
   document.getElementById('results-count').textContent=`${lista.length.toLocaleString()} resultados`;
   const items=lista.length>400?lista.slice(0,400):lista;
   if(items.length===0){cont.innerHTML='<div class="empty-msg">No se encontraron artículos.</div>';return;}
   const freq=frecuenciaCotizados();
-  cont.innerHTML=items.map(art=>{
-    const key=artKey(art);const p=precios[key]||'';const hasP=p>0;
-    const disc=esDescontinuado(art);
-    const mon=monedaArticulo(art);
-    const discBadge=disc?'<span class="discontinued-badge" title="No figura en la lista de precios actual del distribuidor">DISC</span>':'';
-    const n=freq[key]||0;
-    const favBadge=n>0?`<span class="fav-badge" title="Cotizado ${n} ${n===1?'vez':'veces'}">★ ${n}</span>`:'';
-    let equiv='';
-    if(hasP&&mon!==monedaActual){
-      const v=convertir(p,mon,monedaActual);
-      equiv=v==null?'<div class="precio-usd-equiv warn">sin tipo de cambio</div>':`<div class="precio-usd-equiv">≈ ${_simb(monedaActual)}${fmt(v)}</div>`;
-    }
-    return `<div class="fila${disc?' discontinued':''}" data-key="${escHtml(key)}">
-      <div class="fila-meta"><span class="code-tag" title="${escHtml(art.c)}">${_resaltar(art.c)}</span><span class="hoja-badge">${escHtml(art.h)}</span>${discBadge}${favBadge}</div>
-      <div class="desc-text">${_resaltar(art.d)}</div>
-      <div class="precio-cell"><div class="precio-line"><input type="number" class="precio-input${hasP?' tiene-precio':''}" value="${hasP?_precioVista(p):''}" placeholder="precio" step="any" oninput="onPrecioChange(this)" onkeydown="if(event.key==='Enter')this.closest('.fila').querySelector('.btn-add').click()"><button type="button" class="mon-tag ${mon}" onclick="toggleMonedaArticulo(this)" title="Precio de lista en ${mon==='USD'?'dólares':'pesos'}. Clic para cambiar.">${mon}</button></div>${equiv}</div>
-      <div><input type="number" class="cant-input" value="1" min="1" onkeydown="if(event.key==='Enter')this.closest('.fila').querySelector('.btn-add').click()"></div>
-      <div><button class="btn-add" onclick="agregarDesdeFila(this)">Añadir</button></div>
-    </div>`;
-  }).join('');
+  cont.innerHTML=items.map(art=>filaHTML(art,freq)).join('');
 }
 
 function filtrar(){
@@ -14618,7 +14641,7 @@ function filtrar(){
   }else if(sortKey){
     lista=lista.slice().sort((a,b)=>{
       let va=a[sortKey], vb=b[sortKey];
-      if(sortKey==='p'){va=parseFloat(va)||0;vb=parseFloat(vb)||0;}
+      if(sortKey==='p'){const ca=convertir(parseFloat(va)||0,monedaArticulo(a),'ARS'),cb=convertir(parseFloat(vb)||0,monedaArticulo(b),'ARS');va=ca==null?(parseFloat(va)||0):ca;vb=cb==null?(parseFloat(vb)||0):cb;}
       else {va=(va||'').toString().toLowerCase();vb=(vb||'').toString().toLowerCase();}
       if(va<vb)return -1*sortDir;
       if(va>vb)return 1*sortDir;
@@ -14636,8 +14659,9 @@ function toggleMasCotizados(){
 }
 
 function onPrecioChange(input){
-  const key=input.closest('.fila').dataset.key;const val=parseFloat(input.value);
-  if(val>0){precios[key]=val;input.classList.add('tiene-precio');}
+  const key=input.closest('.fila').dataset.key;const a=artPorKey(key);const val=parseFloat(input.value);
+  const ver=input.dataset.ver||monedaArticulo(a);
+  if(val>0){const nat=convertir(val,ver,monedaArticulo(a));precios[key]=nat==null?val:nat;input.classList.add('tiene-precio');}
   else{delete precios[key];input.classList.remove('tiene-precio');}
   actualizarBadge();
 }
@@ -14648,14 +14672,16 @@ function agregarDesdeFila(btn){
   const art=artPorKey(key);
   const pi=fila.querySelector('.precio-input');
   const ci=fila.querySelector('.cant-input');
-  let p=parseFloat(pi.value);const q=parseInt(ci.value)||1;
+  const p=parseFloat(pi.value);const q=parseInt(ci.value)||1;
   if(!p||p<=0){showToast('⚠ Ingresá un precio válido','#f59e0b');pi.focus();return;}
-  // Si no se tocó el precio, usar el valor completo (sin el redondeo de la vista)
-  if(precios[key]>0&&Math.abs(_precioVista(precios[key])-p)<1e-9)p=precios[key];
-  precios[key]=p;
-  const mon=monedaArticulo(art);
+  const monLista=monedaArticulo(art);
+  const ver=pi.dataset.ver||monLista;
+  // Si el precio no se tocó, usar el de lista completo (sin el redondeo de la vista) en su moneda original
+  let pBase=p,mon=ver;
+  const pVerFull=precios[key]>0?convertir(precios[key],monLista,ver):null;
+  if(pVerFull!=null&&Math.abs(_precioVista(pVerFull)-p)<1e-9){pBase=precios[key];mon=monLista;}
   if(mon!==monedaActual&&!tcActual()){showToast('⚠ Falta el tipo de cambio. Tocá el dólar de arriba para cargarlo.','#f59e0b');}
-  carrito.push({cod:art?art.c:'',desc:art?art.d:'',q,pBase:p,mon,costoBase:art&&art.p>0?art.p:null,costoMon:mon,dto:0,nota:''});
+  carrito.push({cod:art?art.c:'',desc:art?art.d:'',q,pBase,mon,costoBase:art&&art.p>0?art.p:null,costoMon:monLista,dto:0,nota:''});
   actualizarTabla();ci.value='1';
   showToast('✓ Agregado al presupuesto');
 }
