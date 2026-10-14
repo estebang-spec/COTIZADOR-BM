@@ -762,6 +762,7 @@ body.hide-cart .main > div:last-child{display:none !important;}
     <div class="user-chip">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <strong id="user-nombre">-</strong>
+      <span id="sync-status" onclick="syncClick(event)" style="cursor:pointer;font-size:11px;font-weight:600;margin-left:6px;white-space:nowrap;color:#f59e0b" title="">⚠ Sin nube</span>
       <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">✕ Salir</button>
     </div>
   </div>
@@ -1273,10 +1274,12 @@ function doLogin(){
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];
   document.getElementById('login-error').textContent='';
+  syncInit();
 }
 
 function doLogout(){
   if(!confirm('¿Cerrar sesión?'))return;
+  if(_syncQueue.length&&!confirm('Hay '+_syncQueue.length+' cambio(s) que todavía no se subieron a la nube. Se van a subir la próxima vez que entres desde este navegador. ¿Cerrar sesión igual?'))return;
   usuarioActivo=null;
   try{sessionStorage.removeItem('bm_session');}catch(e){}
   document.getElementById('login-user').value='';
@@ -1288,7 +1291,7 @@ function checkSession(){
   try{
     const s=sessionStorage.getItem('bm_session');
     if(s){const data=JSON.parse(s);const match=USUARIOS.find(x=>x.user===data.user);
-      if(match){usuarioActivo=match;document.getElementById('login-screen').classList.add('hidden');document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];return;}
+      if(match){usuarioActivo=match;document.getElementById('login-screen').classList.add('hidden');document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];syncInit();return;}
     }
   }catch(e){}
   document.getElementById('login-screen').classList.remove('hidden');
@@ -14697,7 +14700,12 @@ async function generarPicking(){
 }
 
 // ─── HISTORIAL ────────────────────────────────────────────
-function cargarHistorial(){try{return JSON.parse(localStorage.getItem('bm_historial_v1')||'[]');}catch(e){return [];}}
+let _histCache=null;
+function cargarHistorial(){
+  if(_histCache===null){try{_histCache=localStorage.getItem('bm_historial_v1')||'[]';}catch(e){_histCache='[]';}}
+  try{return JSON.parse(_histCache);}catch(e){return [];}
+}
+function _histSetLocal(arr){_histCache=JSON.stringify(arr);try{localStorage.setItem('bm_historial_v1',_histCache);}catch(e){}}
 
 function guardarEnHistorial(){
   if(carrito.length===0)return;
@@ -14708,12 +14716,14 @@ function guardarEnHistorial(){
   const vd=parseInt(document.getElementById('validez-dias').value);
   let sub=0;carrito.forEach(it=>sub+=it.p*it.q);
   const dm=sub*(dp/100),neto=sub-dm,iva=neto*0.21,total=neto+iva;
-  const entrada={nro:nroPresupuesto,fecha:new Date().toISOString(),vendedor:usuarioActivo?usuarioActivo.nombre:'',vendedorData:usuarioActivo?{...usuarioActivo}:null,cliente:cli,pago,dp,empresa,vd,items:carrito.map(it=>{return{...it}}),subtotal:sub,descMonto:dm,neto,iva,total};
+  const _ahora=new Date().toISOString();
+  const entrada={nro:nroPresupuesto,fecha:_ahora,actualizado:_ahora,vendedorUser:usuarioActivo?usuarioActivo.user.toLowerCase():'',vendedor:usuarioActivo?usuarioActivo.nombre:'',vendedorData:usuarioActivo?{...usuarioActivo}:null,cliente:cli,pago,dp,empresa,vd,items:carrito.map(it=>{return{...it}}),subtotal:sub,descMonto:dm,neto,iva,total};
   const hist=cargarHistorial();
-  const idx=hist.findIndex(h=>h.nro===nroPresupuesto);
-  if(idx>=0)hist[idx]=entrada;else hist.unshift(entrada);
-  if(hist.length>100)hist.splice(100);
-  try{localStorage.setItem('bm_historial_v1',JSON.stringify(hist));}catch(e){}
+  const _id=syncHistId(entrada);
+  const idx=hist.findIndex(h=>syncHistId(h)===_id);
+  if(idx>=0){entrada.fecha=hist[idx].fecha||entrada.fecha;hist[idx]=entrada;}else hist.unshift(entrada);
+  _histSetLocal(hist);
+  syncEncolar('hist','up',_id,entrada,_ahora);
   actualizarHistBadge();
 }
 
@@ -14727,7 +14737,7 @@ function actualizarHistBadge(){
 
 function renderHistorial(){
   actualizarHistBadge();
-  let hist=cargarHistorial();
+  let hist=cargarHistorial().map((h,_i)=>Object.assign(h,{_i:_i}));
   // Filtro de búsqueda
   const sEl=document.getElementById('hist-buscador');
   const q=(sEl?sEl.value:'').toLowerCase().trim();
@@ -14747,8 +14757,8 @@ function renderHistorial(){
     const fecha=new Date(h.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const emp=DATOS_EMPRESAS[h.empresa]||DATOS_EMPRESAS.mitre;
     const itemsHTML=h.items.map(it=>`<tr><td style="font-family:monospace;font-size:11px;color:var(--muted)">${it.cod}</td><td style="font-size:12px">${it.desc}</td><td style="text-align:right;color:var(--muted);font-size:11px">$${fmt(it.p)}</td><td style="text-align:center;font-weight:600;font-size:12px">${it.q}</td><td style="text-align:right;font-weight:600;font-size:12px">$${fmt(it.p*it.q)}</td></tr>`).join('');
-    return `<div class="hist-card" id="hcard-${i}">
-      <div class="hist-card-header" onclick="toggleHistCard(${i})">
+    return `<div class="hist-card" id="hcard-${h._i}">
+      <div class="hist-card-header" onclick="toggleHistCard(${h._i})">
         <div class="hist-meta">
           <div class="hist-nro">${h.nro} <span style="font-size:11px;font-weight:400;color:var(--muted);font-family:'Barlow',sans-serif">· ${emp.nombre.split('-')[0].trim()}</span></div>
           <div class="hist-info">👤 ${h.cliente||'Sin nombre'}${h.vendedor?' · 🧑‍💼 '+h.vendedor:''} · 📅 ${fecha} · ${h.items.length} artículo${h.items.length!==1?'s':''}</div>
@@ -14767,11 +14777,11 @@ function renderHistorial(){
           ${h.pago?`<span>Pago: <b style="color:var(--text)">${h.pago}</b></span>`:''}
         </div>
         <div class="hist-actions">
-          <button class="btn-hist-act" style="background:var(--green);color:#000" onclick="histPDF(${i})">⬇ Presupuesto PDF</button>
-          <button class="btn-hist-act" style="background:var(--blue);color:#fff" onclick="histPicking(${i})">📋 Hoja de Picking</button>
-          <button class="btn-hist-act" style="background:var(--yellow);color:#000" onclick="histCargar(${i})">✏ Cargar y Editar</button>
-          <button class="btn-hist-act hist-action-dup" onclick="histDuplicar(${i})" title="Crea un nuevo presupuesto con los mismos ítems">📑 Duplicar</button>
-          <button class="btn-hist-act" style="background:var(--card);color:var(--muted);border:1px solid var(--border);flex:0;padding:8px 14px" onclick="histBorrar(${i})" title="Eliminar">🗑</button>
+          <button class="btn-hist-act" style="background:var(--green);color:#000" onclick="histPDF(${h._i})">⬇ Presupuesto PDF</button>
+          <button class="btn-hist-act" style="background:var(--blue);color:#fff" onclick="histPicking(${h._i})">📋 Hoja de Picking</button>
+          <button class="btn-hist-act" style="background:var(--yellow);color:#000" onclick="histCargar(${h._i})">✏ Cargar y Editar</button>
+          <button class="btn-hist-act hist-action-dup" onclick="histDuplicar(${h._i})" title="Crea un nuevo presupuesto con los mismos ítems">📑 Duplicar</button>
+          <button class="btn-hist-act" style="background:var(--card);color:var(--muted);border:1px solid var(--border);flex:0;padding:8px 14px" onclick="histBorrar(${h._i})" title="Eliminar">🗑</button>
         </div>
       </div>
     </div>`;
@@ -14841,13 +14851,23 @@ function histCargar(i){
 
 function histBorrar(i){
   const hist=cargarHistorial();if(!confirm(`¿Eliminar la cotización ${hist[i].nro}?`))return;
-  hist.splice(i,1);try{localStorage.setItem('bm_historial_v1',JSON.stringify(hist));}catch(e){}
+  const _del=hist[i];
+  if(_syncAdmin===false&&syncOn()&&syncHistId(_del).split('|')[0]!==(usuarioActivo&&usuarioActivo.user.toLowerCase())){showToast('Solo podés eliminar tus propias cotizaciones','#f59e0b');return;}
+  hist.splice(i,1);_histSetLocal(hist);
+  syncEncolar('hist','del',syncHistId(_del),null);
   renderHistorial();showToast('Cotización eliminada','#ef4444');
 }
 
 function borrarHistorial(){
-  if(!confirm('¿Borrar TODO el historial?'))return;
-  localStorage.removeItem('bm_historial_v1');renderHistorial();showToast('Historial borrado','#ef4444');
+  const yo=(usuarioActivo&&usuarioActivo.user.toLowerCase())||'';
+  const hist=cargarHistorial();
+  const mios=hist.filter(h=>_syncAdmin||syncHistId(h).split('|')[0]===yo);
+  if(!mios.length){showToast('No hay cotizaciones tuyas para borrar','#f59e0b');return;}
+  if(!confirm('¿Borrar '+mios.length+' cotizaciones del historial'+(syncOn()?' (también de la nube)':'')+'?'))return;
+  if(prompt('Para confirmar escribí BORRAR')!=='BORRAR')return;
+  mios.forEach(h=>syncEncolar('hist','del',syncHistId(h),null));
+  _histSetLocal(hist.filter(h=>mios.indexOf(h)<0));
+  renderHistorial();showToast('Historial borrado','#ef4444');
 }
 
 function _buildPDFFromHist(h,conPrecios){
@@ -15217,12 +15237,27 @@ document.addEventListener('keydown',function(e){
 let clienteSeleccionado=null; // {id, ...} cuando se elige un cliente del autocomplete
 let sugerenciaActiva=-1;
 
+let _cliCache=null;
 function cargarClientes(){
-  try{const j=localStorage.getItem('bm_clientes');return j?JSON.parse(j):[];}
-  catch(e){return [];}
+  if(_cliCache===null){try{_cliCache=localStorage.getItem('bm_clientes')||'[]';}catch(e){_cliCache='[]';}}
+  try{return JSON.parse(_cliCache);}catch(e){return [];}
 }
+function _cliSetLocal(arr){_cliCache=JSON.stringify(arr);try{localStorage.setItem('bm_clientes',_cliCache);}catch(e){}}
 function guardarClientes(arr){
-  localStorage.setItem('bm_clientes',JSON.stringify(arr));
+  const prev={};cargarClientes().forEach(c=>{if(c&&c.id)prev[c.id]=JSON.stringify(c);});
+  const ahora=new Date().toISOString();
+  arr.forEach(c=>{
+    if(!c||!c.id)return;
+    const p=prev[c.id];
+    if(p!==JSON.stringify(c)){
+      if(p&&JSON.parse(p).actualizado===c.actualizado)c.actualizado=ahora;
+      if(!c.actualizado)c.actualizado=ahora;
+      syncEncolar('cli','up',c.id,c,c.actualizado>ahora?c.actualizado:ahora);
+    }
+    delete prev[c.id];
+  });
+  Object.keys(prev).forEach(id=>syncEncolar('cli','del',id,null,ahora));
+  _cliSetLocal(arr);
   actualizarBadgeClientes();
 }
 function actualizarBadgeClientes(){
@@ -16328,6 +16363,146 @@ document.addEventListener('keydown',function(e){
   }
 });
 
+// ─── SINCRONIZACIÓN CON GOOGLE SHEETS ─────────────────────
+// Clientes (compartidos) e Historial (cada vendedor el suyo; admin todos) se
+// guardan en la planilla de Google. localStorage queda solo como caché local
+// y cola de cambios pendientes cuando no hay conexión.
+const SYNC_URL_DEFAULT='https://script.google.com/macros/s/AKfycbywtZzfcfScdR49SF-t3bBgEEBQNKHWCKzQQCEmILDL0YzqlVoy6ThMGGAyp43fMXzYaQ/exec';
+const SYNC_KEY='fWHJjmHhVZfyDhox0P4GE9IKQArhzXxf';
+let _syncQueue=[];try{_syncQueue=JSON.parse(localStorage.getItem('bm_sync_queue')||'[]');}catch(e){_syncQueue=[];}
+let _syncBusy=false,_syncAdmin=false,_syncTimer=null,_syncLastPull=0,_syncPulling=false;
+
+function syncUrl(){let u='';try{u=localStorage.getItem('bm_sync_url')||'';}catch(e){}return u||SYNC_URL_DEFAULT;}
+function syncOn(){return /^https:\/\/script\.google\.com\/.+\/exec$/.test(syncUrl());}
+function _syncSaveQueue(){try{localStorage.setItem('bm_sync_queue',JSON.stringify(_syncQueue));}catch(e){}}
+
+function syncSetEstado(est,msg){
+  const el=document.getElementById('sync-status');if(!el)return;
+  const pend=_syncQueue.length;
+  const M={
+    off:['⚠ Sin nube','#f59e0b','La nube no está configurada: los datos quedan solo en este navegador. Clic para configurar.'],
+    ok:['☁ Guardado','#22c55e','Todo guardado en Google Sheets. Clic para actualizar.'],
+    saving:['☁ Guardando…','#3b82f6','Enviando cambios a Google Sheets…'],
+    loading:['☁ Cargando…','#3b82f6','Trayendo datos de Google Sheets…'],
+    pending:['☁ '+pend+' pendiente'+(pend!==1?'s':''),'#f59e0b','Hay cambios sin subir. Se reintentará automáticamente. Clic para reintentar.'],
+    error:['⚠ Sin conexión'+(pend?' ('+pend+')':''),'#ef4444','No se pudo conectar con Google Sheets'+(msg?': '+msg:'')+'. Los cambios quedan guardados acá y se suben solos cuando vuelva la conexión. Clic para reintentar.']
+  };
+  const m=M[est]||M.off;el.textContent=m[0];el.style.color=m[1];el.title=m[2];
+}
+
+function syncClick(ev){
+  if(ev&&ev.shiftKey||!syncOn()){
+    const u=prompt('Pegá la URL de la aplicación web de Google Apps Script (termina en /exec):',syncUrl().indexOf('__')===0?'':syncUrl());
+    if(u===null)return;
+    try{localStorage.setItem('bm_sync_url',u.trim());}catch(e){}
+    if(!syncOn()){showToast('URL inválida','#ef4444');syncSetEstado('off');return;}
+    syncInit();return;
+  }
+  syncFlush().then(()=>syncPull(true));
+}
+
+async function syncCall(action,extra){
+  const body=JSON.stringify(Object.assign({key:SYNC_KEY,user:(usuarioActivo&&usuarioActivo.user)||'',action:action},extra||{}));
+  const r=await fetch(syncUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,redirect:'follow'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const j=await r.json();
+  if(!j.ok)throw new Error(j.error||'error');
+  return j;
+}
+
+function syncHistId(h){
+  const u=(h.vendedorUser||(h.vendedorData&&h.vendedorData.user)||(USUARIOS.find(x=>x.nombre===h.vendedor)||{}).user||(usuarioActivo&&usuarioActivo.user)||'').toLowerCase();
+  return u+'|'+h.nro;
+}
+
+function syncEncolar(t,op,id,data,ts){
+  if(!id)return;
+  ts=ts||new Date().toISOString();
+  _syncQueue=_syncQueue.filter(o=>!(o.t===t&&o.id===id));
+  _syncQueue.push({t:t,op:op,id:id,ts:ts,data:op==='up'?data:undefined});
+  _syncSaveQueue();
+  if(!syncOn()){syncSetEstado('off');return;}
+  syncSetEstado('pending');
+  clearTimeout(_syncTimer);_syncTimer=setTimeout(syncFlush,400);
+}
+
+async function syncFlush(){
+  if(!syncOn()||!usuarioActivo||_syncBusy||_syncQueue.length===0)return;
+  _syncBusy=true;syncSetEstado('saving');
+  const batch=_syncQueue.slice(0,150);
+  try{
+    await syncCall('push',{ops:batch});
+    _syncQueue=_syncQueue.filter(o=>!batch.some(b=>b.t===o.t&&b.id===o.id&&b.ts===o.ts));
+    _syncSaveQueue();
+    _syncBusy=false;
+    if(_syncQueue.length)return syncFlush();
+    syncSetEstado('ok');
+  }catch(e){
+    _syncBusy=false;syncSetEstado('error',e.message);
+    clearTimeout(_syncTimer);_syncTimer=setTimeout(syncFlush,30000);
+  }
+}
+
+// Trae todo de la nube y lo deja en la caché local (los cambios pendientes se respetan)
+async function syncPull(manual){
+  if(!syncOn()||!usuarioActivo||_syncPulling)return;
+  _syncPulling=true;syncSetEstado('loading');
+  try{
+    const j=await syncCall('pull');
+    _syncAdmin=!!j.admin;
+    let cli=j.clientes||[],hist=j.historial||[];
+    _syncQueue.forEach(o=>{
+      if(o.t==='cli'){cli=cli.filter(c=>c.id!==o.id);if(o.op==='up')cli.push(o.data);}
+      if(o.t==='hist'){hist=hist.filter(h=>syncHistId(h)!==o.id);if(o.op==='up')hist.unshift(o.data);}
+    });
+    hist.sort((a,b)=>String(b.fecha||'').localeCompare(String(a.fecha||'')));
+    _cliSetLocal(cli);_histSetLocal(hist);
+    _syncLastPull=Date.now();
+    actualizarBadgeClientes();actualizarHistBadge();
+    const vis=id=>{const e=document.getElementById(id);return e&&e.style.display!=='none';};
+    if(vis('tab-clientes')&&typeof renderClientes==='function')renderClientes();
+    if(vis('tab-historial'))renderHistorial();
+    syncSetEstado(_syncQueue.length?'pending':'ok');
+    if(manual)showToast('☁ Datos actualizados: '+cli.length+' clientes, '+hist.length+' cotizaciones','#3b82f6');
+  }catch(e){
+    syncSetEstado('error',e.message);
+  }finally{_syncPulling=false;}
+}
+
+// La primera vez que un usuario entra con esta versión en un navegador, sube
+// lo que ese navegador tenía guardado (así se recupera lo de cada vendedor).
+function syncMigrarLocal(){
+  const flag='bm_sync_migrado_'+usuarioActivo.user;
+  try{if(localStorage.getItem(flag))return;}catch(e){return;}
+  const yo=usuarioActivo.user.toLowerCase();
+  let n=0;
+  cargarClientes().forEach(c=>{if(c&&c.id){syncEncolar('cli','up',c.id,c,c.actualizado||c.creado||'2000-01-01T00:00:00.000Z');n++;}});
+  cargarHistorial().forEach(h=>{
+    if(!h||!h.nro)return;
+    const id=syncHistId(h);const owner=id.split('|')[0];
+    if(owner!==yo&&!ADMINS_SYNC.includes(yo))return;
+    h.vendedorUser=owner;
+    syncEncolar('hist','up',id,h,h.actualizado||h.fecha||'2000-01-01T00:00:00.000Z');n++;
+  });
+  try{localStorage.setItem(flag,new Date().toISOString());}catch(e){}
+  if(n)showToast('☁ Subiendo '+n+' registros de este navegador a la nube…','#3b82f6');
+}
+const ADMINS_SYNC=['estebang@buloneriamitre.com.ar'];
+
+async function syncInit(){
+  if(!usuarioActivo)return;
+  if(!syncOn()){syncSetEstado('off');return;}
+  syncMigrarLocal();
+  await syncFlush();
+  await syncPull();
+}
+
+window.addEventListener('online',()=>{syncFlush();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&usuarioActivo&&Date.now()-_syncLastPull>60000)syncFlush().then(()=>syncPull());
+});
+setInterval(()=>{if(document.visibilityState==='visible'&&usuarioActivo&&Date.now()-_syncLastPull>180000)syncFlush().then(()=>syncPull());},60000);
+
 // ─── INIT ─────────────────────────────────────────────────
 cargarPrecios();
 cargarOverlayPrecios();
@@ -16337,6 +16512,7 @@ render(ARTICULOS);
 document.getElementById('results-count').textContent=`${ARTICULOS.length.toLocaleString()} artículos`;
 actualizarHistBadge();
 actualizarBadgeClientes();
+syncSetEstado(syncOn()?'ok':'off');
 checkSession();
 </script>
 </body>
