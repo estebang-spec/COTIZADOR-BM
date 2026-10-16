@@ -861,7 +861,7 @@ mark.hl{background:rgba(245,158,11,.30);color:inherit;border-radius:2px;padding:
 <div class="tabs">
   <div class="tab active" onclick="switchTab(this,'tab-cotizador')">Cotizador</div>
   <div class="tab" onclick="switchTab(this,'tab-manual')">Ítem Manual</div>
-  <div class="tab" onclick="switchTab(this,'tab-clientes')">👥 Clientes <span id="cli-badge" style="display:none;background:#3b82f6;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
+  <div class="tab" id="tab-btn-clientes" onclick="switchTab(this,'tab-clientes')">👥 Clientes <span id="cli-badge" style="display:none;background:#3b82f6;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
   <div class="tab" onclick="switchTab(this,'tab-historial')">🕘 Historial <span id="hist-badge" style="display:none;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;font-family:'Barlow',sans-serif;font-weight:700"></span></div>
 </div>
 
@@ -1360,24 +1360,31 @@ mark.hl{background:rgba(245,158,11,.30);color:inherit;border-radius:2px;padding:
 <script>
 // ─── USUARIOS ─────────────────────────────────────────────
 const USUARIOS=[
-  {user:'estebang@buloneriamitre.com.ar',  pass:'febe1016',         nombre:'Esteban González',  tel:'3816797611', mail:'estebang@buloneriamitre.com.ar'},
-  {user:'patricios@buloneriamitre.com.ar', pass:'simon162',         nombre:'Patricio Studdert', tel:'3814900503', mail:'patricios@buloneriamitre.com.ar'},
-  {user:'jvrarguelles@outlook.com',         pass:'guille162',        nombre:'Javier Arguelles',  tel:'3815541717', mail:'jvrarguelles@outlook.com'},
-  {user:'rodrigocano@buloneriamitre.com.ar',pass:'rodrigobuloneria', nombre:'Rodrigo Cano',      tel:'',           mail:'rodrigocano@buloneriamitre.com.ar'},
-  {user:'alvarocp@buloneriamitre.com.ar',  pass:'alvarobm162',      nombre:'Alvaro CP',         tel:'',           mail:'alvarocp@buloneriamitre.com.ar'},
+  {user:'estebang@buloneriamitre.com.ar',  ph:"bf87031cfacb313d142050ba2589459a01690d0f4a670e0b84d710f075def90f",         nombre:'Esteban González',  tel:'3816797611', mail:'estebang@buloneriamitre.com.ar'},
+  {user:'patricios@buloneriamitre.com.ar', ph:"bb626c98ab973c53e910feed1767f1e7aeba54a27623ead24c0131837af33d00",         nombre:'Patricio Studdert', tel:'3814900503', mail:'patricios@buloneriamitre.com.ar'},
+  {user:'jvrarguelles@outlook.com',         ph:"24b6bed8755f291a2da5c57557e30675f6b72009b3909b0377ad36e6b35049ee",        nombre:'Javier Arguelles',  tel:'3815541717', mail:'jvrarguelles@outlook.com'},
+  {user:'rodrigocano@buloneriamitre.com.ar',ph:"3ddb8f76f0b62d6b1699e5ea0452fe07f153deba94374e509c39f01796a6da64", nombre:'Rodrigo Cano',      tel:'',           mail:'rodrigocano@buloneriamitre.com.ar'},
+  {user:'alvarocp@buloneriamitre.com.ar',  ph:"d460064de1514b738d329465a2180311d981e7a5c3d3538317a819a2fa524697",      nombre:'Alvaro CP',         tel:'',           mail:'alvarocp@buloneriamitre.com.ar'},
+  {user:'ventas@buloneriamitre.com.ar',    ph:"f1d90bd459e149e5a982591d0a35bfd3955dfa8ce3e2e19823c85cdd3368f248", nombre:'Ventas',            tel:'',           mail:'ventas@buloneriamitre.com.ar', sinClientes:true},
 ];
 let usuarioActivo=null;
 
-function doLogin(){
+async function _hashPass(p){
+  const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('bmgroup|'+p));
+  return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function doLogin(){
   const u=document.getElementById('login-user').value.trim().toLowerCase();
   const p=document.getElementById('login-pass').value;
-  const match=USUARIOS.find(x=>x.user.toLowerCase()===u&&x.pass===p);
+  let ph='';try{ph=await _hashPass(p);}catch(e){document.getElementById('login-error').textContent='Este navegador no permite iniciar sesión (abrí el cotizador desde https://bmmineria.com).';return;}
+  const match=USUARIOS.find(x=>x.user.toLowerCase()===u&&x.ph===ph);
   if(!match){document.getElementById('login-error').textContent='Usuario o contraseña incorrectos.';document.getElementById('login-pass').value='';return;}
   usuarioActivo=match;
   try{sessionStorage.setItem('bm_session',JSON.stringify({user:match.user,nombre:match.nombre}));}catch(e){}
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];
   document.getElementById('login-error').textContent='';
+  prepararSesion();
   syncInit();
 }
 
@@ -1395,7 +1402,7 @@ function checkSession(){
   try{
     const s=sessionStorage.getItem('bm_session');
     if(s){const data=JSON.parse(s);const match=USUARIOS.find(x=>x.user===data.user);
-      if(match){usuarioActivo=match;document.getElementById('login-screen').classList.add('hidden');document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];syncInit();return;}
+      if(match){usuarioActivo=match;document.getElementById('login-screen').classList.add('hidden');document.getElementById('user-nombre').textContent=match.nombre.split(' ')[0];prepararSesion();syncInit();return;}
     }
   }catch(e){}
   document.getElementById('login-screen').classList.remove('hidden');
@@ -14948,6 +14955,7 @@ async function asegurarNroDefinitivo(){
 
 // Busca el cliente de la base que coincide con el nombre escrito
 function _clienteParaPDF(nombre){
+  if(sinAccesoClientes())return null;
   const n=(nombre||'').trim().toLowerCase();if(!n)return null;
   let c=(clienteSeleccionado&&(clienteSeleccionado.razon||'').trim().toLowerCase()===n)?clienteSeleccionado:null;
   if(!c)c=cargarClientes().find(x=>(x.razon||'').trim().toLowerCase()===n||(x.fantasia||'').trim().toLowerCase()===n)||null;
@@ -15747,12 +15755,15 @@ let clienteSeleccionado=null; // {id, ...} cuando se elige un cliente del autoco
 let sugerenciaActiva=-1;
 
 let _cliCache=null;
+function sinAccesoClientes(){return !!(usuarioActivo&&usuarioActivo.sinClientes);}
 function cargarClientes(){
+  if(sinAccesoClientes())return [];
   if(_cliCache===null){try{_cliCache=localStorage.getItem('bm_clientes')||'[]';}catch(e){_cliCache='[]';}}
   try{return JSON.parse(_cliCache);}catch(e){return [];}
 }
 function _cliSetLocal(arr){_cliCache=JSON.stringify(arr);try{localStorage.setItem('bm_clientes',_cliCache);}catch(e){}}
 function guardarClientes(arr){
+  if(sinAccesoClientes())return;
   const prev={};cargarClientes().forEach(c=>{if(c&&c.id)prev[c.id]=JSON.stringify(c);});
   const ahora=new Date().toISOString();
   arr.forEach(c=>{
@@ -16015,6 +16026,7 @@ function quitarClienteSeleccionado(){
 
 // AUTOCOMPLETE EN COTIZADOR
 function onClienteInput(){
+  if(sinAccesoClientes()){document.getElementById('cliente-suggestions').classList.remove('open');return;}
   const q=document.getElementById('cliente-nombre').value.toLowerCase().trim();
   const sug=document.getElementById('cliente-suggestions');
   const info=document.getElementById('cliente-loaded-info');
@@ -16929,7 +16941,7 @@ function syncEncolar(t,op,id,data,ts){
   if(!id)return;
   ts=ts||new Date().toISOString();
   _syncQueue=_syncQueue.filter(o=>!(o.t===t&&o.id===id));
-  if(t==='hist'&&data&&data.vendedorData&&data.vendedorData.pass!==undefined){data=Object.assign({},data,{vendedorData:_vendedorSeguro(data.vendedorData)});}
+  if(t==='hist'&&data&&data.vendedorData&&(data.vendedorData.pass!==undefined||data.vendedorData.ph!==undefined)){data=Object.assign({},data,{vendedorData:_vendedorSeguro(data.vendedorData)});}
   _syncQueue.push({t:t,op:op,id:id,ts:ts,data:op==='up'?data:undefined});
   _syncSaveQueue();
   if(!syncOn()){syncSetEstado('off');return;}
@@ -16999,6 +17011,37 @@ function syncMigrarLocal(){
   if(n)showToast('☁ Subiendo '+n+' registros de este navegador a la nube…','#3b82f6');
 }
 const ADMINS_SYNC=['estebang@buloneriamitre.com.ar'];
+
+// Al entrar un usuario: si la caché del navegador es de otro, se aparta y se vacía
+function prepararSesion(){
+  if(!usuarioActivo)return;
+  const u=String(usuarioActivo.user).toLowerCase();
+  let owner=null;try{owner=localStorage.getItem('bm_cache_owner');}catch(e){}
+  const restringido=sinAccesoClientes();
+  if((owner&&owner!==u)||(!owner&&restringido)){
+    if(owner&&_syncQueue.length){try{localStorage.setItem('bm_sync_queue::'+owner,JSON.stringify(_syncQueue));}catch(e){}}
+    _syncQueue=[];
+    _histCache='[]';_cliCache='[]';
+    try{localStorage.setItem('bm_historial_v1','[]');localStorage.setItem('bm_clientes','[]');}catch(e){}
+  }
+  try{const q=JSON.parse(localStorage.getItem('bm_sync_queue::'+u)||'[]');if(q.length){_syncQueue=_syncQueue.concat(q);localStorage.removeItem('bm_sync_queue::'+u);}}catch(e){}
+  if(restringido)_syncQueue=_syncQueue.filter(o=>o.t!=='cli');
+  _syncSaveQueue();
+  try{localStorage.setItem('bm_cache_owner',u);}catch(e){}
+  aplicarPermisosUI();
+  if(typeof _freqCache!=='undefined')_freqCache=null;
+  actualizarHistBadge();
+}
+function aplicarPermisosUI(){
+  const sin=sinAccesoClientes();
+  const t=document.getElementById('tab-btn-clientes');if(t)t.style.display=sin?'none':'';
+  const tc=document.getElementById('tab-clientes');
+  if(sin&&tc&&tc.style.display!=='none')switchTab(document.querySelector('.tab'),'tab-cotizador');
+  const sug=document.getElementById('cliente-suggestions');if(sug)sug.classList.remove('open');
+  const inp=document.getElementById('cliente-nombre');if(inp)inp.placeholder=sin?'Nombre del cliente':'Tipeá para buscar o crear cliente...';
+  if(sin){clienteSeleccionado=null;const info=document.getElementById('cliente-loaded-info');if(info)info.classList.remove('show');}
+  actualizarBadgeClientes();
+}
 
 async function syncInit(){
   if(!usuarioActivo)return;
