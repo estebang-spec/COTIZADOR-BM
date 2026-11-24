@@ -14345,6 +14345,27 @@ let precios={};
 let carrito=[], nroPresupuesto=generarNro();
 let monedaActual='ARS'; // 'ARS' o 'USD'
 let cotizacionUSD=0; // se actualiza cuando llega el BNA
+
+// Clasificación de hojas por moneda NATIVA (según cómo vienen en el Excel del proveedor)
+const HOJAS_USD = new Set(['LISTA GRAL.','ELECTRODOS','LIBUS','AIR','DP','SEGOD','ALTURA-ESLINGA','ELECTRODOS COMMODITY']);
+const HOJAS_ARS = new Set(['BAHCO','BOSCH','TRUPER','LUSQTOFF','BREMEN','BULON BREMEN','TEK BOND','FUNCIONAL','LOCTITE']);
+
+// Devuelve 'USD' o 'ARS' según la hoja de origen del artículo
+function monedaNativa(hoja){
+  if(HOJAS_USD.has(hoja)) return 'USD';
+  if(HOJAS_ARS.has(hoja)) return 'ARS';
+  return 'ARS'; // default
+}
+
+// Convierte un precio desde su moneda nativa a la moneda visualizada
+function convertirPrecio(precio, hojaOrigen, monedaDestino){
+  if(!precio || !cotizacionUSD) return precio;
+  const origen = monedaNativa(hojaOrigen);
+  if(origen === monedaDestino) return precio;
+  if(origen === 'USD' && monedaDestino === 'ARS') return precio * cotizacionUSD;
+  if(origen === 'ARS' && monedaDestino === 'USD') return precio / cotizacionUSD;
+  return precio;
+}
 let sortKey=null, sortDir=1; // 1 asc, -1 desc
 
 function setSort(key){
@@ -14414,17 +14435,19 @@ function render(lista){
     const key=artKey(art);const p=precios[key]||'';const hasP=p>0;
     const disc=esDescontinuado(art);
     const discBadge=disc?'<span class="discontinued-badge" title="No figura en la lista de precios actual del distribuidor">DISC</span>':'';
-    // Equivalente de moneda
+    // Equivalente de moneda — basado en la hoja de origen, no en el valor del precio
     let equivHTML='';
     if(hasP && cotizacionUSD>0){
-      if(monedaActual==='ARS' && p>=cotizacionUSD*0.5){
-        // Si el precio en ARS es alto, asumimos que ya está en pesos -> mostrar USD
-        const usdEq=(p/cotizacionUSD);
-        if(usdEq>=0.5)equivHTML=`<div class="precio-usd-equiv">≈ USD ${usdEq.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>`;
-      } else if(monedaActual==='USD' || p<cotizacionUSD*0.5){
-        // Precio bajo: probablemente USD del distribuidor -> mostrar ARS
-        const arsEq=(p*cotizacionUSD);
-        equivHTML=`<div class="precio-usd-equiv">≈ $${arsEq.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0})} ARS</div>`;
+      const origen = monedaNativa(art.h);
+      // Si el precio nativo está en USD, mostrar equivalente en ARS
+      if(origen === 'USD'){
+        const arsEq = p * cotizacionUSD;
+        equivHTML = `<div class="precio-usd-equiv">≈ $${arsEq.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0})} ARS</div>`;
+      }
+      // Si el precio nativo está en ARS, mostrar equivalente en USD
+      else if(origen === 'ARS'){
+        const usdEq = p / cotizacionUSD;
+        if(usdEq >= 0.5) equivHTML = `<div class="precio-usd-equiv">≈ USD ${usdEq.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>`;
       }
     }
     return `<div class="fila${disc?' discontinued':''}" data-key="${key}">
@@ -14476,10 +14499,13 @@ function agregarDesdeFila(btn){
   const ci=fila.querySelector('.cant-input');
   const desc=fila.querySelector('.desc-text').textContent;
   const cod=fila.querySelector('.code-tag').getAttribute('title')||fila.querySelector('.code-tag').textContent;
+  const hojaBadge=fila.querySelector('.hoja-badge');
+  const hoja=hojaBadge?hojaBadge.textContent.trim():'';
   const p=parseFloat(pi.value);const q=parseInt(ci.value)||1;
   if(!p||p<=0){showToast('⚠ Ingresá un precio válido','#f59e0b');pi.focus();return;}
   precios[pi.dataset.key]=p;
-  carrito.push({cod,desc,p,q});actualizarTabla();ci.value='1';
+  // p está en la MONEDA NATIVA de la hoja (como viene del Excel)
+  carrito.push({cod,desc,p,q,h:hoja});actualizarTabla();ci.value='1';
   showToast('✓ Agregado al presupuesto');
 }
 
@@ -14489,13 +14515,31 @@ function agregarManual(){
   const q=parseInt(document.getElementById('man-cant').value)||1;
   if(!desc){showToast('Ingresá una descripción','#ef4444');return;}
   if(!p||p<=0){showToast('Ingresá un precio válido','#ef4444');return;}
-  carrito.push({cod:'MANUAL',desc,p,q});actualizarTabla();
+  // Ítem manual: se asume que el precio ingresado es en la moneda actualmente mostrada
+  // Lo guardamos como ARS nativo (porque no tiene hoja de origen)
+  const pNativo = monedaActual==='USD' && cotizacionUSD>0 ? p*cotizacionUSD : p;
+  carrito.push({cod:'MANUAL',desc,p:pNativo,q,h:'MANUAL'});actualizarTabla();
   document.getElementById('man-desc').value='';document.getElementById('man-precio').value='';document.getElementById('man-cant').value='1';
   showToast('✓ Ítem manual agregado');
 }
 
 function cambiarQ(i,val){carrito[i].q=Math.max(1,parseInt(val)||1);actualizarTabla();}
-function cambiarPrecio(i,val){const p=parseFloat(val);if(p>=0){carrito[i].p=p;}actualizarTabla();}
+function cambiarPrecio(i,val){
+  // El usuario ingresó el precio en la moneda VISUALIZADA (monedaActual)
+  // Lo convertimos de vuelta a la moneda NATIVA del item para guardarlo
+  const pMostrado=parseFloat(val);
+  if(pMostrado<0||isNaN(pMostrado))return;
+  const it=carrito[i];
+  const origen=it.h?monedaNativa(it.h):'ARS';
+  let pNativo=pMostrado;
+  if(monedaActual==='USD' && origen==='ARS' && cotizacionUSD>0){
+    pNativo=pMostrado*cotizacionUSD;
+  } else if(monedaActual==='ARS' && origen==='USD' && cotizacionUSD>0){
+    pNativo=pMostrado/cotizacionUSD;
+  }
+  carrito[i].p=pNativo;
+  actualizarTabla();
+}
 function borrar(i){carrito.splice(i,1);actualizarTabla();}
 function limpiarCarrito(){
   if(carrito.length&&!confirm('¿Limpiar el presupuesto?'))return;
@@ -14523,10 +14567,18 @@ function actualizarTabla(){
   }
   let sub=0;
   const S=monedaSimbolo();
-  body.innerHTML=carrito.map((it,i)=>{const s=it.p*it.q;sub+=s;
+  body.innerHTML=carrito.map((it,i)=>{
+    // Convertir precio nativo a moneda visualizada
+    const origen=it.h?monedaNativa(it.h):'ARS';
+    let pMostrado=it.p;
+    if(cotizacionUSD>0){
+      if(monedaActual==='USD' && origen==='ARS') pMostrado=it.p/cotizacionUSD;
+      else if(monedaActual==='ARS' && origen==='USD') pMostrado=it.p*cotizacionUSD;
+    }
+    const s=pMostrado*it.q; sub+=s;
     return `<tr>
       <td style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.desc}">${it.desc}</td>
-      <td style="text-align:right;font-size:11px"><input type="number" class="precio-carrito-input" value="${it.p}" min="0" step="0.01" onchange="cambiarPrecio(${i},this.value)" title="Editar precio"></td>
+      <td style="text-align:right;font-size:11px"><input type="number" class="precio-carrito-input" value="${pMostrado.toFixed(2)}" min="0" step="0.01" onchange="cambiarPrecio(${i},this.value)" title="Editar precio"></td>
       <td class="qty-cell" style="text-align:center"><input type="number" value="${it.q}" min="1" onchange="cambiarQ(${i},this.value)"></td>
       <td style="text-align:right;font-weight:600;font-size:12px" id="subtotal-${i}">${S}${fmt(s)}</td>
       <td style="text-align:center"><button class="del-btn" onclick="borrar(${i})">✕</button></td>
@@ -14764,11 +14816,17 @@ async function generarPDF(){
     lugarEntrega: lugarEntrega || '—'
   });
 
-  // ─── TABLA DE ÍTEMS con columna # ───
+  // ─── TABLA DE ÍTEMS con columna # (precios convertidos a moneda visualizada) ───
   let sub=0;
   const rows=carrito.map((it,idx)=>{
-    const s=it.p*it.q; sub+=s;
-    return [String(idx+1), it.cod, it.desc, String(it.q), S+fmt(it.p), S+fmt(s)];
+    const origen=it.h?monedaNativa(it.h):'ARS';
+    let pMostrado=it.p;
+    if(cotizacionUSD>0){
+      if(monedaActual==='USD' && origen==='ARS') pMostrado=it.p/cotizacionUSD;
+      else if(monedaActual==='ARS' && origen==='USD') pMostrado=it.p*cotizacionUSD;
+    }
+    const s=pMostrado*it.q; sub+=s;
+    return [String(idx+1), it.cod, it.desc, String(it.q), S+fmt(pMostrado), S+fmt(s)];
   });
   doc.autoTable({
     startY,
