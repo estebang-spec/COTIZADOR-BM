@@ -799,6 +799,21 @@ mark.hl{background:rgba(245,158,11,.30);color:inherit;border-radius:2px;padding:
   .main > div:last-child{z-index:320 !important;}
   .mobile-overlay{z-index:310 !important;}
 }
+/* v35: barra de avisos con botones (deshacer / recuperar) y resaltado de línea */
+.bm-barra{position:fixed;left:16px;bottom:18px;transform:translateY(140%);opacity:0;pointer-events:none;width:max-content;max-width:min(560px,calc(100% - 32px));
+  background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:10px;
+  box-shadow:0 12px 32px rgba(0,0,0,.45);padding:9px 10px 9px 14px;display:flex;align-items:center;gap:8px;
+  font-size:13px;z-index:10000;transition:transform .2s ease,opacity .2s ease;}
+.bm-barra.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+.bm-barra-msg{flex:1;min-width:0;line-height:1.35;}
+.bm-barra button{background:var(--red);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.bm-barra button.sec{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.bm-barra button.cerrar{background:transparent;color:var(--muted);padding:6px 8px;}
+.bm-barra button:focus-visible{outline:2px solid var(--text);outline-offset:2px;}
+@media (max-width:680px){.bm-barra{bottom:86px;right:16px;width:auto;flex-wrap:wrap;}.bm-barra-msg{flex-basis:100%;}}
+@keyframes bmflash{from{background:rgba(34,197,94,.28);}to{background:transparent;}}
+.ci.flash{animation:bmflash 1.3s ease-out;}
+@media (prefers-reduced-motion:reduce){.bm-barra{transition:none;}.ci.flash{animation:none;outline:1px solid var(--green);}}
 </style>
 </head>
 <body>
@@ -1379,6 +1394,7 @@ function _entrar(ses){
   document.getElementById('login-error').textContent='';
   prepararSesion();
   syncInit();
+  if(typeof ofrecerBorrador==='function')ofrecerBorrador();
 }
 
 async function doLogin(){
@@ -14504,6 +14520,7 @@ function setSort(key){
 
 function setPago(txt){
   document.getElementById('pago-cliente').value=txt;
+  if(typeof guardarBorrador==='function')guardarBorrador();
 }
 
 function setMoneda(m){
@@ -14627,9 +14644,26 @@ function frecuenciaCotizados(){
   cargarHistorial().forEach(h=>(h.items||[]).forEach(it=>{const k=(it.cod||'')+'||'+(it.desc||'');f[k]=(f[k]||0)+1;}));
   _freqCache=f;return f;
 }
+// v35: búsqueda sin tildes ni mayúsculas, y "8 mm" = "8mm"
+function _normBusq(s){
+  return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/(\d)\s+(mm|cm|mts|mt|m|kg|grs|gr|g|lts|lt|l|v|w|hp|cc|ml|pulg|")(?![a-z])/g,'$1$2');
+}
+const _blobCache=new WeakMap();
+function _blobArt(x){let b=_blobCache.get(x);if(b===undefined){b=_normBusq(x.c+' '+x.d+' '+(x.h||''));_blobCache.set(x,b);}return b;}
+const _ACC={a:'[aáàäâ]',e:'[eéèëê]',i:'[iíìïî]',o:'[oóòöô]',u:'[uúùüû]',n:'[nñ]'};
+function _rxTok(t){
+  let r='';
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    r+=_ACC[c]||escHtml(c).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    if(/\d/.test(c)&&i+1<t.length&&/[a-z"]/.test(t[i+1]))r+='\\s?';
+  }
+  return r;
+}
 function _resaltar(texto){
   let html=escHtml(texto);
-  const toks=_tokensBusqueda.filter(t=>t.length>=2).map(t=>escHtml(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  const toks=_tokensBusqueda.filter(t=>t.length>=2).map(_rxTok);
   if(!toks.length)return html;
   try{return html.replace(new RegExp('('+toks.join('|')+')','gi'),'<mark class="hl">$1</mark>');}catch(e){return html;}
 }
@@ -14667,14 +14701,14 @@ function render(lista){
 }
 
 function filtrar(){
-  const t=document.getElementById('buscador').value.toLowerCase().trim();
+  const t=_normBusq(document.getElementById('buscador').value).trim();
   const h=document.getElementById('filtro-hoja').value;
   const tokens=t.split(/\s+/).filter(x=>x);
   _tokensBusqueda=tokens;
   let lista=ARTICULOS.filter(x=>{
     if(h && x.h!==h)return false;
     if(tokens.length===0)return true;
-    const blob=(x.c+' '+x.d+' '+(x.h||'')).toLowerCase();
+    const blob=_blobArt(x);
     return tokens.every(tok=>blob.includes(tok));
   });
   if(sortKey==='freq'){
@@ -14723,9 +14757,31 @@ function agregarDesdeFila(btn){
   const pVerFull=precios[key]>0?convertir(precios[key],monLista,ver):null;
   if(pVerFull!=null&&Math.abs(_precioVista(pVerFull)-p)<1e-9){pBase=precios[key];mon=monLista;}
   if(mon!==monedaActual&&!tcActual()){showToast('⚠ Falta el tipo de cambio. Tocá el dólar de arriba para cargarlo.','#f59e0b');}
-  carrito.push({cod:art?art.c:'',desc:art?art.d:'',q,pBase,mon,costoBase:art&&art.p>0?art.p:null,costoMon:monLista,dto:0,nota:''});
+  const r=_agregarAlCarrito({cod:art?art.c:'',desc:art?art.d:'',q,pBase,mon,costoBase:art&&art.p>0?art.p:null,costoMon:monLista,dto:0,nota:''});
   actualizarTabla();ci.value='1';
-  showToast('✓ Agregado al presupuesto');
+  _resaltarLinea(r.idx);
+  if(r.sumado)showToast(`✓ Ya estaba en el presupuesto: ahora son ${r.q}`,'#3b82f6');
+  else if(r.otroPrecio)showToast('✓ Agregado en una línea aparte (ya estaba con otro precio)','#3b82f6');
+  else showToast('✓ Agregado al presupuesto');
+}
+
+// v35: si el artículo ya está con el mismo precio, se suma la cantidad en vez de repetir la línea
+function _esManual(it){return !it.cod||it.cod==='MANUAL'||it.cod==='(MANUAL)';}
+function _agregarAlCarrito(it){
+  if(!_esManual(it)){
+    const mismos=carrito.map((x,j)=>j).filter(j=>carrito[j].cod===it.cod&&carrito[j].desc===it.desc);
+    const j=mismos.find(j=>{const x=carrito[j];return x.mon===it.mon&&!(Number(x.dto)>0)&&Math.abs((Number(x.pBase)||0)-(Number(it.pBase)||0))<1e-9;});
+    if(j!==undefined){carrito[j].q=(Number(carrito[j].q)||0)+(Number(it.q)||1);return {sumado:true,idx:j,q:carrito[j].q};}
+    carrito.push(it);return {sumado:false,otroPrecio:mismos.length>0,idx:carrito.length-1};
+  }
+  carrito.push(it);return {sumado:false,idx:carrito.length-1};
+}
+function _resaltarLinea(i){
+  setTimeout(()=>{
+    const el=document.querySelectorAll('#body-items .ci')[i];if(!el)return;
+    el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+    try{el.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}
+  },0);
 }
 
 function agregarManual(){
@@ -14743,11 +14799,23 @@ function agregarManual(){
 function cambiarQ(i,val){carrito[i].q=Math.max(1,parseInt(val)||1);actualizarTabla();}
 function cambiarPrecio(i,val){const p=parseFloat(val);if(p>=0){carrito[i].pBase=p;carrito[i].mon=monedaActual;}actualizarTabla();}
 function cambiarDto(i,val){let d=parseFloat(String(val).replace(',','.'))||0;d=Math.min(100,Math.max(0,d));carrito[i].dto=d;actualizarTabla();}
-function cambiarNota(i,val){carrito[i].nota=val;}
+function cambiarNota(i,val){carrito[i].nota=val;guardarBorrador();}
 function toggleNota(i){carrito[i]._notaAbierta=!carrito[i]._notaAbierta;actualizarTabla();if(carrito[i]._notaAbierta){const e=document.getElementById('nota-'+i);if(e)e.focus();}}
 function moverItem(i,d){const j=i+d;if(j<0||j>=carrito.length)return;const t=carrito[i];carrito[i]=carrito[j];carrito[j]=t;actualizarTabla();}
-function borrar(i){carrito.splice(i,1);actualizarTabla();}
-function limpiarCarrito(){if(carrito.length&&!confirm('¿Limpiar el presupuesto?'))return;carrito=[];nroPresupuesto=generarNro();nroEmpresa=null;_setExtra({});mostrarNro();actualizarTabla();}
+// v35: quitar y limpiar se pueden deshacer durante unos segundos
+function borrar(i){
+  const it=carrito.splice(i,1)[0];if(!it)return;
+  actualizarTabla();
+  const d=String(it.desc||'').trim();
+  _mostrarBarra('Ítem quitado: '+(d.length>40?d.slice(0,38)+'…':d),[{t:'Deshacer',fn:()=>{carrito.splice(Math.min(i,carrito.length),0,it);actualizarTabla();_resaltarLinea(Math.min(i,carrito.length-1));}}],7000);
+}
+function limpiarCarrito(){
+  if(!carrito.length&&!_val('cliente-nombre'))return;
+  const antes=_snapshotBorrador();
+  carrito=[];nroPresupuesto=generarNro();nroEmpresa=null;_setExtra({});mostrarNro();actualizarTabla();
+  _borrarBorrador();
+  if(antes.carrito.length)_mostrarBarra('Presupuesto vaciado ('+antes.carrito.length+' ítem'+(antes.carrito.length>1?'s':'')+')',[{t:'Deshacer',fn:()=>_aplicarSnapshot(antes)}],8000);
+}
 
 let _dragIdx=-1;
 function _ciDragStart(e,i){_dragIdx=i;e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(i));}catch(x){}e.currentTarget.classList.add('dragging');}
@@ -14774,6 +14842,7 @@ function actualizarTabla(){
     if(warn)warn.style.display='none';
     if(stats)stats.style.display='none';
     if(typeof actualizarMobileFab==='function')actualizarMobileFab();
+    guardarBorrador();
     return;
   }
   let sub=0,costo=0,conCosto=0;
@@ -14854,6 +14923,7 @@ function actualizarTabla(){
     document.getElementById('stat-max').title=`${max.d} — ${S}${fmt(max.v)}`;
   }
   if(typeof actualizarMobileFab==='function')actualizarMobileFab();
+  guardarBorrador();
 }
 
 // ─── ALTURAS SEGÚN LA PANTALLA ─────────────────────────────
@@ -15026,7 +15096,7 @@ function actualizarResumenExtra(){
   el.textContent=p.length?p.join(' · '):'opcional';
   el.style.color=p.length?'':'var(--muted)';
 }
-function setPlazo(t){document.getElementById('entrega-plazo').value=t;actualizarResumenExtra();}
+function setPlazo(t){document.getElementById('entrega-plazo').value=t;actualizarResumenExtra();guardarBorrador();}
 function setLugar(t){
   if(t==='__cliente__'){
     const c=_clienteParaPDF(_val('cliente-nombre'));
@@ -15034,7 +15104,7 @@ function setLugar(t){
     if(!d){showToast(c?'El cliente no tiene domicilio cargado':'Primero elegí un cliente de la base','#f59e0b');return;}
     t=d;
   }
-  document.getElementById('entrega-lugar').value=t;actualizarResumenExtra();
+  document.getElementById('entrega-lugar').value=t;actualizarResumenExtra();guardarBorrador();
 }
 
 // Junta todo lo que lleva el presupuesto actual (se usa para el PDF y el historial)
@@ -15283,6 +15353,7 @@ async function _generarDoc(conPrecios){
     const archivo=cli.replace(/[^a-z0-9]/gi,'_').toUpperCase();
     doc.save(`${conPrecios?'Presupuesto':'Picking'}_${datos.nro}_${archivo}.pdf`);
     guardarEnHistorial(datos);
+    _marcarBorradorExportado();
     showToast(conPrecios?`✓ Presupuesto ${datos.nro} generado`:'✓ Hoja de Picking generada');
   }finally{_generandoPDF=false;}
 }
@@ -15777,7 +15848,7 @@ function agregarSeleccion(){
       const key=artKey(a);
       const p=precios[key]||a.p||0;
       if(p>0){
-        carrito.push({cod:a.c,desc:a.d,q:m.cant,pBase:p,mon:monedaArticulo(a),costoBase:a.p>0?a.p:null,costoMon:monedaArticulo(a),dto:0,nota:''});
+        _agregarAlCarrito({cod:a.c,desc:a.d,q:m.cant,pBase:p,mon:monedaArticulo(a),costoBase:a.p>0?a.p:null,costoMon:monedaArticulo(a),dto:0,nota:''});
         agregados++;
       }else{omitidos++;}
     }else{omitidos++;}
@@ -17142,6 +17213,110 @@ document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&usuarioActivo&&Date.now()-_syncLastPull>60000)syncFlush().then(()=>syncPull());
 });
 setInterval(()=>{if(document.visibilityState==='visible'&&usuarioActivo&&Date.now()-_syncLastPull>180000)syncFlush().then(()=>syncPull());},60000);
+
+// ─── v35: BARRA DE AVISOS CON BOTONES (deshacer / recuperar) ──
+let _barraT=null;
+function _mostrarBarra(msg,botones,ms){
+  let b=document.getElementById('bm-barra');
+  if(!b){b=document.createElement('div');b.id='bm-barra';b.className='bm-barra';b.setAttribute('role','status');document.body.appendChild(b);}
+  clearTimeout(_barraT);
+  b.innerHTML='';
+  const s=document.createElement('span');s.className='bm-barra-msg';s.textContent=msg;b.appendChild(s);
+  (botones||[]).forEach(o=>{
+    const k=document.createElement('button');k.type='button';k.textContent=o.t;if(o.sec)k.className='sec';
+    k.onclick=()=>{_ocultarBarra();o.fn();};b.appendChild(k);
+  });
+  const x=document.createElement('button');x.type='button';x.className='cerrar';x.title='Cerrar';x.textContent='✕';
+  x.onclick=()=>{_ocultarBarra();if(b._alCerrar)b._alCerrar();};b.appendChild(x);
+  b._alCerrar=null;
+  b.classList.add('show');
+  if(ms)_barraT=setTimeout(_ocultarBarra,ms);
+  return b;
+}
+function _ocultarBarra(){clearTimeout(_barraT);const b=document.getElementById('bm-barra');if(b)b.classList.remove('show');}
+
+// ─── v35: PRESUPUESTO EN ARMADO (se guarda solo en este navegador) ──
+// Si se recarga la página, se cierra la pestaña o se corta la sesión, al volver
+// a entrar se ofrece recuperarlo. Se guarda por usuario.
+let _borradorT=null,_borradorExportado=false,_borradorPendiente=false;
+function _keyBorrador(){return usuarioActivo?'bm_borrador::'+String(usuarioActivo.user).toLowerCase():null;}
+function _snapshotBorrador(){
+  return {v:1,ts:Date.now(),
+    carrito:carrito.map(it=>{const o={...it};delete o._sinTC;delete o._notaAbierta;return o;}),
+    nro:nroPresupuesto,nroEmpresa:nroEmpresa,
+    cliente:_val('cliente-nombre'),clienteId:(clienteSeleccionado&&clienteSeleccionado.id)||null,
+    pago:_val('pago-cliente'),dp:(document.getElementById('descuento')||{}).value||'0',
+    empresa:(document.getElementById('select-empresa')||{}).value||'mitre',
+    vd:(document.getElementById('validez-dias')||{}).value||'',
+    moneda:monedaActual,entrega:_val('entrega-plazo'),lugarEntrega:_val('entrega-lugar'),obs:_val('obs-presupuesto')};
+}
+function _aplicarSnapshot(s){
+  const set=(id,v)=>{const e=document.getElementById(id);if(e&&v!=null)e.value=v;};
+  carrito=(s.carrito||[]).map(it=>_normItem({...it},s.moneda||'ARS'));
+  nroPresupuesto=s.nro||generarNro();nroEmpresa=s.nroEmpresa||null;
+  const cli=s.clienteId?cargarClientes().find(c=>c.id===s.clienteId):null;
+  if(cli)aplicarClienteACotizador(cli);
+  else{clienteSeleccionado=null;const info=document.getElementById('cliente-loaded-info');if(info)info.classList.remove('show');}
+  set('cliente-nombre',s.cliente||'');set('pago-cliente',s.pago||'');set('descuento',s.dp||'0');
+  set('select-empresa',s.empresa||'mitre');if(s.vd)set('validez-dias',s.vd);
+  _setExtra({entrega:s.entrega,lugarEntrega:s.lugarEntrega,obs:s.obs,moneda:s.moneda});
+  mostrarNro();actualizarInfoPantalla();actualizarTabla();
+}
+let _borradorFirma='';
+function _firmaBorrador(s){return JSON.stringify(Object.assign({},s,{ts:0,exportado:0}));}
+function guardarBorrador(){
+  if(!usuarioActivo)return;
+  clearTimeout(_borradorT);_borradorT=setTimeout(_guardarBorradorYa,400);
+}
+function _guardarBorradorYa(){
+  clearTimeout(_borradorT);
+  const k=_keyBorrador();if(!k)return;
+  if(!carrito.length){
+    // Mientras se ofrece recuperar uno guardado, un carrito vacío no lo pisa
+    if(!_borradorPendiente){_borradorFirma='';try{localStorage.removeItem(k);}catch(e){}}
+    return;
+  }
+  if(_borradorPendiente){_borradorPendiente=false;_ocultarBarra();} // empezó otro: el viejo se reemplaza
+  const s=_snapshotBorrador();
+  const f=_firmaBorrador(s);
+  if(f===_borradorFirma)return;            // nada cambió (p. ej. solo se re-dibujó la tabla)
+  _borradorFirma=f;_borradorExportado=false; // cambió algo después del PDF: vuelve a contar como "sin terminar"
+  try{s.exportado=false;localStorage.setItem(k,JSON.stringify(s));}catch(e){}
+}
+function _borrarBorrador(){const k=_keyBorrador();_borradorPendiente=false;_borradorFirma='';if(k){try{localStorage.removeItem(k);}catch(e){}}}
+function _marcarBorradorExportado(){
+  clearTimeout(_borradorT);_borradorExportado=true;
+  const k=_keyBorrador();if(!k||!carrito.length)return;
+  const s=_snapshotBorrador();_borradorFirma=_firmaBorrador(s);
+  try{s.exportado=true;localStorage.setItem(k,JSON.stringify(s));}catch(e){}
+}
+function _haceCuanto(ts){
+  const m=Math.round((Date.now()-ts)/60000);
+  if(m<1)return 'recién';if(m<60)return 'hace '+m+' min';
+  const h=Math.round(m/60);if(h<24)return 'hace '+h+' h';
+  const d=Math.round(h/24);return 'hace '+d+' día'+(d>1?'s':'');
+}
+function ofrecerBorrador(){
+  if(carrito.length)return;                 // ya hay algo en pantalla (p. ej. volvió a entrar tras vencer la sesión)
+  const k=_keyBorrador();if(!k)return;
+  let s=null;try{s=JSON.parse(localStorage.getItem(k)||'null');}catch(e){}
+  if(!s||!Array.isArray(s.carrito)||!s.carrito.length)return;
+  if(s.exportado||Date.now()-Number(s.ts||0)>30*86400000)return;   // ya se generó el PDF, o es muy viejo
+  _borradorPendiente=true;
+  const n=s.carrito.length;
+  const msg='📝 Tenés un presupuesto sin terminar: '+n+' ítem'+(n>1?'s':'')+(s.cliente?' · '+s.cliente:'')+' · '+_haceCuanto(Number(s.ts));
+  const b=_mostrarBarra(msg,[
+    {t:'Recuperar',fn:()=>{_borradorPendiente=false;_aplicarSnapshot(s);showToast('✓ Presupuesto recuperado');}},
+    {t:'Descartar',sec:true,fn:()=>{_borrarBorrador();}}
+  ],0);
+  b._alCerrar=()=>{_borradorPendiente=false;};
+}
+['cliente-nombre','pago-cliente','descuento','select-empresa','validez-dias','entrega-plazo','entrega-lugar','obs-presupuesto'].forEach(id=>{
+  const e=document.getElementById(id);if(!e)return;
+  e.addEventListener('input',guardarBorrador);e.addEventListener('change',guardarBorrador);
+});
+window.addEventListener('pagehide',()=>{if(_borradorT)_guardarBorradorYa();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&_borradorT)_guardarBorradorYa();});
 
 // ─── INIT ─────────────────────────────────────────────────
 cargarOverlayPrecios(); // primero el catálogo (con el Excel cargado, si hay)...
