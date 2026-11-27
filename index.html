@@ -17152,20 +17152,46 @@ async function syncPull(manual){
 
 // La primera vez que un usuario entra con esta versión en un navegador, sube
 // lo que ese navegador tenía guardado (así se recupera lo de cada vendedor).
-function syncMigrarLocal(){
-  const flag='bm_sync_migrado_'+usuarioActivo.user;
-  try{if(localStorage.getItem(flag))return;}catch(e){return;}
-  const yo=usuarioActivo.user.toLowerCase();
+// v36: se vuelve a correr una vez para todos (flag nuevo). Entre el 18/11 y el 27/11
+// el sitio tuvo una versión que guardaba solo en el navegador; esto sube esas
+// cotizaciones y clientes ANTES de traer la nube, para que no se pisen.
+// El servidor se queda con la versión más nueva de cada registro, así que subir
+// algo que ya está no duplica ni revive cosas borradas.
+function _subirLocal(clientes,historial,yo){
   let n=0;
-  cargarClientes().forEach(c=>{if(c&&c.id){syncEncolar('cli','up',c.id,c,c.actualizado||c.creado||'2000-01-01T00:00:00.000Z');n++;}});
-  cargarHistorial().forEach(h=>{
+  (clientes||[]).forEach(c=>{if(c&&c.id&&!sinAccesoClientes()){syncEncolar('cli','up',c.id,c,c.actualizado||c.creado||'2000-01-01T00:00:00.000Z');n++;}});
+  (historial||[]).forEach(h=>{
     if(!h||!h.nro)return;
     const id=syncHistId(h);const owner=id.split('|')[0];
-    if(owner!==yo&&!esAdmin())return;
+    if(owner!==yo&&!esAdmin()){_guardarRescate(owner,[],[h]);return;}  // es de otro vendedor: se guarda para cuando entre él
     h.vendedorUser=owner;
     syncEncolar('hist','up',id,h,h.actualizado||h.fecha||'2000-01-01T00:00:00.000Z');n++;
   });
-  try{localStorage.setItem(flag,new Date().toISOString());}catch(e){}
+  return n;
+}
+function _guardarRescate(owner,clientes,historial){
+  if(!owner||(!clientes.length&&!historial.length))return;
+  const k='bm_rescate::'+String(owner).toLowerCase();
+  let prev={cli:[],hist:[]};try{prev=JSON.parse(localStorage.getItem(k)||'null')||prev;}catch(e){}
+  const cli=(prev.cli||[]).concat(clientes),hist=(prev.hist||[]).concat(historial);
+  try{localStorage.setItem(k,JSON.stringify({cli,hist,fecha:new Date().toISOString()}));}catch(e){console.error('No se pudo guardar el rescate',e);}
+}
+function syncMigrarLocal(){
+  const yo=usuarioActivo.user.toLowerCase();
+  let n=0;
+  // Lo que quedó apartado de este usuario (otro entró antes en este navegador)
+  const kr='bm_rescate::'+yo;
+  try{const r=JSON.parse(localStorage.getItem(kr)||'null');if(r){n+=_subirLocal(r.cli,r.hist,yo);localStorage.removeItem(kr);}}catch(e){}
+  if(esAdmin()){
+    const ks='bm_rescate::__sin_duenio__';
+    try{const r=JSON.parse(localStorage.getItem(ks)||'null');if(r){n+=_subirLocal(r.cli,r.hist,yo);localStorage.removeItem(ks);}}catch(e){}
+  }
+  const flag='bm_sync_migrado_v36_'+yo;
+  let hecho=false;try{hecho=!!localStorage.getItem(flag);}catch(e){return;}
+  if(!hecho){
+    n+=_subirLocal(cargarClientes(),cargarHistorial(),yo);
+    try{localStorage.setItem(flag,new Date().toISOString());}catch(e){}
+  }
   if(n)showToast('☁ Subiendo '+n+' registros de este navegador a la nube…','#3b82f6');
 }
 
@@ -17178,8 +17204,17 @@ function prepararSesion(){
   if((owner&&owner!==u)||(!owner&&restringido)){
     if(owner&&_syncQueue.length){try{localStorage.setItem('bm_sync_queue::'+owner,JSON.stringify(_syncQueue));}catch(e){}}
     _syncQueue=[];
-    _histCache='[]';_cliCache='[]';
-    try{localStorage.setItem('bm_historial_v1','[]');localStorage.setItem('bm_clientes','[]');}catch(e){}
+    // v36: antes se vaciaba sin más; ahora lo que había se aparta para su dueño
+    // (y lo sube cuando entra), así nunca se pierde lo que estaba solo en este navegador.
+    let hl=[],cl=[];try{hl=JSON.parse(localStorage.getItem('bm_historial_v1')||'[]');cl=JSON.parse(localStorage.getItem('bm_clientes')||'[]');}catch(e){}
+    if(owner){_guardarRescate(owner,cl,hl);}
+    else{
+      // Navegador sin dueño (versión vieja) y entra un usuario sin acceso a clientes:
+      // su historial se queda para subirlo; los clientes se apartan para el administrador.
+      _guardarRescate('__sin_duenio__',cl,[]);
+    }
+    _histCache=owner?'[]':JSON.stringify(hl);_cliCache='[]';
+    try{localStorage.setItem('bm_historial_v1',_histCache);localStorage.setItem('bm_clientes','[]');}catch(e){}
   }
   try{const q=JSON.parse(localStorage.getItem('bm_sync_queue::'+u)||'[]');if(q.length){_syncQueue=_syncQueue.concat(q);localStorage.removeItem('bm_sync_queue::'+u);}}catch(e){}
   if(restringido)_syncQueue=_syncQueue.filter(o=>o.t!=='cli');
